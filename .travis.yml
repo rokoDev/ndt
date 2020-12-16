@@ -1,0 +1,86 @@
+language: cpp
+
+branches:
+  only:
+    - master
+    - develop
+
+os: osx
+osx_image: xcode12.2
+compiler: clang
+
+matrix:
+   include:
+     - env:
+         - CC=clang
+         - CXX=clang++
+         - IS_SHARED_LIBS=NO
+         - BUILD_TYPE='Debug'
+         - CMAKE_GENERATOR=Xcode
+         - BUILD_DIR=build/$CMAKE_GENERATOR
+     - env:
+         - CC=clang
+         - CXX=clang++
+         - IS_SHARED_LIBS=NO
+         - BUILD_TYPE='Release'
+         - CMAKE_GENERATOR=Xcode
+         - BUILD_DIR=build/$CMAKE_GENERATOR
+     - env:
+         - CC=clang
+         - CXX=clang++
+         - IS_SHARED_LIBS=NO
+         - BUILD_TYPE='Debug'
+         - CMAKE_GENERATOR=Ninja
+         - BUILD_DIR=build/$CMAKE_GENERATOR/$BUILD_TYPE
+     - env:
+         - CC=clang
+         - CXX=clang++
+         - IS_SHARED_LIBS=NO
+         - BUILD_TYPE='Release'
+         - CMAKE_GENERATOR=Ninja
+         - BUILD_DIR=build/$CMAKE_GENERATOR/$BUILD_TYPE
+
+before_install:
+  - echo ${TRAVIS_EVENT_TYPE}
+  - echo ${TRAVIS_PULL_REQUEST_BRANCH}
+  - echo ${TRAVIS_PULL_REQUEST}
+  - |
+    if [ $TRAVIS_EVENT_TYPE = 'pull_request' ]
+    then
+        pip3 install requests
+        cd $TRAVIS_BUILD_DIR/..
+        git clone https://github.com/rokoDev/UsefulScripts.git
+        cd $TRAVIS_BUILD_DIR
+        python3 ./../UsefulScripts/apply_bb_pr_for_travis.py
+        export BRANCH=$(git symbolic-ref -q --short HEAD)
+    else
+        export BRANCH=$TRAVIS_BRANCH
+        git checkout $BRANCH
+        git submodule update --init --recursive
+    fi
+  - echo ${BRANCH}
+
+install: #travis_wait 30 ./scripts/updatecmake.sh  #- while sleep 60; do echo "=====[ $SECONDS seconds still running ]====="; done &
+  - brew update
+  - brew outdated cmake || brew upgrade cmake
+  - brew install ninja
+
+script:
+  - mkdir -p $BUILD_DIR
+  - cd $BUILD_DIR
+  - cmake -DBUILD_SHARED_LIBS=$IS_SHARED_LIBS -G $CMAKE_GENERATOR $TRAVIS_BUILD_DIR
+  - |
+    if [ $CMAKE_GENERATOR = 'Xcode' ]
+    then
+        xcodebuild -configuration $BUILD_TYPE -scheme ndt_tests build
+    else
+        ninja
+    fi
+  - ctest -VV --output-on-failure -C $BUILD_TYPE
+
+notifications:
+  email:
+    recipients:
+      - rokodev@mail.ru
+    on_success: change
+    on_failure: always
