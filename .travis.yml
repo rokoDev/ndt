@@ -9,37 +9,6 @@ os: osx
 osx_image: xcode12.2
 compiler: clang
 
-matrix:
-   include:
-     - env:
-         - CC=clang
-         - CXX=clang++
-         - IS_SHARED_LIBS=NO
-         - BUILD_TYPE='Debug'
-         - CMAKE_GENERATOR=Xcode
-         - BUILD_DIR=build/$CMAKE_GENERATOR
-     - env:
-         - CC=clang
-         - CXX=clang++
-         - IS_SHARED_LIBS=NO
-         - BUILD_TYPE='Release'
-         - CMAKE_GENERATOR=Xcode
-         - BUILD_DIR=build/$CMAKE_GENERATOR
-     - env:
-         - CC=clang
-         - CXX=clang++
-         - IS_SHARED_LIBS=NO
-         - BUILD_TYPE='Debug'
-         - CMAKE_GENERATOR=Ninja
-         - BUILD_DIR=build/$CMAKE_GENERATOR/$BUILD_TYPE
-     - env:
-         - CC=clang
-         - CXX=clang++
-         - IS_SHARED_LIBS=NO
-         - BUILD_TYPE='Release'
-         - CMAKE_GENERATOR=Ninja
-         - BUILD_DIR=build/$CMAKE_GENERATOR/$BUILD_TYPE
-
 before_install:
   - echo ${TRAVIS_EVENT_TYPE}
   - echo ${TRAVIS_PULL_REQUEST_BRANCH}
@@ -66,17 +35,10 @@ install: #travis_wait 30 ./scripts/updatecmake.sh  #- while sleep 60; do echo "=
   - brew install ninja
 
 script:
-  - mkdir -p $BUILD_DIR
-  - cd $BUILD_DIR
-  - cmake -DBUILD_SHARED_LIBS=$IS_SHARED_LIBS -G $CMAKE_GENERATOR $TRAVIS_BUILD_DIR
-  - |
-    if [ $CMAKE_GENERATOR = 'Xcode' ]
-    then
-        xcodebuild -configuration $BUILD_TYPE -scheme ndt_tests build
-    else
-        ninja
-    fi
-  - ctest -VV --output-on-failure -C $BUILD_TYPE
+  - python3 ./scripts/build_test_macos_travisci.py -g Xcode -source_dir $TRAVIS_BUILD_DIR -build_dir $TRAVIS_BUILD_DIR/build/Xcode --build_type Debug
+  - python3 ./scripts/build_test_macos_travisci.py -g Xcode -source_dir $TRAVIS_BUILD_DIR -build_dir $TRAVIS_BUILD_DIR/build/Xcode --build_type Release -notclear
+  - python3 ./scripts/build_test_macos_travisci.py -g Ninja -source_dir $TRAVIS_BUILD_DIR -build_dir $TRAVIS_BUILD_DIR/build/Ninja/Debug --build_type Debug
+  - python3 ./scripts/build_test_macos_travisci.py -g Ninja -source_dir $TRAVIS_BUILD_DIR -build_dir $TRAVIS_BUILD_DIR/build/Ninja/Release --build_type Release
 
 notifications:
   email:
