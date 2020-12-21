@@ -29,3 +29,5 @@ rex pex fex
 rex
 
 red
+
+white
