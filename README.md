@@ -47,3 +47,5 @@ edit
 ultimate edit
 
 foo edit
+
+bar edit
