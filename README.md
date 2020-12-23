@@ -51,3 +51,5 @@ foo edit
 bar edit
 
 cat
+
+nice cat
