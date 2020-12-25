@@ -107,3 +107,5 @@ tar cat
 bit cat
 
 spy cat
+
+vet cat
