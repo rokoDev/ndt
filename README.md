@@ -89,3 +89,5 @@ get cat
 glad cat
 
 fat cat
+
+bot cat
