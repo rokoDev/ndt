@@ -59,8 +59,8 @@ bool operator==(const ipv6_t &aVal1, const ipv6_t &aVal2) noexcept
 const ipv4_t kIPv4Any{INADDR_ANY};
 const ipv4_t kIPv4Loopback{INADDR_LOOPBACK};
 
-const ipv6_t kIPv6Any{*(ipv6_t *)(&in6addr_any)};
-const ipv6_t kIPv6Loopback{*(ipv6_t *)(&in6addr_loopback)};
+const ipv6_t kIPv6Any{u_ipv6_t{in6addr_any}};
+const ipv6_t kIPv6Loopback{u_ipv6_t{in6addr_loopback}};
 
 namespace utils
 {
@@ -70,7 +70,7 @@ bool memvcmp(const void *memptr, unsigned char val, const std::size_t size)
     {
         return false;
     }
-    unsigned char *mm = (unsigned char *)memptr;
+    const unsigned char *mm = static_cast<const unsigned char *>(memptr);
     return (*mm == val) && (memcmp(mm, mm + 1, size - 1) == 0);
 }
 }  // namespace utils

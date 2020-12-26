@@ -1,5 +1,4 @@
 #include <fmt/core.h>
-
 #include <algorithm>
 #include <array>
 
@@ -534,7 +533,7 @@ TEST(AddressTests, ConstructorSockaddrWithAFINETFamilyNotThrow)
     const auto constructWithAF_INET = []() {
         sockaddr_in sa4;
         sa4.sin_family = AF_INET;
-        const sockaddr *sa = (const sockaddr *)&sa4;
+        const sockaddr *sa = reinterpret_cast<const sockaddr *>(&sa4);
         net::Address a(*sa);
     };
     EXPECT_NO_THROW(constructWithAF_INET());
@@ -543,9 +542,9 @@ TEST(AddressTests, ConstructorSockaddrWithAFINETFamilyNotThrow)
 TEST(AddressTests, ConstructorSockaddrWithAFINET6FamilyNotThrow)
 {
     const auto constructWithAF_INET6 = []() {
-        sockaddr_in sa4;
-        sa4.sin_family = AF_INET6;
-        const sockaddr *sa = (const sockaddr *)&sa4;
+        sockaddr_in6 sa6;
+        sa6.sin6_family = AF_INET6;
+        const sockaddr *sa = reinterpret_cast<const sockaddr *>(&sa6);
         net::Address a(*sa);
     };
     EXPECT_NO_THROW(constructWithAF_INET6());
@@ -557,7 +556,7 @@ TEST(AddressTests, ConstructorSockaddrWithAFINETFamilyValidInit)
     std::memset(&sa4, 0, sizeof(sa4));
     sa4.sin_port = htons(123);
     sa4.sin_family = AF_INET;
-    const sockaddr *sa = (const sockaddr *)&sa4;
+    const sockaddr *sa = reinterpret_cast<const sockaddr *>(&sa4);
     net::Address a(*sa);
 
     ASSERT_EQ(a.port(), 123);
@@ -573,7 +572,7 @@ TEST(AddressTests, ConstructorSockaddrWithAFINET6FamilyValidInit)
     std::memset(&sa6, 0, sizeof(sa6));
     sa6.sin6_port = htons(321);
     sa6.sin6_family = AF_INET6;
-    const sockaddr *sa = (const sockaddr *)&sa6;
+    const sockaddr *sa = reinterpret_cast<const sockaddr *>(&sa6);
     net::Address a(*sa);
 
     ASSERT_EQ(a.port(), 321);
