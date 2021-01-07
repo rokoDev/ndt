@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "NetException.h"
+#include "NdtException.h"
 
-namespace net
+namespace ndt
 {
 Address::~Address() = default;
 
@@ -83,7 +83,7 @@ void Address::addressFamily(const eAddressFamily aFamily)
 {
     throwIfFamilyUnspec(aFamily);
 
-    changeFamilyIfDifferent(net::AddressFamilyUserToSystem.at(aFamily));
+    changeFamilyIfDifferent(ndt::AddressFamilyUserToSystem.at(aFamily));
 }
 
 uint8_t Address::addressFamilySys() const noexcept
@@ -210,4 +210,4 @@ eAddressFamily Address::throwIfUnknownFamily(const uint8_t aFamily)
 
 sockaddr *Address::nativeData() noexcept { return &_sockaddr.sa; }
 
-}  // namespace net
+}  // namespace ndt

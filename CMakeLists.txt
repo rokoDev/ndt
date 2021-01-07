@@ -78,20 +78,21 @@ set(INCLUDE_DIRS
 set(HEADERS
 	${MAIN_INCLUDE_DIR}/CommonInclude.h
 	${MAIN_INCLUDE_DIR}/Socket.h
-	${MAIN_INCLUDE_DIR}/NetUtils.h
+	${MAIN_INCLUDE_DIR}/NdtUtils.h
 	${MAIN_INCLUDE_DIR}/FastPimpl.h
 	${MAIN_INCLUDE_DIR}/UDP.h
 	${MAIN_INCLUDE_DIR}/Address.h
-	${MAIN_INCLUDE_DIR}/NetException.h
+	${MAIN_INCLUDE_DIR}/NdtException.h
 	)
 
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(SOURCES
-	${SOURCE_DIR}/NetUtils.cpp
+	${SOURCE_DIR}/NdtUtils.cpp
 	${SOURCE_DIR}/UDP.cpp
 	${SOURCE_DIR}/Address.cpp
-	${SOURCE_DIR}/NetException.cpp
+	${SOURCE_DIR}/NdtException.cpp
 	${SOURCE_DIR}/Socket.cpp
+	${SOURCE_DIR}/CommonInclude.cpp
 	)
 
 include_directories("${INCLUDE_DIRS}")

@@ -1,5 +1,5 @@
-#ifndef NetException_h
-#define NetException_h
+#ifndef NdtException_h
+#define NdtException_h
 
 #include <fmt/core.h>
 
@@ -8,7 +8,9 @@
 #include <stdexcept>
 #include <string>
 
-namespace net
+#include "CommonInclude.h"
+
+namespace ndt
 {
 namespace exception
 {
@@ -146,39 +148,46 @@ const std::string& Error<STD_ERROR>::func() const noexcept
 template <class STD_ERROR>
 std::ostream& operator<<(std::ostream& aOut, const Error<STD_ERROR>& aError)
 {
-    const auto errorStr = fmt::format(
-        "Runtime error:\nFile: {}\nFunction: {}\nLine: {}\nWhat: {}\nError "
-        "code: {}\nError msg: {}\n",
-        aError.file(), aError.func(), aError.line(), aError.what(),
-        aError.errorCode(), std::strerror(aError.errorCode()));
-    aOut << errorStr;
+    static constexpr std::size_t kMaxMsgLen = 1024;
+    static ndt::ch_t errorMsg[kMaxMsgLen];
+    auto [restStr, resultLen] = fmt::format_to_n(
+        errorMsg, kMaxMsgLen,
+        "Runtime error:\nFile: {}\nLine: {}\nFunction: {}\nWhat: {}\nError "
+        "code: {}\nError msg: ",
+        aError.file(), aError.line(), aError.func(), aError.what(),
+        aError.errorCode());
+    const std::size_t kMsgLen =
+        resultLen + ndt::getSysErrorDescr(aError.errorCode(), restStr,
+                                          kMaxMsgLen - resultLen);
+    std::string_view sv(errorMsg, kMsgLen);
+    aOut << sv;
     return aOut;
 }
 
 using LogicError = Error<std::logic_error>;
 using RuntimeError = Error<std::runtime_error>;
 
-#define CheckLogicError(IsThrow, Reason)                             \
-    {                                                                \
-        if (IsThrow)                                                 \
-        {                                                            \
-            net::exception::LogicError logicError(                   \
-                Reason, 0, __LINE__, __FILE__, __PRETTY_FUNCTION__); \
-            logicError.raise();                                      \
-        }                                                            \
+#define CheckLogicError(IsThrow, Reason)                                \
+    {                                                                   \
+        if (IsThrow)                                                    \
+        {                                                               \
+            ndt::exception::LogicError logicError(Reason, 0, __LINE__,  \
+                                                  __FILE__, FUNC_INFO); \
+            logicError.raise();                                         \
+        }                                                               \
     }
 
-#define CheckRuntimeError(IsThrow, Reason)                               \
-    {                                                                    \
-        if (IsThrow)                                                     \
-        {                                                                \
-            net::exception::RuntimeError runtimeError(                   \
-                Reason, errno, __LINE__, __FILE__, __PRETTY_FUNCTION__); \
-            runtimeError.raise();                                        \
-        }                                                                \
+#define CheckRuntimeError(IsThrow, Reason)                          \
+    {                                                               \
+        if (IsThrow)                                                \
+        {                                                           \
+            ndt::exception::RuntimeError runtimeError(              \
+                Reason, err_code, __LINE__, __FILE__, FUNC_INFO); \
+            runtimeError.raise();                                   \
+        }                                                           \
     }
 
 }  // namespace exception
-}  // namespace net
+}  // namespace ndt
 
-#endif /* NetException_h */
+#endif /* NdtException_h */

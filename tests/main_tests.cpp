@@ -1,13 +1,13 @@
 #include <fmt/core.h>
 
 #include "GitInfo.h"
-#include "NetUtils.h"
+#include "NdtUtils.h"
 #include "Version.h"
 #include "gtest/gtest.h"
 
 TEST(TestNDTVersion, GitInfoTest)
 {
-    fmt::print("[          ] build type: {}\n", net::kBuildTypeCStr);
+    fmt::print("[          ] build type: {}\n", ndt::kBuildTypeCStr);
     fmt::print("[          ] branch: {}\n", ndt::GitInfo::branch());
     fmt::print("[          ] SHA1: {}\n", ndt::GitInfo::SHA1());
     const std::string isDirty =

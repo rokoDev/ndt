@@ -1,15 +1,13 @@
-#ifndef NetUtils_h
-#define NetUtils_h
+#ifndef NdtUtils_h
+#define NdtUtils_h
 
 #include <cstdint>
 #include <unordered_map>
 
 #include "CommonInclude.h"
 
-namespace net
+namespace ndt
 {
-inline constexpr int OPERATION_FAILED = -1;
-
 enum class eSocketType : std::uint8_t
 {
     kStream,
@@ -95,6 +93,6 @@ namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
 }
-}  // namespace net
+}  // namespace ndt
 
-#endif /* NetUtils_h */
+#endif /* NdtUtils_h */

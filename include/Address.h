@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <variant>
 
-#include "NetUtils.h"
+#include "NdtUtils.h"
 
-namespace net
+namespace ndt
 {
 class Address final
 {
@@ -70,6 +70,6 @@ class Address final
     } _sockaddr;
 };
 
-}  // namespace net
+}  // namespace ndt
 
 #endif /* Address_h */

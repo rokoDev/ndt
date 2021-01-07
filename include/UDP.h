@@ -1,10 +1,10 @@
 #ifndef UDP_h
 #define UDP_h
 
-#include "NetUtils.h"
+#include "NdtUtils.h"
 #include "Socket.h"
 
-namespace net
+namespace ndt
 {
 template <typename FlagsT, typename SFuncsT>
 class Socket;
@@ -15,7 +15,7 @@ class SocketAddress;
 class UDP final
 {
    public:
-    using Socket = net::Socket<UDP, details::SocketFuncs>;
+    using Socket = ndt::Socket<UDP, details::SocketFuncs>;
 
     static UDP V4() noexcept;
     static UDP V6() noexcept;
@@ -36,6 +36,6 @@ class UDP final
     int _af;
 };
 
-}  // namespace net
+}  // namespace ndt
 
 #endif /* UDP_h */

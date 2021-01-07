@@ -43,6 +43,6 @@ script:
 notifications:
   email:
     recipients:
-      - rokodev@mail.ru
+      - ndtmill@gmail.com
     on_success: change
     on_failure: always

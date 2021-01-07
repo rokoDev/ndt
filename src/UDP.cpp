@@ -2,7 +2,7 @@
 
 #include "CommonInclude.h"
 
-namespace net
+namespace ndt
 {
 UDP UDP::V4() noexcept { return UDP(eAddressFamily::kIPv4); }
 
@@ -38,4 +38,4 @@ int UDP::sysSocketType() const noexcept { return SOCK_DGRAM; }
 
 int UDP::sysProtocol() const noexcept { return IPPROTO_UDP; }
 
-}  // namespace net
+}  // namespace ndt

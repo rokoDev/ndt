@@ -1,8 +1,8 @@
-#include "NetException.h"
+#include "NdtException.h"
 
 #include <iostream>
 
-namespace net
+namespace ndt
 {
 namespace exception
 {
@@ -17,4 +17,4 @@ std::ostream& operator<<(std::ostream& aOut,
 }
 
 }  // namespace exception
-}  // namespace net
+}  // namespace ndt

@@ -1,4 +1,4 @@
-#include "NetUtils.h"
+#include "NdtUtils.h"
 
 #include <fmt/core.h>
 #include <fmt/format.h>
@@ -8,7 +8,7 @@
 
 #include "CommonInclude.h"
 
-namespace net
+namespace ndt
 {
 const std::unordered_map<eSocketType, int> SocketTypeUserToSystem = {
     {eSocketType::kStream, SOCK_STREAM},
@@ -75,4 +75,4 @@ bool memvcmp(const void *memptr, unsigned char val, const std::size_t size)
 }
 }  // namespace utils
 
-}  // namespace net
+}  // namespace ndt
