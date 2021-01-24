@@ -108,8 +108,8 @@ before_build:
 
   - cmake -S .. -B . -GNinja "-DCMAKE_BUILD_TYPE:String=Debug" "-DCMAKE_CXX_COMPILER:STRING=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/x64/bin/clang++.exe" "-DCMAKE_C_COMPILER:STRING=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/x64/bin/clang.exe" "-DCMAKE_TOOLCHAIN_FILE:INTERNAL=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
-build:
-  project: $env:projectName
+# build:
+#   project: $env:projectName
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
