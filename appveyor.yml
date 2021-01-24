@@ -25,13 +25,13 @@ environment:
       command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..\..
       command2: --build . --config %CONFIGURATION%
       testCommand: -VV --output-on-failure -C %CONFIGURATION%
-      projectName: $env:APPVEYOR_BUILD_FOLDER\build\msvs\$env:APPVEYOR_PROJECT_NAME.sln
+      projectName: $(SRC_PATH)\build\msvs\$(APPVEYOR_PROJECT_NAME).sln
       buildDir: build\msvs
     - type: Ninja
       command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "$env:APPVEYOR_BUILD_FOLDER"
       command2: -version
       testCommand: -version
-      projectName: $env:APPVEYOR_BUILD_FOLDER\build\Ninja\%CONFIGURATION%\build.ninja
+      projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
       buildDir: build\%CONFIGURATION%
 
 matrix:
@@ -40,6 +40,7 @@ matrix:
 install:
   - ps: |
       $CLONE_URL = git remote get-url origin
+      $env:SRC_PATH = $env:APPVEYOR_BUILD_FOLDER
       $BRANCH = $env:APPVEYOR_REPO_BRANCH
       cd .. 2> $null
       Remove-Item -LiteralPath "$env:APPVEYOR_PROJECT_NAME" -Force -Recurse
