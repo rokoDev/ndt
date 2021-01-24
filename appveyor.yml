@@ -28,7 +28,7 @@ environment:
     #   projectName: $(SRC_PATH)\build\msvs\$(APPVEYOR_PROJECT_NAME).sln
     #   buildDir: build\msvs
     - type: Ninja
-      command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "C:/projects/ndt"
+      command: python3 "C:\projects\ndt\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "C:\projects\ndt"
       command2: -version
       testCommand: -version
       projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
