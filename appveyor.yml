@@ -32,7 +32,7 @@ environment:
       command2: -version
       testCommand: -VV --output-on-failure -C %CONFIGURATION%
       projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
-      buildDir: build\Ninja\%CONFIGURATION%
+      buildDir: build
 
 matrix:
   fast_finish: true
