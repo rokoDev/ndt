@@ -25,10 +25,12 @@ environment:
       command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
       command2: --build . --config %CONFIGURATION%
       testCommand: -VV --output-on-failure -C %CONFIGURATION%
+      projectName: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
     - type: Ninja
       command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "$env:APPVEYOR_BUILD_FOLDER"
       command2: -version
       testCommand: -version
+      projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
 
 matrix:
   fast_finish: true
@@ -97,6 +99,8 @@ before_build:
   - cmake %command%
   - cmake %command2%
 
+build:
+  project: $(projectName)
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
