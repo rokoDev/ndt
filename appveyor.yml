@@ -22,15 +22,17 @@ configuration:
 environment:
   matrix:
     - type: ClangCL
-      command: cmake -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
-      command2: cmake --build . --config %CONFIGURATION%
-      testCommand: ctest -VV --output-on-failure -C %CONFIGURATION%
-      projectName: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
+      command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..\..
+      command2: --build . --config %CONFIGURATION%
+      testCommand: -VV --output-on-failure -C %CONFIGURATION%
+      projectName: $(APPVEYOR_BUILD_FOLDER)\build\msvs\$(APPVEYOR_PROJECT_NAME).sln
+      buildDir: build\msvs
     - type: Ninja
       command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "$env:APPVEYOR_BUILD_FOLDER"
-      command2: cmake -version
-      testCommand: ctest -version
+      command2: -version
+      testCommand: -version
       projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
+      buildDir: build\%CONFIGURATION%
 
 matrix:
   fast_finish: true
@@ -91,13 +93,13 @@ install:
 before_build:
   - cmake --version
   - C:\Tools\vcpkg\vcpkg.exe integrate remove
-  - cmake -E make_directory build
-  - cd build
+  - cmake -E make_directory %buildDir%
+  - cd %buildDir%
   - echo %PATH%
   # - ps: |
   #     clang-cl /?
-  - $env:command
-  - $env:command2
+  - cmake %command%
+  - cmake %command2%
 
 build:
   project: $env:projectName
@@ -105,7 +107,7 @@ build:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
-  - cmd: $env:testCommand
+  - cmd: ctest %testCommand%
 
 notifications:
   - provider: Email
