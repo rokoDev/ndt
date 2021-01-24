@@ -32,7 +32,7 @@ environment:
       command2: -version
       testCommand: -version
       projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
-      buildDir: build\%CONFIGURATION%
+      buildDir: build\Ninja\%CONFIGURATION%
 
 matrix:
   fast_finish: true
