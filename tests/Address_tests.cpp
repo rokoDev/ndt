@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <array>
 
-#include "Address.h"
-#include "NdtException.h"
+#include "ndt/Address.h"
+#include "ndt/NdtException.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

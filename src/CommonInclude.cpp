@@ -4,7 +4,7 @@
 #include <cassert>
 #include <fmt/format.h>
 
-#include "CommonInclude.h"
+#include "ndt/CommonInclude.h"
 
 namespace ndt
 {

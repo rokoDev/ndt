@@ -1,4 +1,4 @@
-#include "NdtException.h"
+#include "ndt/NdtException.h"
 
 #include <iostream>
 

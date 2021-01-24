@@ -1,4 +1,4 @@
-#include "NdtUtils.h"
+#include "ndt/NdtUtils.h"
 
 #include <fmt/core.h>
 #include <fmt/format.h>
@@ -6,7 +6,7 @@
 #include <cstring>
 #include <string>
 
-#include "CommonInclude.h"
+#include "ndt/CommonInclude.h"
 
 namespace ndt
 {

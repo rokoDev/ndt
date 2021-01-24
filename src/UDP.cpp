@@ -1,6 +1,6 @@
-#include "UDP.h"
+#include "ndt/UDP.h"
 
-#include "CommonInclude.h"
+#include "ndt/CommonInclude.h"
 
 namespace ndt
 {
