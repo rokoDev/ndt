@@ -1,4 +1,4 @@
-#include "NdtUtils.h"
+#include "ndt/utils.h"
 #include "gtest/gtest.h"
 
 TEST(Memvcmp_TESTS, NonEmptyMemTest)

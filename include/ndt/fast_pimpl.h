@@ -1,5 +1,5 @@
-#ifndef FastPimpl_h
-#define FastPimpl_h
+#ifndef ndt_fast_pimpl_h
+#define ndt_fast_pimpl_h
 
 #include <type_traits>
 
@@ -76,4 +76,4 @@ class FastPimpl
     std::aligned_storage_t<Size, Alignment> _data;
 };
 
-#endif /* FastPimpl_h */
+#endif /* ndt_fast_pimpl_h */

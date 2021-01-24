@@ -1,6 +1,6 @@
-#include "NdtException.h"
-
 #include <iostream>
+
+#include "ndt/exception.h"
 
 namespace ndt
 {

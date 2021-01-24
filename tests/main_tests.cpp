@@ -1,8 +1,8 @@
 #include <fmt/core.h>
 
-#include "GitInfo.h"
-#include "NdtUtils.h"
-#include "Version.h"
+#include "ndt/GitInfo.h"
+#include "ndt/utils.h"
+#include "ndt/Version.h"
 #include "gtest/gtest.h"
 
 TEST(TestNDTVersion, GitInfoTest)

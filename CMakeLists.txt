@@ -4,10 +4,8 @@ cmake_minimum_required(VERSION ${cmake_version})
 
 set(ProjectName "ndt")
 
-set(CMAKE_XCODE_GENERATE_TOP_LEVEL_PROJECT_ONLY ON)
-
 project(${ProjectName}
-		VERSION 0.1.0
+		VERSION 0.1.1
 		LANGUAGES CXX)
 
 set(allowableBuildTypes Debug Release)
@@ -76,28 +74,30 @@ set(INCLUDE_DIRS
 	${CMAKE_CURRENT_LIST_DIR}/fmt/include
 	)
 set(HEADERS
-	${MAIN_INCLUDE_DIR}/CommonInclude.h
-	${MAIN_INCLUDE_DIR}/Socket.h
-	${MAIN_INCLUDE_DIR}/NdtUtils.h
-	${MAIN_INCLUDE_DIR}/FastPimpl.h
-	${MAIN_INCLUDE_DIR}/UDP.h
-	${MAIN_INCLUDE_DIR}/Address.h
-	${MAIN_INCLUDE_DIR}/NdtException.h
+	${MAIN_INCLUDE_DIR}/ndt/common.h
+	${MAIN_INCLUDE_DIR}/ndt/socket.h
+	${MAIN_INCLUDE_DIR}/ndt/utils.h
+	${MAIN_INCLUDE_DIR}/ndt/fast_pimpl.h
+	${MAIN_INCLUDE_DIR}/ndt/udp.h
+	${MAIN_INCLUDE_DIR}/ndt/address.h
+	${MAIN_INCLUDE_DIR}/ndt/exception.h
 	)
 
-set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SOURCES
-	${SOURCE_DIR}/NdtUtils.cpp
-	${SOURCE_DIR}/UDP.cpp
-	${SOURCE_DIR}/Address.cpp
-	${SOURCE_DIR}/NdtException.cpp
-	${SOURCE_DIR}/Socket.cpp
-	${SOURCE_DIR}/CommonInclude.cpp
+	${SOURCE_DIR}/utils.cpp
+	${SOURCE_DIR}/udp.cpp
+	${SOURCE_DIR}/address.cpp
+	${SOURCE_DIR}/exception.cpp
+	${SOURCE_DIR}/socket.cpp
+	${SOURCE_DIR}/common.cpp
 	)
 
 include_directories("${INCLUDE_DIRS}")
 
-add_subdirectory(fmt)
+if(NOT TARGET fmt)
+  add_subdirectory(fmt)
+endif()
 
 # Create library
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
@@ -105,9 +105,16 @@ add_library(${ProjectName} ${SOURCES} ${HEADERS})
 target_compile_definitions(${ProjectName} PUBLIC $<$<CONFIG:Release>:RELEASE> $<$<CONFIG:Debug>:DEBUG>)
 target_compile_options(${ProjectName} PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(${ProjectName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(${ProjectName} PUBLIC versionInfo fmt)
+target_link_libraries(${ProjectName} PUBLIC "${ProjectName}_versionInfo" fmt)
+target_include_directories(${ProjectName} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
-# Setup testing
-add_subdirectory(googletest)
-enable_testing()
-add_subdirectory(tests)
+# Things typically only needed if we are the top level project
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  # Setup testing
+  add_subdirectory(googletest)
+  enable_testing()
+  add_subdirectory(tests)
+endif()

@@ -19,7 +19,7 @@ endmacro()
 
 package_add_test(${ProjectName}
 	main_tests.cpp
-	Memvcmp_tests.cpp
-	Address_tests.cpp
-	Socket_tests.cpp
+	memvcmp_tests.cpp
+	address_tests.cpp
+	socket_tests.cpp
 	)

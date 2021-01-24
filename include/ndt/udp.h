@@ -1,8 +1,8 @@
-#ifndef UDP_h
-#define UDP_h
+#ifndef ndt_udp_h
+#define ndt_udp_h
 
-#include "NdtUtils.h"
-#include "Socket.h"
+#include "utils.h"
+#include "socket.h"
 
 namespace ndt
 {
@@ -38,4 +38,4 @@ class UDP final
 
 }  // namespace ndt
 
-#endif /* UDP_h */
+#endif /* ndt_udp_h */

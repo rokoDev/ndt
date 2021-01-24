@@ -1,12 +1,10 @@
-#include "NdtUtils.h"
-
 #include <fmt/core.h>
 #include <fmt/format.h>
-
 #include <cstring>
 #include <string>
 
-#include "CommonInclude.h"
+#include "ndt/common.h"
+#include "ndt/utils.h"
 
 namespace ndt
 {

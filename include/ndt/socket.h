@@ -1,12 +1,12 @@
-#ifndef Socket_h
-#define Socket_h
+#ifndef ndt_socket_h
+#define ndt_socket_h
 
 #include <cstddef>
 
-#include "Address.h"
-#include "CommonInclude.h"
-#include "NdtException.h"
-#include "NdtUtils.h"
+#include "address.h"
+#include "common.h"
+#include "exception.h"
+#include "utils.h"
 
 namespace ndt
 {
@@ -180,4 +180,4 @@ const FlagsT &Socket<FlagsT, SFuncsT>::flags() const noexcept
 
 }  // namespace ndt
 
-#endif /* Socket_h */
+#endif /* ndt_socket_h */

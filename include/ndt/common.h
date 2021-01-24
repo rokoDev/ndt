@@ -1,8 +1,8 @@
-/** @file CommonInclude.h
+/** @file common.h
     @brief Header with typedefs to make type designation platform independent.
  */
-#ifndef CommonInclude_h
-#define CommonInclude_h
+#ifndef ndt_common_h
+#define ndt_common_h
 
 #ifdef _WIN32
 
@@ -104,4 +104,4 @@ std::size_t getSysErrorDescr(const int aErrorCode, ch_t *aBuf,
                              const std::size_t aBufLen);
 }  // namespace ndt
 
-#endif /* CommonInclude_h */
+#endif /* ndt_common_h */

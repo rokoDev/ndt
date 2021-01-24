@@ -1,8 +1,7 @@
-#include "Address.h"
-
 #include <string>
 
-#include "NdtException.h"
+#include "ndt/address.h"
+#include "ndt/exception.h"
 
 namespace ndt
 {

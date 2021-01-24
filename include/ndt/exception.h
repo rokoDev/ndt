@@ -1,14 +1,13 @@
-#ifndef NdtException_h
-#define NdtException_h
+#ifndef ndt_exception_h
+#define ndt_exception_h
 
 #include <fmt/core.h>
-
 #include <exception>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
-#include "CommonInclude.h"
+#include "common.h"
 
 namespace ndt
 {
@@ -190,4 +189,4 @@ using RuntimeError = Error<std::runtime_error>;
 }  // namespace exception
 }  // namespace ndt
 
-#endif /* NdtException_h */
+#endif /* ndt_exception_h */

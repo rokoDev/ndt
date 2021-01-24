@@ -1,10 +1,10 @@
-#ifndef Address_h
-#define Address_h
+#ifndef ndt_address_h
+#define ndt_address_h
 
 #include <algorithm>
 #include <variant>
 
-#include "NdtUtils.h"
+#include "utils.h"
 
 namespace ndt
 {
@@ -72,4 +72,4 @@ class Address final
 
 }  // namespace ndt
 
-#endif /* Address_h */
+#endif /* ndt_address_h */

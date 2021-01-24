@@ -1,12 +1,11 @@
 #include <fmt/core.h>
-
 #include <algorithm>
 #include <array>
 
-#include "Address.h"
-#include "NdtException.h"
-#include "Socket.h"
-#include "UDP.h"
+#include "ndt/address.h"
+#include "ndt/exception.h"
+#include "ndt/socket.h"
+#include "ndt/udp.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 

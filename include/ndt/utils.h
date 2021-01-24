@@ -1,10 +1,10 @@
-#ifndef NdtUtils_h
-#define NdtUtils_h
+#ifndef ndt_utils_h
+#define ndt_utils_h
 
 #include <cstdint>
 #include <unordered_map>
 
-#include "CommonInclude.h"
+#include "common.h"
 
 namespace ndt
 {
@@ -95,4 +95,4 @@ bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
 }
 }  // namespace ndt
 
-#endif /* NdtUtils_h */
+#endif /* ndt_utils_h */
