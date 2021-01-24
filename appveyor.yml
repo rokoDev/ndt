@@ -18,6 +18,20 @@ configuration:
   - Debug
   - Release
 
+# Build matrix
+environment:
+  matrix:
+    - type: ClangCL
+      command: |
+        cmake -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
+        cmake --build . --config %CONFIGURATION%
+      testCommand: |
+        ctest -VV --output-on-failure -C %CONFIGURATION%
+        echo "Tests completed"
+    - type: Ninja
+      command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "$env:APPVEYOR_BUILD_FOLDER"
+      testCommand: echo "Tests completed"
+
 matrix:
   fast_finish: true
 
@@ -82,17 +96,16 @@ before_build:
   - echo %PATH%
   # - ps: |
   #     clang-cl /?
-  - cmake -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
-  - cmake --build . --config %CONFIGURATION%
+  - %command%
 
-build:
-  project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
+# build:
+#   project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
 
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
-  - ctest -VV --output-on-failure -C %CONFIGURATION%
+  - %testCommand%
 
 notifications:
   - provider: Email
