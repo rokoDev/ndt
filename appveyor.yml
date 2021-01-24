@@ -21,7 +21,7 @@ configuration:
 # Build matrix
 environment:
   matrix:
-    - type: ClangCL
+    - type: MSVS
       command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..\..
       command2: --build . --config %CONFIGURATION%
       testCommand: -VV --output-on-failure -C %CONFIGURATION%
@@ -99,13 +99,17 @@ before_build:
   - echo %PATH%
   # - ps: |
   #     clang-cl /?
+  - echo %command%
+  - echo %command2%
+  - echo %testCommand%
+  - echo %projectName%
   - cmake %command%
   - cmake %command2%
 
 build:
   project: $env:projectName
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 test_script:
   - cmd: ctest %testCommand%
