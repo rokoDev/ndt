@@ -21,12 +21,12 @@ configuration:
 # Build matrix
 environment:
   matrix:
-    - type: MSVS
-      command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..\..
-      command2: --build . --config %CONFIGURATION%
-      testCommand: -VV --output-on-failure -C %CONFIGURATION%
-      projectName: $(SRC_PATH)\build\msvs\$(APPVEYOR_PROJECT_NAME).sln
-      buildDir: build\msvs
+    # - type: MSVS
+    #   command: -G "Visual Studio 16 2019" -A x64 -T ClangCL ..\..
+    #   command2: --build . --config %CONFIGURATION%
+    #   testCommand: -VV --output-on-failure -C %CONFIGURATION%
+    #   projectName: $(SRC_PATH)\build\msvs\$(APPVEYOR_PROJECT_NAME).sln
+    #   buildDir: build\msvs
     - type: Ninja
       command: python3 "$env:APPVEYOR_BUILD_FOLDER\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "$env:APPVEYOR_BUILD_FOLDER"
       command2: -version
