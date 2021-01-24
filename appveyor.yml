@@ -30,7 +30,7 @@ environment:
     - type: Ninja
       command: python3 "C:\projects\ndt\scripts\circle_linux_configure_build_test.py" --build_type %CONFIGURATION% -source_dir "C:\projects\ndt"
       command2: -version
-      testCommand: -version
+      testCommand: -VV --output-on-failure -C %CONFIGURATION%
       projectName: $(APPVEYOR_BUILD_FOLDER)\build\Ninja\%CONFIGURATION%\build.ninja
       buildDir: build\Ninja\%CONFIGURATION%
 
@@ -93,7 +93,7 @@ install:
 
 before_build:
   - cmake --version
-  - C:\Tools\vcpkg\vcpkg.exe integrate remove
+  #- C:\Tools\vcpkg\vcpkg.exe integrate remove
   - cmake -E make_directory %buildDir%
   - cd %buildDir%
   - echo %PATH%
@@ -103,8 +103,10 @@ before_build:
   - echo %command2%
   - echo %testCommand%
   - echo %projectName%
-  - cmake %command%
-  - cmake %command2%
+  # - cmake %command%
+  # - cmake %command2%
+
+  - cmake -S .. -B . -GNinja "-DCMAKE_BUILD_TYPE:String=Debug" "-DCMAKE_CXX_COMPILER:STRING=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/x64/bin/clang++.exe" "-DCMAKE_C_COMPILER:STRING=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/x64/bin/clang.exe" "-DCMAKE_TOOLCHAIN_FILE:INTERNAL=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 build:
   project: $env:projectName
