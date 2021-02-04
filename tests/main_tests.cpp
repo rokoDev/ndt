@@ -1,24 +1,11 @@
 #include <fmt/core.h>
 
-#include "ndt/GitInfo.h"
-#include "ndt/utils.h"
-#include "ndt/Version.h"
 #include "gtest/gtest.h"
-
-TEST(TestNDTVersion, GitInfoTest)
-{
-    fmt::print("[          ] build type: {}\n", ndt::kBuildTypeCStr);
-    fmt::print("[          ] branch: {}\n", ndt::GitInfo::branch());
-    fmt::print("[          ] SHA1: {}\n", ndt::GitInfo::SHA1());
-    const std::string isDirty =
-        ndt::GitInfo::isDirty() ? std::string("true") : std::string("false");
-    fmt::print("[          ] IS_DIRTY: {}\n", isDirty);
-    ASSERT_EQ(0, 0);
-}
+#include "ndt/version_info.h"
 
 TEST(TestNDTVersion, VersionTest)
 {
-    fmt::print("[          ] ndt Version: {}\n", ndt::Version::str());
+    fmt::print("{}", ndt::version_info());
     ASSERT_EQ(0, 0);
 }
 

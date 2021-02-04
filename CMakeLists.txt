@@ -8,30 +8,19 @@ project(${ProjectName}
 		VERSION 0.1.1
 		LANGUAGES CXX)
 
-set(allowableBuildTypes Debug Release)
-get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(isMultiConfig)
-	set(CMAKE_CONFIGURATION_TYPES "${allowableBuildTypes}")
-else()
-	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${allowableBuildTypes}")
-	if(NOT CMAKE_BUILD_TYPE)
-		set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
-	elseif(NOT CMAKE_BUILD_TYPE IN_LIST allowableBuildTypes)
-		message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
-	endif()
-endif()
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/VersionHelper")
 include(VersionInfoUtils)
-m_generate_version_info_sources_by_project_name(MY_PROJECT_NAME ${ProjectName})
+m_generate_version_info(PROJECT_NAME ${ProjectName}
+	                    CPP_NAMESPACE "ndt"
+	                    BUILD_TYPES Debug Release)
 
 message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "CMAKE_CXX_COMPILER_FRONTEND_VARIANT: ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
 	"-std=c++17"
@@ -102,7 +91,7 @@ endif()
 # Create library
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 add_library(${ProjectName} ${SOURCES} ${HEADERS})
-target_compile_definitions(${ProjectName} PUBLIC $<$<CONFIG:Release>:RELEASE> $<$<CONFIG:Debug>:DEBUG>)
+target_compile_definitions(${ProjectName} PUBLIC $<UPPER_CASE:$<CONFIG>>)
 target_compile_options(${ProjectName} PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(${ProjectName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(${ProjectName} PUBLIC "${ProjectName}_versionInfo" fmt)

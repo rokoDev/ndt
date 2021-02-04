@@ -73,22 +73,6 @@ extern const ipv4_t kIPv4Loopback;
 extern const ipv6_t kIPv6Any;
 extern const ipv6_t kIPv6Loopback;
 
-enum class eBuildType : std::uint8_t
-{
-    kDebug = 1,
-    kRelease
-};
-
-#ifdef DEBUG
-inline constexpr eBuildType kBuildType = eBuildType::kDebug;
-inline constexpr char kBuildTypeCStr[] = "Debug";
-#elif RELEASE
-inline constexpr eBuildType kBuildType = eBuildType::kRelease;
-inline constexpr char kBuildTypeCStr[] = "Release";
-#else
-static_assert(false, "Error: Unsupported build type has been provided!!!");
-#endif
-
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
