@@ -22,4 +22,5 @@ package_add_test(${ProjectName}
 	memvcmp_tests.cpp
 	address_tests.cpp
 	socket_tests.cpp
+	thread_pool_tests.cpp
 	)

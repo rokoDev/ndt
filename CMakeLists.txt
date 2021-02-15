@@ -70,6 +70,7 @@ set(HEADERS
 	${MAIN_INCLUDE_DIR}/ndt/udp.h
 	${MAIN_INCLUDE_DIR}/ndt/address.h
 	${MAIN_INCLUDE_DIR}/ndt/exception.h
+	${MAIN_INCLUDE_DIR}/ndt/thread_pool.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -80,6 +81,7 @@ set(SOURCES
 	${SOURCE_DIR}/exception.cpp
 	${SOURCE_DIR}/socket.cpp
 	${SOURCE_DIR}/common.cpp
+	${SOURCE_DIR}/thread_pool.cpp
 	)
 
 include_directories("${INCLUDE_DIRS}")
