@@ -200,15 +200,14 @@ TEST(AddressTests, ConstructorFamilykUnspecThrowLogicError)
             {
                 ndt::Address a(ndt::eAddressFamily::kUnspec);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorFamilykIPv4NotThrow)
@@ -243,15 +242,15 @@ TEST(AddressTests, ConstructorSysFamilyInvalidThrowLogicError)
                 const uint8_t invalidFamily = maxValue + 1;
                 ndt::Address a(invalidFamily);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
                 EXPECT_THAT(
                     le.what(),
-                    testing::StartsWith(ndt::exception::kUnknownAddressFamily));
+                    testing::StartsWith(ndt::exception::kAddressUnknownFamily));
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSysFamilyAFUNSPECThrowLogicError)
@@ -262,15 +261,14 @@ TEST(AddressTests, ConstructorSysFamilyAFUNSPECThrowLogicError)
             {
                 ndt::Address a(AF_UNSPEC);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSysFamilykIPv4NotThrow)
@@ -333,15 +331,14 @@ TEST(AddressTests, ConstructorFamilykUnspecPortThrowLogicError)
             {
                 ndt::Address a(ndt::eAddressFamily::kUnspec, 111);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorFamilykIPv4PortNotThrow)
@@ -388,15 +385,14 @@ TEST(AddressTests, ConstructorSysFamilyAFUNSPECPortThrowLogicError)
             {
                 ndt::Address a(AF_UNSPEC, 111);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSysFamilyInvalidPortThrowLogicError)
@@ -415,15 +411,15 @@ TEST(AddressTests, ConstructorSysFamilyInvalidPortThrowLogicError)
                 const uint8_t invalidFamily = maxValue + 1;
                 ndt::Address a(invalidFamily, 111);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
                 EXPECT_THAT(
                     le.what(),
-                    testing::StartsWith(ndt::exception::kUnknownAddressFamily));
+                    testing::StartsWith(ndt::exception::kAddressUnknownFamily));
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSysFamilykIPv4PortNotThrow)
@@ -496,15 +492,14 @@ TEST(AddressTests, ConstructorSockaddrWithInvalidFamilyThrowLogicError)
                 sa.sa_family = invalidFamily;
                 ndt::Address a(sa);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressUnknownFamily.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSockaddrWithAFUNSPECFamilyThrowLogicError)
@@ -517,15 +512,14 @@ TEST(AddressTests, ConstructorSockaddrWithAFUNSPECFamilyThrowLogicError)
                 sa.sa_family = AF_UNSPEC;
                 ndt::Address a(sa);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, ConstructorSockaddrWithAFINETFamilyNotThrow)
@@ -591,15 +585,14 @@ TEST(AddressTests, AddressFamilySetkUnspecThrowLogicError)
                 ndt::Address a;
                 a.addressFamily(ndt::eAddressFamily::kUnspec);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, AddressFamilySetAFUNSPECThrowLogicError)
@@ -611,15 +604,14 @@ TEST(AddressTests, AddressFamilySetAFUNSPECThrowLogicError)
                 ndt::Address a;
                 a.addressFamily(AF_UNSPEC);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
-                EXPECT_STREQ(
-                    le.what(),
-                    ndt::exception::kOnlyIPv4OrkIPv6FamilyAllowed.c_str());
+                EXPECT_STREQ(le.what(),
+                             ndt::exception::kAddressOnlyIPv4OrkIPv6.c_str());
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, AddressFamilySetInvalidThrowLogicError)
@@ -639,15 +631,15 @@ TEST(AddressTests, AddressFamilySetInvalidThrowLogicError)
                 const uint8_t invalidFamily = maxValue + 1;
                 a.addressFamily(invalidFamily);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
                 EXPECT_THAT(
                     le.what(),
-                    testing::StartsWith(ndt::exception::kUnknownAddressFamily));
+                    testing::StartsWith(ndt::exception::kAddressUnknownFamily));
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST(AddressTests, AddressFamilyGetSetCorrectness)

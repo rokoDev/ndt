@@ -9,6 +9,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "ndt/address.h"
 #include "ndt/exception.h"
 #include "ndt/thread_pool.h"
 
@@ -44,7 +45,6 @@ void check(ndt::thread_pool &pool, const std::size_t taskCount,
                 (results[i].value().wait_for(std::chrono::seconds(0)) ==
                  std::future_status::ready))
             {
-                const auto val = results[i].value().get();
                 readyValues.insert(i);
             }
         }
@@ -109,19 +109,20 @@ TEST(ThreadPoolTests, ExceptionTest)
             {
                 ndt::thread_pool pool;
                 auto result = pool.push([]() {
-                    std::string message = fmt::format(
-                        "error in thread {}", std::this_thread::get_id());
-                    ndt::exception::RuntimeError err(
-                        message, err_code, __LINE__, __FILE__, FUNC_INFO);
-                    err.raise();
+                    std::error_code ec(
+                        ndt::eAddressErrorCode::kInvalidAddressFamily);
+                    ndt::Error ndtError(ec);
+                    throw ndtError;
                 });
                 result.value().get();
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
-                EXPECT_THAT(re.what(), testing::StartsWith("error in thread "));
+                EXPECT_THAT(re.what(),
+                            testing::StartsWith(
+                                ndt::exception::kAddressOnlyIPv4OrkIPv6));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }

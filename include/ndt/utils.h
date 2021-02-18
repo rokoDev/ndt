@@ -2,6 +2,7 @@
 #define ndt_utils_h
 
 #include <cstdint>
+#include <system_error>
 #include <unordered_map>
 
 #include "common.h"
@@ -76,6 +77,10 @@ extern const ipv6_t kIPv6Loopback;
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
+void validateAddressFamily(const eAddressFamily aAddressFamily,
+                           std::error_code& aEc) noexcept;
+void validateAddressFamily(const uint8_t aAddressFamily,
+                           std::error_code& aEc) noexcept;
 }
 }  // namespace ndt
 

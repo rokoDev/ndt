@@ -172,14 +172,14 @@ TEST_F(SocketTest, SocketFuncReturnErrorInConstructorWithUDPv4flagsCall)
             {
                 SocketT s(ndt::UDP::V4(), 333);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketOpen));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, SocketFuncReturnErrorInConstructorWithUDPv6flagsCall)
@@ -194,14 +194,14 @@ TEST_F(SocketTest, SocketFuncReturnErrorInConstructorWithUDPv6flagsCall)
             {
                 SocketT s(ndt::UDP::V6(), 333);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketOpen));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, ConstructorWithUDPv4flagsAndPort)
@@ -266,14 +266,14 @@ TEST_F(SocketTest, ConstructorWithUDPv4flagsAndPortBindFailed)
             {
                 SocketT s(ndt::UDP::V4(), 333);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketBind));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, ConstructorWithUDPv6flagsAndPortBindFailed)
@@ -290,14 +290,14 @@ TEST_F(SocketTest, ConstructorWithUDPv6flagsAndPortBindFailed)
             {
                 SocketT s(ndt::UDP::V6(), 333);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketBind));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV4MustThrow)
@@ -314,7 +314,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV4MustThrow)
             {
                 s.open();
             }
-            catch (const ndt::exception::LogicError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(
                     re.what(),
@@ -322,7 +322,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV4MustThrow)
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
@@ -339,7 +339,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
             {
                 s.open();
             }
-            catch (const ndt::exception::LogicError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(
                     re.what(),
@@ -347,7 +347,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, MoveConstructorV4ClosedSocket)
@@ -435,7 +435,7 @@ TEST_F(SocketTest, MoveAssignmentV4ClosedToV6Opened)
     ASSERT_EQ(s1.flags().getSocketType(), ndt::eSocketType::kDgram);
 }
 
-TEST_F(SocketTest, BindNotOpenedV4MustThrowLogicError)
+TEST_F(SocketTest, BindNotOpenedV4MustThrowError)
 {
     ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4());
 
@@ -445,7 +445,7 @@ TEST_F(SocketTest, BindNotOpenedV4MustThrowLogicError)
             {
                 s.bind(10);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
                 EXPECT_THAT(le.what(),
                             testing::StartsWith(
@@ -453,10 +453,10 @@ TEST_F(SocketTest, BindNotOpenedV4MustThrowLogicError)
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
-TEST_F(SocketTest, BindNotOpenedV6MustThrowLogicError)
+TEST_F(SocketTest, BindNotOpenedV6MustThrowError)
 {
     ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6());
 
@@ -466,7 +466,7 @@ TEST_F(SocketTest, BindNotOpenedV6MustThrowLogicError)
             {
                 s.bind(10);
             }
-            catch (const ndt::exception::LogicError &le)
+            catch (const ndt::Error &le)
             {
                 EXPECT_THAT(le.what(),
                             testing::StartsWith(
@@ -474,7 +474,7 @@ TEST_F(SocketTest, BindNotOpenedV6MustThrowLogicError)
                 throw;
             }
         },
-        ndt::exception::LogicError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, BindOpenedV4MustNotThrow)
@@ -501,7 +501,7 @@ TEST_F(SocketTest, BindOpenedV6MustNotThrow)
     EXPECT_NO_THROW(s.bind(10));
 }
 
-TEST_F(SocketTest, BindAlreadyBoundV4MustThrowRuntimeError)
+TEST_F(SocketTest, BindAlreadyBoundV4MustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET);
@@ -516,17 +516,17 @@ TEST_F(SocketTest, BindAlreadyBoundV4MustThrowRuntimeError)
             {
                 s.bind(11);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketBind));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
-TEST_F(SocketTest, BindAlreadyBoundV6MustThrowRuntimeError)
+TEST_F(SocketTest, BindAlreadyBoundV6MustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET6);
@@ -541,14 +541,14 @@ TEST_F(SocketTest, BindAlreadyBoundV6MustThrowRuntimeError)
             {
                 s.bind(11);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketBind));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, CloseNotOpenedSocketV4MustNotThrow)
@@ -595,7 +595,7 @@ TEST_F(SocketTest, SuccessfulCloseV6MustSetIsOpenedFlagToFalse)
     ASSERT_EQ(s.isOpen(), false);
 }
 
-TEST_F(SocketTest, FailedCloseV4MustThrowRuntimeError)
+TEST_F(SocketTest, FailedCloseV4MustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET);
@@ -612,17 +612,17 @@ TEST_F(SocketTest, FailedCloseV4MustThrowRuntimeError)
             {
                 s.close();
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketClose));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
-TEST_F(SocketTest, FailedCloseV6MustThrowRuntimeError)
+TEST_F(SocketTest, FailedCloseV6MustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET6);
@@ -639,17 +639,17 @@ TEST_F(SocketTest, FailedCloseV6MustThrowRuntimeError)
             {
                 s.close();
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketClose));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
-TEST_F(SocketTest, FailedSendToMustThrowRuntimeError)
+TEST_F(SocketTest, FailedSendToMustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET);
@@ -667,14 +667,14 @@ TEST_F(SocketTest, FailedSendToMustThrowRuntimeError)
             {
                 s.sendTo(dst, buf, bufLen);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(),
                             testing::StartsWith(ndt::exception::kSocketSendTo));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }
 
 TEST_F(SocketTest, SuccessfulSendToMustReturnCountBytesSent)
@@ -705,7 +705,7 @@ TEST_F(SocketTest, SuccessfulRecvFromMustReturnCountBytesRecieved)
     ASSERT_EQ(s.recvFrom(buf, bufLen, dst), kRecvfromSucceeded);
 }
 
-TEST_F(SocketTest, FailedRecvFromMustThrowRuntimeError)
+TEST_F(SocketTest, FailedRecvFromMustThrowError)
 {
     InSequence seq;
     mDetails->expectSocketSucceded(AF_INET);
@@ -723,12 +723,12 @@ TEST_F(SocketTest, FailedRecvFromMustThrowRuntimeError)
             {
                 s.recvFrom(buf, bufLen, dst);
             }
-            catch (const ndt::exception::RuntimeError &re)
+            catch (const ndt::Error &re)
             {
                 EXPECT_THAT(re.what(), testing::StartsWith(
                                            ndt::exception::kSocketRecvFrom));
                 throw;
             }
         },
-        ndt::exception::RuntimeError);
+        ndt::Error);
 }

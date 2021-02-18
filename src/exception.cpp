@@ -4,17 +4,25 @@
 
 namespace ndt
 {
-namespace exception
+const char* Error::what() const noexcept
 {
-std::ostream& operator<<(std::ostream& aOut,
-                         const Error<std::logic_error>& aError)
-{
-    const auto errorStr = fmt::format(
-        "Logic error:\nFile: {}\nFunction: {}\nLine: {}\nWhat: {}\n",
-        aError.file(), aError.func(), aError.line(), aError.what());
-    aOut << errorStr;
-    return aOut;
+    if (mWhat.empty())
+    {
+        try
+        {
+            mWhat = this->std::runtime_error::what();
+            if (!mWhat.empty())
+            {
+                mWhat += ": ";
+            }
+            mWhat += mErrorCode.message();
+        }
+        catch (...)
+        {
+            return std::runtime_error::what();
+        }
+    }
+    return mWhat.c_str();
 }
 
-}  // namespace exception
 }  // namespace ndt

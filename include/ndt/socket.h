@@ -1,12 +1,47 @@
 #ifndef ndt_socket_h
 #define ndt_socket_h
 
-#include <cstddef>
-
 #include "address.h"
 #include "common.h"
 #include "exception.h"
 #include "utils.h"
+
+namespace ndt
+{
+namespace exception
+{
+inline const std::string kSocketAlreadyOpened = "socket already opened";
+inline const std::string kSocketMustBeOpenToBind =
+    "socket must be opened to bind";
+inline const std::string kSocketOpen = "socket error";
+inline const std::string kSocketBind = "bind error";
+inline const std::string kSocketSendTo = "sendto error";
+inline const std::string kSocketRecvFrom = "recvfrom error";
+inline const std::string kSocketClose = "close error";
+}  // namespace exception
+
+enum class eSocketErrorCode
+{
+    kSuccess = 0,
+    kAlreadyOpened,
+    kMustBeOpenToBind,
+    kOpen,
+    kBind,
+    kSendTo,
+    kRecvFrom,
+    kClose
+};
+}  // namespace ndt
+
+namespace std
+{
+// Tell the C++ 11 STL metaprogramming that enum ndt::eSocketErrorCode
+// is registered with the standard error code system
+template <>
+struct is_error_code_enum<ndt::eSocketErrorCode> : true_type
+{
+};
+}  // namespace std
 
 namespace ndt
 {
@@ -51,12 +86,19 @@ class Socket
 
     bool isOpen() const noexcept;
     void open();
+    void open(std::error_code &aEc);
     void bind(const uint16_t aPort);
+    void bind(const uint16_t aPort, std::error_code &aEc);
     std::size_t sendTo(const Address &aDst, ndt::cbuf_t aDataPtr,
                        const dlen_t aDataSize);
+    std::size_t sendTo(const Address &aDst, ndt::cbuf_t aDataPtr,
+                       const dlen_t aDataSize, std::error_code &aEc);
     std::size_t recvFrom(ndt::buf_t aDataPtr, ndt::dlen_t aDataSize,
                          Address &aSender);
+    std::size_t recvFrom(ndt::buf_t aDataPtr, ndt::dlen_t aDataSize,
+                         Address &aSender, std::error_code &aEc);
     void close();
+    void close(std::error_code &aEc);
 
     const FlagsT &flags() const noexcept;
 
@@ -113,22 +155,61 @@ bool Socket<FlagsT, SFuncsT>::isOpen() const noexcept
 template <typename FlagsT, typename SFuncsT>
 void Socket<FlagsT, SFuncsT>::open()
 {
-    CheckLogicError(isOpen(), exception::kSocketAlreadyOpened);
-    _socketHandle = SFuncsT::socket(_flags.sysFamily(), _flags.sysSocketType(),
-                                    _flags.sysProtocol());
-    CheckRuntimeError(kInvalidSocket == _socketHandle,
-                      ndt::exception::kSocketOpen);
+    std::error_code ec;
+    Socket<FlagsT, SFuncsT>::open(ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+}
+
+template <typename FlagsT, typename SFuncsT>
+void Socket<FlagsT, SFuncsT>::open(std::error_code &aEc)
+{
+    if (isOpen())
+    {
+        aEc = eSocketErrorCode::kAlreadyOpened;
+        return;
+    }
+    const auto socketHandle = SFuncsT::socket(
+        _flags.sysFamily(), _flags.sysSocketType(), _flags.sysProtocol());
+    if (kInvalidSocket == socketHandle)
+    {
+        aEc = eSocketErrorCode::kOpen;
+        return;
+    }
+    _socketHandle = socketHandle;
     _isOpen = true;
 }
 
 template <typename FlagsT, typename SFuncsT>
 void Socket<FlagsT, SFuncsT>::bind(const uint16_t aPort)
 {
-    CheckLogicError(!isOpen(), exception::kSocketMustBeOpenToBind);
+    std::error_code ec;
+    Socket<FlagsT, SFuncsT>::bind(aPort, ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+}
+
+template <typename FlagsT, typename SFuncsT>
+void Socket<FlagsT, SFuncsT>::bind(const uint16_t aPort, std::error_code &aEc)
+{
+    if (!isOpen())
+    {
+        aEc = eSocketErrorCode::kMustBeOpenToBind;
+        return;
+    }
     Address sa(_flags.getFamily(), aPort);
     const auto result = SFuncsT::bind(_socketHandle, sa.nativeDataConst(),
                                       static_cast<ndt::salen_t>(sa.capacity()));
-    CheckRuntimeError(ndt::kSocketError == result, ndt::exception::kSocketBind);
+    if (ndt::kSocketError == result)
+    {
+        aEc = eSocketErrorCode::kBind;
+    }
 }
 
 template <typename FlagsT, typename SFuncsT>
@@ -136,11 +217,30 @@ std::size_t Socket<FlagsT, SFuncsT>::sendTo(const Address &aDst,
                                             ndt::cbuf_t aDataPtr,
                                             const ndt::dlen_t aLen)
 {
+    std::error_code ec;
+    const auto bytesSent =
+        Socket<FlagsT, SFuncsT>::sendTo(aDst, aDataPtr, aLen, ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+    return static_cast<std::size_t>(bytesSent);
+}
+
+template <typename FlagsT, typename SFuncsT>
+std::size_t Socket<FlagsT, SFuncsT>::sendTo(const Address &aDst,
+                                            ndt::cbuf_t aDataPtr,
+                                            const ndt::dlen_t aLen,
+                                            std::error_code &aEc)
+{
     const auto bytesSent = SFuncsT::sendto(
         _socketHandle, aDataPtr, aLen, 0, aDst.nativeDataConst(),
         static_cast<ndt::salen_t>(aDst.capacity()));
-    CheckRuntimeError(ndt::kSocketError == bytesSent,
-                      ndt::exception::kSocketSendTo);
+    if (ndt::kSocketError == bytesSent)
+    {
+        aEc = eSocketErrorCode::kSendTo;
+    }
     return static_cast<std::size_t>(bytesSent);
 }
 
@@ -149,25 +249,57 @@ std::size_t Socket<FlagsT, SFuncsT>::recvFrom(ndt::buf_t aDataPtr,
                                               ndt::dlen_t aDataSize,
                                               Address &aSender)
 {
-    ndt::salen_t addrlen = static_cast<ndt::salen_t>(aSender.capacityV6());
-    const auto result = SFuncsT::recvfrom(_socketHandle, aDataPtr, aDataSize, 0,
-                                          aSender.nativeData(), &addrlen);
-    CheckRuntimeError(ndt::kSocketError == result,
-                      ndt::exception::kSocketRecvFrom);
+    std::error_code ec;
+    const auto bytesReceived =
+        Socket<FlagsT, SFuncsT>::recvFrom(aDataPtr, aDataSize, aSender, ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+    return static_cast<std::size_t>(bytesReceived);
+}
 
-    return static_cast<std::size_t>(result);
+template <typename FlagsT, typename SFuncsT>
+std::size_t Socket<FlagsT, SFuncsT>::recvFrom(ndt::buf_t aDataPtr,
+                                              ndt::dlen_t aDataSize,
+                                              Address &aSender,
+                                              std::error_code &aEc)
+{
+    ndt::salen_t addrlen = static_cast<ndt::salen_t>(aSender.capacityV6());
+    const auto bytesReceived = SFuncsT::recvfrom(
+        _socketHandle, aDataPtr, aDataSize, 0, aSender.nativeData(), &addrlen);
+    if (ndt::kSocketError == bytesReceived)
+    {
+        aEc = eSocketErrorCode::kRecvFrom;
+    }
+    return static_cast<std::size_t>(bytesReceived);
 }
 
 template <typename FlagsT, typename SFuncsT>
 void Socket<FlagsT, SFuncsT>::close()
+{
+    std::error_code ec;
+    Socket<FlagsT, SFuncsT>::close(ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+}
+
+template <typename FlagsT, typename SFuncsT>
+void Socket<FlagsT, SFuncsT>::close(std::error_code &aEc)
 {
     if (!_isOpen)
     {
         return;
     }
     const auto result = SFuncsT::close(_socketHandle);
-    CheckRuntimeError(ndt::kSocketError == result,
-                      ndt::exception::kSocketClose);
+    if (ndt::kSocketError == result)
+    {
+        aEc = eSocketErrorCode::kClose;
+    }
     _socketHandle = kInvalidSocket;
     _isOpen = false;
 }
@@ -176,6 +308,21 @@ template <typename FlagsT, typename SFuncsT>
 const FlagsT &Socket<FlagsT, SFuncsT>::flags() const noexcept
 {
     return _flags;
+}
+
+class SocketErrorCategory : public std::error_category
+{
+   public:
+    virtual const char *name() const noexcept override final;
+    virtual std::string message(int c) const override final;
+    virtual std::error_condition default_error_condition(
+        int c) const noexcept override final;
+};
+
+inline std::error_code make_error_code(eSocketErrorCode e)
+{
+    static SocketErrorCategory c;
+    return {static_cast<int>(e), c};
 }
 
 }  // namespace ndt

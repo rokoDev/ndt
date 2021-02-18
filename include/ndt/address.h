@@ -1,13 +1,43 @@
 #ifndef ndt_address_h
 #define ndt_address_h
 
-#include <algorithm>
+#include <string>
 #include <variant>
 
+#include "ndt/exception.h"
 #include "utils.h"
 
 namespace ndt
 {
+namespace exception
+{
+inline const std::string kAddressOnlyIPv4OrkIPv6 =
+    "address family can be kIPv4 or kIPv6 only";
+inline const std::string kAddressUnknownFamily = "unknown address family: ";
+}  // namespace exception
+
+enum class eAddressErrorCode
+{
+    kSuccess = 0,
+    kInvalidAddressFamily,
+    kAddressUnknownFamily
+};
+
+template <typename T>
+struct AddressFamily
+{
+};
+template <>
+struct AddressFamily<uint8_t>
+{
+    using type = uint8_t;
+};
+template <>
+struct AddressFamily<eAddressFamily>
+{
+    using type = eAddressFamily;
+};
+
 class Address final
 {
     template <typename FlagsT, typename SFuncsT>
@@ -58,9 +88,10 @@ class Address final
     friend bool operator!=(const Address &aVal1, const Address &aVal2) noexcept;
 
    private:
-    void changeFamilyIfDifferent(const uint8_t aFamily);
-    void throwIfFamilyUnspec(const eAddressFamily aFamily);
-    eAddressFamily throwIfUnknownFamily(const uint8_t aFamily);
+    void changeFamilyIfDifferent(const uint8_t aFamily) noexcept;
+    template <typename AF_Type>
+    void throwIfInvalidFamily(
+        const typename AddressFamily<AF_Type>::type aFamily);
     sockaddr *nativeData() noexcept;
     union
     {
@@ -70,6 +101,44 @@ class Address final
     } _sockaddr;
 };
 
+template <typename AF_Type>
+void Address::throwIfInvalidFamily(
+    const typename AddressFamily<AF_Type>::type aFamily)
+{
+    std::error_code ec;
+    utils::validateAddressFamily(aFamily, ec);
+    if (ec)
+    {
+        ndt::Error ndtError(ec);
+        throw ndtError;
+    }
+}
+
+class AddressErrorCategory : public std::error_category
+{
+   public:
+    virtual const char *name() const noexcept override final;
+    virtual std::string message(int c) const override final;
+    virtual std::error_condition default_error_condition(
+        int c) const noexcept override final;
+};
+
+inline std::error_code make_error_code(eAddressErrorCode e)
+{
+    static AddressErrorCategory c;
+    return {static_cast<int>(e), c};
+}
+
 }  // namespace ndt
+
+namespace std
+{
+// Tell the C++ 11 STL metaprogramming that enum ndt::eAddressErrorCode
+// is registered with the standard error code system
+template <>
+struct is_error_code_enum<ndt::eAddressErrorCode> : true_type
+{
+};
+}  // namespace std
 
 #endif /* ndt_address_h */

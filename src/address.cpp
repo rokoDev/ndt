@@ -1,7 +1,4 @@
-#include <string>
-
 #include "ndt/address.h"
-#include "ndt/exception.h"
 
 namespace ndt
 {
@@ -56,7 +53,8 @@ Address::Address(const ipv6_t &aIPv6, const uint16_t aPort) noexcept : Address()
 
 Address::Address(const sockaddr &aSockaddr) : Address()
 {
-    const auto family = aSockaddr.sa_family;
+    const auto family = static_cast<uint8_t>(aSockaddr.sa_family);
+    throwIfInvalidFamily<uint8_t>(family);
 
     if (family == AF_INET)
     {
@@ -65,10 +63,6 @@ Address::Address(const sockaddr &aSockaddr) : Address()
     else if (family == AF_INET6)
     {
         memcpy(&_sockaddr, &aSockaddr, sizeof(sockaddr_in6));
-    }
-    else
-    {
-        CheckLogicError(true, exception::kOnlyIPv4OrkIPv6FamilyAllowed);
     }
 }
 
@@ -80,8 +74,7 @@ eAddressFamily Address::addressFamily() const noexcept
 
 void Address::addressFamily(const eAddressFamily aFamily)
 {
-    throwIfFamilyUnspec(aFamily);
-
+    throwIfInvalidFamily<eAddressFamily>(aFamily);
     changeFamilyIfDifferent(ndt::AddressFamilyUserToSystem.at(aFamily));
 }
 
@@ -92,10 +85,7 @@ uint8_t Address::addressFamilySys() const noexcept
 
 void Address::addressFamily(const uint8_t aFamily)
 {
-    const auto family = throwIfUnknownFamily(aFamily);
-
-    throwIfFamilyUnspec(family);
-
+    throwIfInvalidFamily<uint8_t>(aFamily);
     changeFamilyIfDifferent(aFamily);
 }
 
@@ -181,7 +171,7 @@ bool operator!=(const Address &aVal1, const Address &aVal2) noexcept
     return !(aVal1 == aVal2);
 }
 
-void Address::changeFamilyIfDifferent(const uint8_t aFamily)
+void Address::changeFamilyIfDifferent(const uint8_t aFamily) noexcept
 {
     if (addressFamilySys() != aFamily)
     {
@@ -192,21 +182,42 @@ void Address::changeFamilyIfDifferent(const uint8_t aFamily)
     }
 }
 
-void Address::throwIfFamilyUnspec(const eAddressFamily aFamily)
-{
-    CheckLogicError(aFamily == eAddressFamily::kUnspec,
-                    exception::kOnlyIPv4OrkIPv6FamilyAllowed);
-}
-
-eAddressFamily Address::throwIfUnknownFamily(const uint8_t aFamily)
-{
-    const auto foundIt = AddressFamilySystemToUser.find(aFamily);
-    const bool isUnknownFamily = foundIt == AddressFamilySystemToUser.end();
-    CheckLogicError(isUnknownFamily,
-                    exception::kUnknownAddressFamily + std::to_string(aFamily));
-    return foundIt->second;
-}
-
 sockaddr *Address::nativeData() noexcept { return &_sockaddr.sa; }
+
+const char *AddressErrorCategory::name() const noexcept
+{
+    return "eAddressErrorCode";
+}
+
+std::string AddressErrorCategory::message(int c) const
+{
+    switch (static_cast<eAddressErrorCode>(c))
+    {
+        case eAddressErrorCode::kSuccess:
+            return "success";
+        case eAddressErrorCode::kInvalidAddressFamily:
+            return exception::kAddressOnlyIPv4OrkIPv6;
+        case eAddressErrorCode::kAddressUnknownFamily:
+            return exception::kAddressUnknownFamily;
+        default:
+            return "unknown";
+    }
+}
+
+std::error_condition AddressErrorCategory::default_error_condition(
+    int c) const noexcept
+{
+    switch (static_cast<eAddressErrorCode>(c))
+    {
+        case eAddressErrorCode::kInvalidAddressFamily:
+            return make_error_condition(
+                std::errc::address_family_not_supported);
+        case eAddressErrorCode::kAddressUnknownFamily:
+            return make_error_condition(std::errc::invalid_argument);
+        default:
+            // I have no mapping for this code
+            return std::error_condition(c, *this);
+    }
+}
 
 }  // namespace ndt

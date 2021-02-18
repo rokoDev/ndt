@@ -32,4 +32,56 @@ sock_t SocketFuncs::socket(int socket_family, int socket_type, int protocol)
 int SocketFuncs::close(sock_t fd) { return ndt::socketcloser(fd); }
 
 }  // namespace details
+
+const char* SocketErrorCategory::name() const noexcept
+{
+    return "eSocketErrorCode";
+}
+
+std::string SocketErrorCategory::message(int c) const
+{
+    switch (static_cast<eSocketErrorCode>(c))
+    {
+        case eSocketErrorCode::kSuccess:
+            return "success";
+        case eSocketErrorCode::kAlreadyOpened:
+            return exception::kSocketAlreadyOpened;
+        case eSocketErrorCode::kMustBeOpenToBind:
+            return exception::kSocketMustBeOpenToBind;
+        case eSocketErrorCode::kOpen:
+            return exception::kSocketOpen;
+        case eSocketErrorCode::kBind:
+            return exception::kSocketBind;
+        case eSocketErrorCode::kSendTo:
+            return exception::kSocketSendTo;
+        case eSocketErrorCode::kRecvFrom:
+            return exception::kSocketRecvFrom;
+        case eSocketErrorCode::kClose:
+            return exception::kSocketClose;
+        default:
+            return "unknown";
+    }
+}
+
+std::error_condition SocketErrorCategory::default_error_condition(
+    int c) const noexcept
+{
+    switch (static_cast<eSocketErrorCode>(c))
+    {
+        case eSocketErrorCode::kAlreadyOpened:
+            return make_error_condition(std::errc::operation_not_supported);
+        case eSocketErrorCode::kMustBeOpenToBind:
+            return make_error_condition(std::errc::not_a_socket);
+        case eSocketErrorCode::kOpen:
+        case eSocketErrorCode::kBind:
+        case eSocketErrorCode::kSendTo:
+        case eSocketErrorCode::kRecvFrom:
+        case eSocketErrorCode::kClose:
+            return make_error_condition(std::errc::invalid_argument);
+        default:
+            // I have no mapping for this code
+            return std::error_condition(c, *this);
+    }
+}
+
 }  // namespace ndt
