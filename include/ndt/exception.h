@@ -1,11 +1,6 @@
 #ifndef ndt_exception_h
 #define ndt_exception_h
 
-#include <fmt/core.h>
-
-#include <memory>
-#include <stdexcept>
-#include <string>
 #include <system_error>
 
 #include "common.h"

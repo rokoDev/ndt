@@ -1,6 +1,5 @@
 #include <fmt/core.h>
 #include <fmt/ostream.h>
-
 #include <array>
 #include <chrono>
 #include <random>
@@ -118,9 +117,8 @@ TEST(ThreadPoolTests, ExceptionTest)
             }
             catch (const ndt::Error &re)
             {
-                EXPECT_THAT(re.what(),
-                            testing::StartsWith(
-                                ndt::exception::kAddressOnlyIPv4OrkIPv6));
+                EXPECT_THAT(re.what(), testing::StartsWith(
+                                           ndt::kInvalidAddressFamilyDescr));
                 throw;
             }
         },

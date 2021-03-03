@@ -15,7 +15,7 @@ class SocketAddress;
 class UDP final
 {
    public:
-    using Socket = ndt::Socket<UDP, details::SocketFuncs>;
+    using Socket = ndt::Socket<UDP, System>;
 
     static UDP V4() noexcept;
     static UDP V6() noexcept;

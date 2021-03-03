@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "ndt/exception.h"
 
 namespace ndt

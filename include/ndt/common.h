@@ -50,6 +50,7 @@ using sdlen_t = int;
 
 #else
 
+#include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -57,6 +58,7 @@ using sdlen_t = int;
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstddef>
 
 namespace ndt
 {
@@ -102,6 +104,15 @@ using ch_t = char;
 
 std::size_t getSysErrorDescr(const int aErrorCode, ch_t *aBuf,
                              const std::size_t aBufLen);
+
+namespace details
+{
+inline int lastErrorCode() { return err_code; }
+}  // namespace details
+
+typedef int (*ErrorCodeGetterT)();
+
+inline ErrorCodeGetterT systemErrorCodeGetter = &details::lastErrorCode;
 }  // namespace ndt
 
 #endif /* ndt_common_h */

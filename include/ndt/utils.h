@@ -1,8 +1,6 @@
 #ifndef ndt_utils_h
 #define ndt_utils_h
 
-#include <cstdint>
-#include <system_error>
 #include <unordered_map>
 
 #include "common.h"
@@ -74,14 +72,14 @@ extern const ipv4_t kIPv4Loopback;
 extern const ipv6_t kIPv6Any;
 extern const ipv6_t kIPv6Loopback;
 
+inline constexpr std::size_t kV4Capacity = sizeof(sockaddr_in);
+inline constexpr std::size_t kV6Capacity = sizeof(sockaddr_in6);
+
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
-void validateAddressFamily(const eAddressFamily aAddressFamily,
-                           std::error_code& aEc) noexcept;
-void validateAddressFamily(const uint8_t aAddressFamily,
-                           std::error_code& aEc) noexcept;
-}
+
+}  // namespace utils
 }  // namespace ndt
 
 #endif /* ndt_utils_h */

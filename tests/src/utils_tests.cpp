@@ -1,7 +1,8 @@
-#include "ndt/utils.h"
 #include "gtest/gtest.h"
+#include "ndt/address.h"
+#include "ndt/utils.h"
 
-TEST(Memvcmp_TESTS, NonEmptyMemTest)
+TEST(UtilsTests, MemvcmpNonEmptyMemTest)
 {
     const char arr[10] = {0};
     const auto result =
@@ -9,7 +10,7 @@ TEST(Memvcmp_TESTS, NonEmptyMemTest)
     ASSERT_EQ(result, true);
 }
 
-TEST(Memvcmp_TESTS, NullptrMemTest_ZeroSize)
+TEST(UtilsTests, MemvcmpNullptrMemTestZeroSize)
 {
     const char *arr = nullptr;
     const auto result =
@@ -17,7 +18,7 @@ TEST(Memvcmp_TESTS, NullptrMemTest_ZeroSize)
     ASSERT_EQ(result, false);
 }
 
-TEST(Memvcmp_TESTS, NullptrMemTest_NonZeroSize)
+TEST(UtilsTests, MemvcmpNullptrMemTestNonZeroSize)
 {
     const char *arr = nullptr;
     const auto result =
@@ -25,7 +26,7 @@ TEST(Memvcmp_TESTS, NullptrMemTest_NonZeroSize)
     ASSERT_EQ(result, false);
 }
 
-TEST(Memvcmp_TESTS, NonNullptrMemTest_OneSize)
+TEST(UtilsTests, MemvcmpNonNullptrMemTestOneSize)
 {
     const char arr[1] = {0};
     const auto result =

@@ -11,16 +11,20 @@ if (WIN32)
 endif (WIN32)
 
 macro(package_add_test TESTNAME)
-    add_executable(${TESTNAME} ${ARGN})
+	set(TEST_HEADERS
+	include/test/sys_error_code_getter.h
+	)
+	include_directories("include")
+    add_executable(${TESTNAME} ${ARGN} ${TEST_HEADERS})
     target_link_libraries(${TESTNAME} gtest gmock gtest_main ${outProjectName})
     add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
 package_add_test(${ProjectName}
-	main_tests.cpp
-	memvcmp_tests.cpp
-	address_tests.cpp
-	socket_tests.cpp
-	thread_pool_tests.cpp
+	src/main_tests.cpp
+	src/utils_tests.cpp
+	src/address_tests.cpp
+	src/socket_tests.cpp
+	src/thread_pool_tests.cpp
 	)

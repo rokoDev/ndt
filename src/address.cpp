@@ -1,5 +1,7 @@
 #include "ndt/address.h"
 
+#include <cstring>
+
 namespace ndt
 {
 Address::~Address() = default;
@@ -58,35 +60,35 @@ Address::Address(const sockaddr &aSockaddr) : Address()
 
     if (family == AF_INET)
     {
-        memcpy(&_sockaddr, &aSockaddr, sizeof(sockaddr_in));
+        memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in));
     }
     else if (family == AF_INET6)
     {
-        memcpy(&_sockaddr, &aSockaddr, sizeof(sockaddr_in6));
+        memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in6));
     }
 }
 
 eAddressFamily Address::addressFamily() const noexcept
 {
     return AddressFamilySystemToUser.at(
-        static_cast<uint8_t>(_sockaddr.sa.sa_family));
+        static_cast<uint8_t>(sockaddr_.sa.sa_family));
 }
 
 void Address::addressFamily(const eAddressFamily aFamily)
 {
     throwIfInvalidFamily<eAddressFamily>(aFamily);
-    changeFamilyIfDifferent(ndt::AddressFamilyUserToSystem.at(aFamily));
+    setFamily(ndt::AddressFamilyUserToSystem.at(aFamily));
 }
 
 uint8_t Address::addressFamilySys() const noexcept
 {
-    return static_cast<uint8_t>(_sockaddr.sa.sa_family);
+    return static_cast<uint8_t>(sockaddr_.sa.sa_family);
 }
 
 void Address::addressFamily(const uint8_t aFamily)
 {
     throwIfInvalidFamily<uint8_t>(aFamily);
-    changeFamilyIfDifferent(aFamily);
+    setFamily(aFamily);
 }
 
 std::variant<std::monostate, ipv4_t, ipv6_t> Address::ip() const noexcept
@@ -95,13 +97,13 @@ std::variant<std::monostate, ipv4_t, ipv6_t> Address::ip() const noexcept
 
     if (kSysFamily == AF_INET)
     {
-        ipv4_t ipValue{ntohl(_sockaddr.sa4.sin_addr.s_addr)};
+        ipv4_t ipValue{ntohl(sockaddr_.sa4.sin_addr.s_addr)};
         return ipValue;
     }
 
     if (kSysFamily == AF_INET6)
     {
-        ipv6_t ipValue{_sockaddr.sa6.sin6_addr};
+        ipv6_t ipValue{sockaddr_.sa6.sin6_addr};
         return ipValue;
     }
 
@@ -110,53 +112,77 @@ std::variant<std::monostate, ipv4_t, ipv6_t> Address::ip() const noexcept
 
 void Address::ip(const ipv4_t &aIPv4) noexcept
 {
-    changeFamilyIfDifferent(AF_INET);
-    _sockaddr.sa4.sin_addr.s_addr = htonl(aIPv4.u_ipv4.data32);
+    setFamily(AF_INET);
+    sockaddr_.sa4.sin_addr.s_addr = htonl(aIPv4.u_ipv4.data32);
 }
 
 void Address::ip(const ipv6_t &aIPv6) noexcept
 {
-    changeFamilyIfDifferent(AF_INET6);
-    _sockaddr.sa6.sin6_addr = aIPv6.u_ipv6.nativeData;
+    setFamily(AF_INET6);
+    sockaddr_.sa6.sin6_addr = aIPv6.u_ipv6.nativeData;
 }
 
 void Address::port(uint16_t aPort) noexcept
 {
-    _sockaddr.sa4.sin_port = htons(aPort);
+    sockaddr_.sa4.sin_port = htons(aPort);
 }
 
 uint16_t Address::port() const noexcept
 {
-    return ntohs(_sockaddr.sa4.sin_port);
+    return ntohs(sockaddr_.sa4.sin_port);
 }
 
 const sockaddr *Address::nativeDataConst() const noexcept
 {
-    return &_sockaddr.sa;
+    return &sockaddr_.sa;
 }
 
 void Address::reset() noexcept
 {
-    memset(&_sockaddr, 0, sizeof(_sockaddr));
-    _sockaddr.sa.sa_family = AF_UNSPEC;
+    memset(&sockaddr_, 0, sizeof(sockaddr_));
+    sockaddr_.sa.sa_family = AF_UNSPEC;
 }
 
 std::size_t Address::capacity() const noexcept
 {
     if (addressFamilySys() == AF_INET)
     {
-        return capacityV4();
+        return kV4Capacity;
     }
-    return capacityV6();
+    return kV6Capacity;
 }
 
-std::size_t Address::capacityV4() noexcept { return sizeof(sockaddr_in); }
+void Address::validateAddressFamily(const eAddressFamily aAddressFamily,
+                                    std::error_code &aEc) noexcept
+{
+    if ((aAddressFamily == eAddressFamily::kIPv4) ||
+        (aAddressFamily == eAddressFamily::kIPv6))
+    {
+        return;
+    }
+    aEc = eAddressErrorCode::kInvalidAddressFamily;
+}
 
-std::size_t Address::capacityV6() noexcept { return sizeof(sockaddr_in6); }
+void Address::validateAddressFamily(const uint8_t aAddressFamily,
+                                    std::error_code &aEc) noexcept
+{
+    if ((aAddressFamily == AF_INET) || (aAddressFamily == AF_INET6))
+    {
+        return;
+    }
+    if (aAddressFamily == AF_UNSPEC)
+    {
+        aEc = eAddressErrorCode::kInvalidAddressFamily;
+    }
+    else
+    {
+        aEc = eAddressErrorCode::kAddressUnknownFamilyDescr;
+    }
+}
 
 void swap(Address &aVal1, Address &aVal2) noexcept
 {
-    std::swap(aVal1._sockaddr, aVal2._sockaddr);
+    std::swap(aVal1.sockaddr_, aVal2.sockaddr_);
 }
 
 bool operator==(const Address &aVal1, const Address &aVal2) noexcept
@@ -171,22 +197,32 @@ bool operator!=(const Address &aVal1, const Address &aVal2) noexcept
     return !(aVal1 == aVal2);
 }
 
-void Address::changeFamilyIfDifferent(const uint8_t aFamily) noexcept
+void Address::setFamily(const uint8_t aFamily) noexcept
 {
-    if (addressFamilySys() != aFamily)
+    sockaddr_.sa.sa_family = aFamily;
+}
+
+const void *Address::ipPtr() const noexcept
+{
+    if (const auto kAf = addressFamilySys(); kAf == AF_INET)
     {
-        const auto p = port();
-        reset();
-        port(p);
-        _sockaddr.sa.sa_family = aFamily;
+        return static_cast<const void *>(&sockaddr_.sa4.sin_addr);
+    }
+    else if (kAf == AF_INET6)
+    {
+        return static_cast<const void *>(&sockaddr_.sa6.sin6_addr);
+    }
+    else
+    {
+        return nullptr;
     }
 }
 
-sockaddr *Address::nativeData() noexcept { return &_sockaddr.sa; }
+sockaddr *Address::nativeData() noexcept { return &sockaddr_.sa; }
 
 const char *AddressErrorCategory::name() const noexcept
 {
-    return "eAddressErrorCode";
+    return kAddressErrorCategoryCStr;
 }
 
 std::string AddressErrorCategory::message(int c) const
@@ -196,9 +232,11 @@ std::string AddressErrorCategory::message(int c) const
         case eAddressErrorCode::kSuccess:
             return "success";
         case eAddressErrorCode::kInvalidAddressFamily:
-            return exception::kAddressOnlyIPv4OrkIPv6;
-        case eAddressErrorCode::kAddressUnknownFamily:
-            return exception::kAddressUnknownFamily;
+            return kInvalidAddressFamilyDescr;
+        case eAddressErrorCode::kAddressUnknownFamilyDescr:
+            return kAddressUnknownFamilyDescr;
+        case eAddressErrorCode::kStringIsNotIpAddress:
+            return kStringIsNotIpAddressDescr;
         default:
             return "unknown";
     }
@@ -207,17 +245,7 @@ std::string AddressErrorCategory::message(int c) const
 std::error_condition AddressErrorCategory::default_error_condition(
     int c) const noexcept
 {
-    switch (static_cast<eAddressErrorCode>(c))
-    {
-        case eAddressErrorCode::kInvalidAddressFamily:
-            return make_error_condition(
-                std::errc::address_family_not_supported);
-        case eAddressErrorCode::kAddressUnknownFamily:
-            return make_error_condition(std::errc::invalid_argument);
-        default:
-            // I have no mapping for this code
-            return std::error_condition(c, *this);
-    }
+    return std::error_condition(c, *this);
 }
 
 }  // namespace ndt

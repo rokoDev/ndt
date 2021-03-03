@@ -1,15 +1,6 @@
 #include "ndt/utils.h"
 
-#include <fmt/core.h>
-#include <fmt/format.h>
-
 #include <cstring>
-#include <stdexcept>
-#include <string>
-#include <system_error>
-
-#include "ndt/address.h"
-#include "ndt/common.h"
 
 namespace ndt
 {
@@ -75,34 +66,6 @@ bool memvcmp(const void *memptr, unsigned char val, const std::size_t size)
     }
     const unsigned char *mm = static_cast<const unsigned char *>(memptr);
     return (*mm == val) && (memcmp(mm, mm + 1, size - 1) == 0);
-}
-
-void validateAddressFamily(const eAddressFamily aAddressFamily,
-                           std::error_code &aEc) noexcept
-{
-    if ((aAddressFamily == eAddressFamily::kIPv4) ||
-        (aAddressFamily == eAddressFamily::kIPv6))
-    {
-        return;
-    }
-    aEc = eAddressErrorCode::kInvalidAddressFamily;
-}
-
-void validateAddressFamily(const uint8_t aAddressFamily,
-                           std::error_code &aEc) noexcept
-{
-    if ((aAddressFamily == AF_INET) || (aAddressFamily == AF_INET6))
-    {
-        return;
-    }
-    if (aAddressFamily == AF_UNSPEC)
-    {
-        aEc = eAddressErrorCode::kInvalidAddressFamily;
-    }
-    else
-    {
-        aEc = eAddressErrorCode::kAddressUnknownFamily;
-    }
 }
 
 }  // namespace utils
