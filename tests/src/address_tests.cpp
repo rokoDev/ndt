@@ -806,7 +806,7 @@ TEST_F(AddressTest, IPv4ToStringNotThrow)
     char ipBuf[INET_ADDRSTRLEN];
     auto action = [&ipBuf]() {
         const ndt::Address a(AF_INET);
-        a.ipStr(ipBuf);
+        a.ipStr(static_cast<ndt::buffer>(ipBuf));
     };
 
     EXPECT_NO_THROW(action());
@@ -819,7 +819,7 @@ TEST_F(AddressTest, IPv6ToStringNotThrow)
     char ipBuf[INET6_ADDRSTRLEN];
     auto action = [&ipBuf]() {
         const ndt::Address a(AF_INET6);
-        a.ipStr(ipBuf);
+        a.ipStr(static_cast<ndt::buffer>(ipBuf));
     };
 
     EXPECT_NO_THROW(action());
@@ -835,7 +835,7 @@ TEST_F(AddressTest, IPkUnspecToStringThrow)
             {
                 char ipBuf[INET_ADDRSTRLEN];
                 const ndt::Address a;
-                a.ipStr(ipBuf);
+                a.ipStr(static_cast<ndt::buffer>(ipBuf));
             }
             catch (const ndt::Error &e)
             {
@@ -934,7 +934,7 @@ TEST_F(AddressTest, IpToStrNotThrow)
 
     const auto action = [&a, &ipResult](const char *ipCStr) {
         a.ip(ipCStr);
-        a.ipStr(ipResult);
+        a.ipStr(static_cast<ndt::buffer>(ipResult));
     };
 
     struct TestDataT
@@ -979,7 +979,7 @@ TEST_F(AddressTest, UnspecIpToStrThrow)
             {
                 ndt::Address a;
                 char ipResult[INET6_ADDRSTRLEN] = {0};
-                a.ipStr(ipResult);
+                a.ipStr(static_cast<ndt::buffer>(ipResult));
             }
             catch (const ndt::Error &e)
             {

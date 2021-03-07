@@ -4,7 +4,7 @@
 #include <type_traits>
 
 template <typename T, std::size_t Size, std::size_t Alignment>
-class FastPimpl
+class FastPimpl final
 {
    public:
     ~FastPimpl() noexcept

@@ -168,11 +168,7 @@ void Address::throwIfInvalidFamily(
 {
     std::error_code ec;
     validateAddressFamily(aFamily, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename SysWrapperT>
@@ -199,11 +195,7 @@ void Address::ipV4(const char *aIPCStr)
 {
     std::error_code ec;
     ipV4<SysWrapperT>(aIPCStr, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename SysWrapperT>
@@ -230,11 +222,7 @@ void Address::ipV6(const char *aIPCStr)
 {
     std::error_code ec;
     ipV6<SysWrapperT>(aIPCStr, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename SysWrapperT>
@@ -253,11 +241,7 @@ void Address::ip(const char *aIPCStr)
 {
     std::error_code ec;
     ip<SysWrapperT>(aIPCStr, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename SysWrapperT>
@@ -265,11 +249,7 @@ void Address::ipStr(buffer aBuf) const
 {
     std::error_code ec;
     ipStr<SysWrapperT>(aBuf, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename SysWrapperT>

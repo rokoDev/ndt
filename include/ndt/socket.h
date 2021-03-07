@@ -4,18 +4,17 @@
 #include "address.h"
 #include "common.h"
 #include "exception.h"
+#include "nocopyable.h"
 #include "utils.h"
 
 namespace ndt
 {
 template <typename FlagsT, typename SFuncsT>
-class Socket
+class Socket final : private Nocopyable
 {
    public:
     ~Socket();
     Socket() = delete;
-    Socket(const Socket &) = delete;
-    Socket &operator=(const Socket &) = delete;
     Socket(Socket &&) noexcept;
     Socket &operator=(Socket &&) noexcept;
     explicit Socket(const FlagsT &flags) noexcept;
@@ -94,11 +93,7 @@ void Socket<FlagsT, SFuncsT>::open()
 {
     std::error_code ec;
     Socket<FlagsT, SFuncsT>::open(ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename FlagsT, typename SFuncsT>
@@ -120,11 +115,7 @@ void Socket<FlagsT, SFuncsT>::bind(const uint16_t aPort)
 {
     std::error_code ec;
     Socket<FlagsT, SFuncsT>::bind(aPort, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename FlagsT, typename SFuncsT>
@@ -147,11 +138,7 @@ std::size_t Socket<FlagsT, SFuncsT>::sendTo(const Address &aDst,
     std::error_code ec;
     const auto bytesSent =
         Socket<FlagsT, SFuncsT>::sendTo(aDst, aDataPtr, aLen, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
     return static_cast<std::size_t>(bytesSent);
 }
 
@@ -179,11 +166,7 @@ std::size_t Socket<FlagsT, SFuncsT>::recvFrom(ndt::buf_t aDataPtr,
     std::error_code ec;
     const auto bytesReceived =
         Socket<FlagsT, SFuncsT>::recvFrom(aDataPtr, aDataSize, aSender, ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
     return static_cast<std::size_t>(bytesReceived);
 }
 
@@ -208,11 +191,7 @@ void Socket<FlagsT, SFuncsT>::close()
 {
     std::error_code ec;
     Socket<FlagsT, SFuncsT>::close(ec);
-    if (ec)
-    {
-        ndt::Error ndtError(ec);
-        throw ndtError;
-    }
+    throw_if_error(ec);
 }
 
 template <typename FlagsT, typename SFuncsT>

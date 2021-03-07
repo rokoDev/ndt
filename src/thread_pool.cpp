@@ -2,11 +2,11 @@
 
 namespace ndt
 {
-thread_pool::~thread_pool() { stop(); }
+thread_pool::~thread_pool() { stopAndMakeOne(); }
 
 thread_pool::thread_pool(const std::size_t aMaxThreadCount,
                          const std::size_t aMaxQueueSize)
-    : mMaxQueueSize(aMaxQueueSize), mStop(false)
+    : mMaxQueueSize(aMaxQueueSize)
 {
     start(aMaxThreadCount);
 }
@@ -31,26 +31,34 @@ void thread_pool::start(const std::size_t aMaxThreadCount)
             while (true)
             {
                 std::unique_lock<std::mutex> uLock(mMutex);
-                mCondition.wait(
-                    uLock, [this]() { return !mTaskQueue.empty() || mStop; });
-                if (mStop)
+                mCondition.wait(uLock, [this]() {
+                    return !mTaskQueue.empty() ||
+                           (stopMode_ != eStopMode::kBusy);
+                });
+                if (stopMode_ != eStopMode::kBusy)
                 {
+                    if ((stopMode_ == eStopMode::kMakeOne) &&
+                        !mTaskQueue.empty())
+                    {
+                        executeJob(std::move(uLock));
+                    }
                     break;
                 }
-                const auto curTask = std::move(mTaskQueue.front());
-                mTaskQueue.pop_front();
-                uLock.unlock();
-                curTask();
+                executeJob(std::move(uLock));
             }
         });
     }
 }
 
-void thread_pool::stop()
+void thread_pool::stop() { stopMode(eStopMode::kFast); }
+
+void thread_pool::stopAndMakeOne() { stopMode(eStopMode::kMakeOne); }
+
+void thread_pool::stopMode(const eStopMode aStopMode)
 {
     {
         std::unique_lock<std::mutex> uLock(mMutex);
-        mStop = true;
+        stopMode_ = aStopMode;
     }
     mCondition.notify_all();
     for (auto& worker: mWorkers)
@@ -61,6 +69,14 @@ void thread_pool::stop()
         }
     }
     mWorkers.clear();
+}
+
+void thread_pool::executeJob(std::unique_lock<std::mutex> aULock)
+{
+    const auto curTask = std::move(mTaskQueue.front());
+    mTaskQueue.pop_front();
+    aULock.unlock();
+    curTask();
 }
 
 std::size_t thread_pool::maxThreadCount() const noexcept

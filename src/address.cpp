@@ -24,7 +24,7 @@ Address::Address(const eAddressFamily aFamily) : Address(aFamily, 0) {}
 
 Address::Address(const uint8_t aFamily, const uint16_t aPort) : Address()
 {
-    addressFamily(aFamily);
+    throwIfInvalidFamily<uint8_t>(aFamily);
     if (aFamily == AF_INET)
     {
         ip(kIPv4Any);

@@ -13,9 +13,18 @@
 
 namespace ndt
 {
-class thread_pool
+class thread_pool final
 {
    public:
+    enum class eStopMode : uint8_t
+    {
+        kBusy = 0,  // thread pool has not received stop command and continue
+                    // executing jobs as usual(if any)
+        kMakeOne,  // thread pool has received stop command and every thread
+                   // will exetuce one job before exit(if any)
+        kFast  ////thread pool has received stop command and every thread will
+               ///finish as soon as possible without regard to remaining jobs
+    };
     ~thread_pool();
     thread_pool();
     thread_pool(const std::size_t aMaxThreadCount,
@@ -30,6 +39,7 @@ class thread_pool
 
     void start(const std::size_t aMaxThreadCount);
     void stop();
+    void stopAndMakeOne();
 
     std::size_t maxThreadCount() const noexcept;
     std::size_t maxQueueSize() const noexcept;
@@ -40,10 +50,13 @@ class thread_pool
         std::optional<std::future<typename std::result_of_t<Func(Args...)>>>>;
 
    private:
+    void stopMode(const eStopMode aStopMode);
+    void executeJob(std::unique_lock<std::mutex> aULock);
+
     std::mutex mMutex;
     std::condition_variable mCondition;
     std::size_t mMaxQueueSize = std::numeric_limits<std::size_t>::max();
-    bool mStop;
+    eStopMode stopMode_ = eStopMode::kBusy;
     std::deque<std::function<void()>> mTaskQueue;
     std::vector<std::thread> mWorkers;
 };

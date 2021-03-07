@@ -17,7 +17,7 @@ class buffer
     }
 
     template <size_t N>
-    buffer(char (&aData)[N]) : data_(aData), size_(N)
+    explicit buffer(char (&aData)[N]) : data_(aData), size_(N)
     {
     }
 

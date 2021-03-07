@@ -73,6 +73,8 @@ set(HEADERS
 	${MAIN_INCLUDE_DIR}/ndt/thread_pool.h
 	${MAIN_INCLUDE_DIR}/ndt/buffer.h
 	${MAIN_INCLUDE_DIR}/ndt/system_wrappers.h
+	${MAIN_INCLUDE_DIR}/ndt/context.h
+	${MAIN_INCLUDE_DIR}/ndt/nocopyable.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -84,6 +86,7 @@ set(SOURCES
 	${SOURCE_DIR}/common.cpp
 	${SOURCE_DIR}/thread_pool.cpp
 	${SOURCE_DIR}/system_wrappers.cpp
+	${SOURCE_DIR}/context.cpp
 	)
 
 include_directories("${INCLUDE_DIRS}")

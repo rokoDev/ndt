@@ -51,6 +51,15 @@ class Error : public std::runtime_error
     mutable std::string mWhat;
 };
 
+inline void throw_if_error(const std::error_code& aEc)
+{
+    if (aEc)
+    {
+        ndt::Error ndtError(aEc);
+        throw ndtError;
+    }
+}
+
 }  // namespace ndt
 
 #endif /* ndt_exception_h */
