@@ -4,6 +4,7 @@ jobs:
   build:
     docker:
       - image: rokodev/ubuntu2004clang11ninja:1.1
+        user: root
         auth:
           username: $DOCKERHUB_LOGIN
           password: $DOCKERHUB_PASSWORD

@@ -1,9 +1,12 @@
 #ifndef ndt_socket_h
 #define ndt_socket_h
 
+#include <cassert>
+
 #include "address.h"
 #include "common.h"
 #include "exception.h"
+#include "ndt/build_type_defs.h"
 #include "nocopyable.h"
 #include "utils.h"
 
@@ -38,15 +41,21 @@ class Socket final : private Nocopyable
 
     const FlagsT &flags() const noexcept;
 
+    bool nonBlocking() const noexcept;
+    void nonBlocking(const bool isNonBlocking, std::error_code &aEc) noexcept;
+    void nonBlocking(const bool isNonBlocking);
+
    protected:
-    sock_t socketHandle_;
+    sock_t socketHandle_ = kInvalidSocket;
     FlagsT flags_;
     bool isOpen_ = false;
+    bool isNonBlocking_ = false;
 };
 
 template <typename FlagsT, typename SFuncsT>
 Socket<FlagsT, SFuncsT>::~Socket()
 {
+    assert(!isOpen_ && "Error: socket must be closed before destruction");
 }
 
 template <typename FlagsT, typename SFuncsT>
@@ -54,6 +63,7 @@ Socket<FlagsT, SFuncsT>::Socket(Socket &&aOther) noexcept
     : socketHandle_(std::exchange(aOther.socketHandle_, kInvalidSocket))
     , flags_(std::move(aOther.flags_))
     , isOpen_(std::exchange(aOther.isOpen_, false))
+    , isNonBlocking_(std::exchange(aOther.isNonBlocking_, false))
 {
 }
 
@@ -61,16 +71,22 @@ template <typename FlagsT, typename SFuncsT>
 Socket<FlagsT, SFuncsT> &Socket<FlagsT, SFuncsT>::operator=(
     Socket &&aOther) noexcept
 {
+    assert(!isOpen_ &&
+           "Error: move assignment to opened socket is not allowed");
     std::swap(aOther.socketHandle_, socketHandle_);
     std::swap(aOther.flags_, flags_);
     std::swap(aOther.isOpen_, isOpen_);
+    std::swap(aOther.isNonBlocking_, isNonBlocking_);
 
     return *this;
 }
 
 template <typename FlagsT, typename SFuncsT>
 Socket<FlagsT, SFuncsT>::Socket(const FlagsT &flags) noexcept
-    : socketHandle_(kInvalidSocket), flags_(flags), isOpen_(false)
+    : socketHandle_(kInvalidSocket)
+    , flags_(flags)
+    , isOpen_(false)
+    , isNonBlocking_(false)
 {
 }
 
@@ -79,7 +95,15 @@ Socket<FlagsT, SFuncsT>::Socket(const FlagsT &aFlags, uint16_t aPort)
     : Socket(aFlags)
 {
     open();
-    bind(aPort);
+    try
+    {
+        bind(aPort);
+    }
+    catch (const std::exception &e)
+    {
+        close();
+        throw;
+    }
 }
 
 template <typename FlagsT, typename SFuncsT>
@@ -215,6 +239,47 @@ template <typename FlagsT, typename SFuncsT>
 const FlagsT &Socket<FlagsT, SFuncsT>::flags() const noexcept
 {
     return flags_;
+}
+
+template <typename FlagsT, typename SFuncsT>
+bool Socket<FlagsT, SFuncsT>::nonBlocking() const noexcept
+{
+    return isNonBlocking_;
+}
+
+template <typename FlagsT, typename SFuncsT>
+void Socket<FlagsT, SFuncsT>::nonBlocking(const bool isNonBlocking,
+                                          std::error_code &aEc) noexcept
+{
+#if _WIN32
+    u_long isNonBlockingArg = isNonBlocking ? 1 : 0;
+    const int flags =
+        SFuncsT::ioctlsocket(socketHandle_, FIONBIO, &isNonBlockingArg);
+#else
+    int flags = SFuncsT::fcntl(socketHandle_, F_GETFL, 0);
+    if (flags == kSocketError)
+    {
+        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        return;
+    }
+
+    flags = isNonBlocking ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK);
+    flags = SFuncsT::fcntl(socketHandle_, F_SETFL, flags);
+#endif
+    if (flags == kSocketError)
+    {
+        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        return;
+    }
+    isNonBlocking_ = isNonBlocking;
+}
+
+template <typename FlagsT, typename SFuncsT>
+void Socket<FlagsT, SFuncsT>::nonBlocking(const bool isNonBlocking)
+{
+    std::error_code ec;
+    Socket<FlagsT, SFuncsT>::nonBlocking(isNonBlocking, ec);
+    throw_if_error(ec);
 }
 
 }  // namespace ndt

@@ -54,7 +54,7 @@ class Context : private Nocopyable
     void startUp(std::error_code &aEc) noexcept;
     void cleanUp(std::error_code &aEc) noexcept;
 
-    [[maybe_unused]] static inline std::atomic_int instanceCount_ = 0;
+    [[maybe_unused]] static inline std::atomic_int32_t instanceCount_ = 0;
 };
 }  // namespace ndt
 

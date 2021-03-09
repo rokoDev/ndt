@@ -5,7 +5,6 @@ import subprocess
 import argparse
 import shutil
 import sys
-from decouple import config
 
 def print_command(command):
   separator = ' '

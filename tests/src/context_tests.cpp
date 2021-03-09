@@ -34,7 +34,7 @@ TEST(ContextTest, MultithreadConstructionDestruction)
 
     const auto action = [createContexts_1 = std::move(createContexts_1),
                          createContexts_2 = std::move(createContexts_2)]() {
-        ndt::thread_pool pool;
+        ndt::thread_pool pool(ndt::thread_pool::eStopMode::kMakeOne);
         pool.push(
             [](const std::function<void()> createContexts) {
                 {

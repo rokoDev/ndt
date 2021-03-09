@@ -18,18 +18,19 @@ class thread_pool final
    public:
     enum class eStopMode : uint8_t
     {
-        kBusy = 0,  // thread pool has not received stop command and continue
-                    // executing jobs as usual(if any)
-        kMakeOne,  // thread pool has received stop command and every thread
-                   // will exetuce one job before exit(if any)
-        kFast  ////thread pool has received stop command and every thread will
-               ///finish as soon as possible without regard to remaining jobs
+        kMakeOne = 0,  // thread pool has received stop command and every thread
+                       // will exetuce one job before exit(if any)
+        kFast  // thread pool has received stop command and every thread will
+               // finish as soon as possible without regard to remaining jobs
     };
     ~thread_pool();
     thread_pool();
+    thread_pool(const eStopMode aStopMode);
+    thread_pool(const std::size_t aMaxThreadCount);
     thread_pool(const std::size_t aMaxThreadCount,
                 const std::size_t aMaxQueueSize);
-    thread_pool(const std::size_t aMaxThreadCount);
+    thread_pool(const std::size_t aMaxThreadCount,
+                const std::size_t aMaxQueueSize, const eStopMode aStopMode);
 
     thread_pool(thread_pool &&aOther) = delete;
     thread_pool &operator=(thread_pool &&aOther) = delete;
@@ -39,7 +40,7 @@ class thread_pool final
 
     void start(const std::size_t aMaxThreadCount);
     void stop();
-    void stopAndMakeOne();
+    void stopMode(const eStopMode aStopMode);
 
     std::size_t maxThreadCount() const noexcept;
     std::size_t maxQueueSize() const noexcept;
@@ -50,13 +51,13 @@ class thread_pool final
         std::optional<std::future<typename std::result_of_t<Func(Args...)>>>>;
 
    private:
-    void stopMode(const eStopMode aStopMode);
     void executeJob(std::unique_lock<std::mutex> aULock);
 
     std::mutex mMutex;
     std::condition_variable mCondition;
+    eStopMode stopMode_ = eStopMode::kFast;
     std::size_t mMaxQueueSize = std::numeric_limits<std::size_t>::max();
-    eStopMode stopMode_ = eStopMode::kBusy;
+    bool active_ = true;
     std::deque<std::function<void()>> mTaskQueue;
     std::vector<std::thread> mWorkers;
 };

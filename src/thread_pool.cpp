@@ -2,13 +2,18 @@
 
 namespace ndt
 {
-thread_pool::~thread_pool() { stopAndMakeOne(); }
+thread_pool::~thread_pool() { stop(); }
 
-thread_pool::thread_pool(const std::size_t aMaxThreadCount,
-                         const std::size_t aMaxQueueSize)
-    : mMaxQueueSize(aMaxQueueSize)
+thread_pool::thread_pool()
+    : thread_pool(std::thread::hardware_concurrency(),
+                  std::numeric_limits<std::size_t>::max())
 {
-    start(aMaxThreadCount);
+}
+
+thread_pool::thread_pool(const eStopMode aStopMode)
+    : thread_pool(std::thread::hardware_concurrency(),
+                  std::numeric_limits<std::size_t>::max(), aStopMode)
+{
 }
 
 thread_pool::thread_pool(const std::size_t aMaxThreadCount)
@@ -16,10 +21,18 @@ thread_pool::thread_pool(const std::size_t aMaxThreadCount)
 {
 }
 
-thread_pool::thread_pool()
-    : thread_pool(std::thread::hardware_concurrency(),
-                  std::numeric_limits<std::size_t>::max())
+thread_pool::thread_pool(const std::size_t aMaxThreadCount,
+                         const std::size_t aMaxQueueSize)
+    : thread_pool(aMaxThreadCount, aMaxQueueSize, eStopMode::kFast)
 {
+}
+
+thread_pool::thread_pool(const std::size_t aMaxThreadCount,
+                         const std::size_t aMaxQueueSize,
+                         const eStopMode aStopMode)
+    : stopMode_(aStopMode), mMaxQueueSize(aMaxQueueSize)
+{
+    start(aMaxThreadCount);
 }
 
 void thread_pool::start(const std::size_t aMaxThreadCount)
@@ -32,10 +45,9 @@ void thread_pool::start(const std::size_t aMaxThreadCount)
             {
                 std::unique_lock<std::mutex> uLock(mMutex);
                 mCondition.wait(uLock, [this]() {
-                    return !mTaskQueue.empty() ||
-                           (stopMode_ != eStopMode::kBusy);
+                    return !mTaskQueue.empty() || !active_;
                 });
-                if (stopMode_ != eStopMode::kBusy)
+                if (!active_)
                 {
                     if ((stopMode_ == eStopMode::kMakeOne) &&
                         !mTaskQueue.empty())
@@ -50,15 +62,11 @@ void thread_pool::start(const std::size_t aMaxThreadCount)
     }
 }
 
-void thread_pool::stop() { stopMode(eStopMode::kFast); }
-
-void thread_pool::stopAndMakeOne() { stopMode(eStopMode::kMakeOne); }
-
-void thread_pool::stopMode(const eStopMode aStopMode)
+void thread_pool::stop()
 {
     {
         std::unique_lock<std::mutex> uLock(mMutex);
-        stopMode_ = aStopMode;
+        active_ = false;
     }
     mCondition.notify_all();
     for (auto& worker: mWorkers)
@@ -69,6 +77,12 @@ void thread_pool::stopMode(const eStopMode aStopMode)
         }
     }
     mWorkers.clear();
+}
+
+void thread_pool::stopMode(const eStopMode aStopMode)
+{
+    std::unique_lock<std::mutex> uLock(mMutex);
+    stopMode_ = aStopMode;
 }
 
 void thread_pool::executeJob(std::unique_lock<std::mutex> aULock)
