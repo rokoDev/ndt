@@ -21,10 +21,15 @@ using ssize_t = SSIZE_T;
 #include <cstddef>
 namespace ndt
 {
-/*! \typedef using buf_t = char*;
-    \brief buf_t - instances of this type contain pointer to byte array.
+/*! \typedef using buf_t = char;
+    \brief buf_t - buffer data type.
  */
-using buf_t = char*;
+using buf_t = char;
+
+/*! \typedef using bufp_t = char*;
+    \brief bufp_t - instances of this type contain pointer to byte array.
+ */
+using bufp_t = char *;
 
 /*! \typedef using salen_t = int;
     \brief salen_t  -  instances of this type hold length of data pointed by
@@ -37,7 +42,7 @@ using salen_t = int;
 
 /*! \typedef using dlen_t = int;
     \brief dlen_t - instances of this type hold length of data pointed by
-   variable of buf_t or cbuf_t types.
+   variable of bufp_t or cbufp_t types.
  */
 using dlen_t = int;
 
@@ -46,6 +51,8 @@ using dlen_t = int;
    like recvfrom or sendto.
  */
 using sdlen_t = int;
+
+using cbufp_t = char const *;
 }  // namespace ndt
 
 #else
@@ -62,7 +69,9 @@ using sdlen_t = int;
 
 namespace ndt
 {
-using buf_t = void*;
+using buf_t = void;
+using bufp_t = void *;
+using cbufp_t = void const *;
 using salen_t = socklen_t;
 using dlen_t = size_t;
 using sdlen_t = ssize_t;
@@ -75,11 +84,6 @@ using sdlen_t = ssize_t;
  */
 namespace ndt
 {
-/*! \typedef using cbuf_t = const buf_t;
-    \brief cbuf_t - instances of this type hold pointer to immutabe byte array.
- */
-using cbuf_t = const buf_t;
-
 /*! \typedef using sock_t = decltype(::socket(0, 0, 0));
     \brief sock_t - instance of this type contains socket descriptor returned by
    socket function.

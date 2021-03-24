@@ -11,7 +11,7 @@
 
 TEST(ContextTest, MultithreadConstructionDestruction)
 {
-    constexpr std::size_t kOriginContextCount = 500000;
+    constexpr std::size_t kOriginContextCount = 50000;
     const std::function<void()> createContexts_1 = []() {
         constexpr std::size_t kContextCount = kOriginContextCount;
         std::vector<std::unique_ptr<ndt::Context>> contexts;

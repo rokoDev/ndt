@@ -1,5 +1,4 @@
 #include <fmt/core.h>
-
 #include <algorithm>
 #include <array>
 
@@ -30,10 +29,10 @@ class MockDetails
     MOCK_METHOD(int, bind,
                 (ndt::sock_t, const struct sockaddr *, ndt::salen_t));
     MOCK_METHOD(ndt::sdlen_t, recvfrom,
-                (ndt::sock_t, ndt::buf_t, ndt::dlen_t, int, struct sockaddr *,
+                (ndt::sock_t, ndt::bufp_t, ndt::dlen_t, int, struct sockaddr *,
                  ndt::salen_t *));
     MOCK_METHOD(ndt::sdlen_t, sendto,
-                (ndt::sock_t, ndt::cbuf_t, ndt::dlen_t, int,
+                (ndt::sock_t, ndt::cbufp_t, ndt::dlen_t, int,
                  const struct sockaddr *, ndt::salen_t));
     MOCK_METHOD(ndt::sock_t, socket, (int, int, int));
     MOCK_METHOD(int, close, (ndt::sock_t));
@@ -101,6 +100,7 @@ class SocketTest : public ::testing::Test
 {
    public:
     ndt::test::SysErrorCodeGetter sysErrorGetter;
+    ndt::Context ctx;
     SocketTest() = default;
     SocketTest(const SocketTest &) = delete;
     SocketTest &operator=(const SocketTest &) = delete;
@@ -113,7 +113,7 @@ class SocketTest : public ::testing::Test
         return mDetails->bind(sockfd, addr, addrlen);
     }
 
-    static ndt::sdlen_t recvfrom(ndt::sock_t sockfd, ndt::buf_t buf,
+    static ndt::sdlen_t recvfrom(ndt::sock_t sockfd, ndt::bufp_t buf,
                                  ndt::dlen_t len, int flags,
                                  struct sockaddr *src_addr,
                                  ndt::salen_t *addrlen)
@@ -121,7 +121,7 @@ class SocketTest : public ::testing::Test
         return mDetails->recvfrom(sockfd, buf, len, flags, src_addr, addrlen);
     }
 
-    static ndt::sdlen_t sendto(ndt::sock_t sockfd, ndt::cbuf_t buf,
+    static ndt::sdlen_t sendto(ndt::sock_t sockfd, ndt::cbufp_t buf,
                                ndt::dlen_t len, int flags,
                                const struct sockaddr *dest_addr,
                                ndt::salen_t addrlen)
@@ -148,7 +148,7 @@ std::unique_ptr<MockDetails> SocketTest::mDetails;
 
 TEST_F(SocketTest, ConstructorWithUDPv4flags)
 {
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4());
     ASSERT_EQ(s.isOpen(), false);
     ASSERT_EQ(s.flags().getFamily(), ndt::eAddressFamily::kIPv4);
     ASSERT_EQ(s.flags().getProtocol(), ndt::eIPProtocol::kUDP);
@@ -157,7 +157,7 @@ TEST_F(SocketTest, ConstructorWithUDPv4flags)
 
 TEST_F(SocketTest, ConstructorWithUDPv6flags)
 {
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6());
     ASSERT_EQ(s.isOpen(), false);
     ASSERT_EQ(s.flags().getFamily(), ndt::eAddressFamily::kIPv6);
     ASSERT_EQ(s.flags().getProtocol(), ndt::eIPProtocol::kUDP);
@@ -174,7 +174,7 @@ TEST_F(SocketTest, SocketFuncReturnErrorInConstructorWithUDPv4flagsCall)
         {
             try
             {
-                SocketT s(ndt::UDP::V4(), 333);
+                SocketT s(ctx, ndt::UDP::V4(), 333);
             }
             catch (const ndt::Error &e)
             {
@@ -194,7 +194,7 @@ TEST_F(SocketTest, SocketFuncReturnErrorInConstructorWithUDPv6flagsCall)
         {
             try
             {
-                SocketT s(ndt::UDP::V6(), 333);
+                SocketT s(ctx, ndt::UDP::V6(), 333);
             }
             catch (const ndt::Error &e)
             {
@@ -211,7 +211,7 @@ TEST_F(SocketTest, ConstructorWithUDPv4flagsAndPort)
     mDetails->expectBindSucceded(kV4Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 333);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 333);
 
     ASSERT_EQ(s.isOpen(), true);
     s.close();
@@ -224,8 +224,8 @@ TEST_F(SocketTest, ConstructorWithUDPv4flagsAndPortNotThrow)
     mDetails->expectBindSucceded(kV4Size);
     mDetails->expectCloseSucceded();
 
-    const auto socketCreator = []() {
-        ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 333);
+    auto socketCreator = [&context = ctx]() {
+        ndt::Socket<ndt::UDP, SocketTest> s(context, ndt::UDP::V4(), 333);
         s.close();
     };
 
@@ -239,7 +239,7 @@ TEST_F(SocketTest, ConstructorWithUDPv6flagsAndPort)
     mDetails->expectBindSucceded(kV6Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6(), 333);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6(), 333);
 
     ASSERT_EQ(s.isOpen(), true);
     s.close();
@@ -252,8 +252,8 @@ TEST_F(SocketTest, ConstructorWithUDPv6flagsAndPortNotThrow)
     mDetails->expectBindSucceded(kV6Size);
     mDetails->expectCloseSucceded();
 
-    const auto socketCreator = []() {
-        ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6(), 333);
+    auto socketCreator = [&context = ctx]() mutable {
+        ndt::Socket<ndt::UDP, SocketTest> s(context, ndt::UDP::V6(), 333);
         s.close();
     };
 
@@ -273,7 +273,7 @@ TEST_F(SocketTest, ConstructorWithUDPv4flagsAndPortBindFailed)
         {
             try
             {
-                SocketT s(ndt::UDP::V4(), 333);
+                SocketT s(ctx, ndt::UDP::V4(), 333);
             }
             catch (const ndt::Error &e)
             {
@@ -296,7 +296,7 @@ TEST_F(SocketTest, ConstructorWithUDPv6flagsAndPortBindFailed)
         {
             try
             {
-                SocketT s(ndt::UDP::V6(), 333);
+                SocketT s(ctx, ndt::UDP::V6(), 333);
             }
             catch (const ndt::Error &e)
             {
@@ -313,7 +313,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV4MustThrow)
     mDetails->expectSocketFailed(AF_INET);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4());
     s.open();
 
     EXPECT_THROW(
@@ -338,7 +338,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
     mDetails->expectSocketFailed(AF_INET6);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6());
     s.open();
 
     EXPECT_THROW(
@@ -358,7 +358,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
 
 TEST_F(SocketTest, MoveConstructorV4ClosedSocket)
 {
-    ndt::UDP::Socket s1(ndt::UDP::V4());
+    ndt::UDP::Socket s1(ctx, ndt::UDP::V4());
 
     ndt::UDP::Socket s2(std::move(s1));
 
@@ -370,7 +370,7 @@ TEST_F(SocketTest, MoveConstructorV4ClosedSocket)
 
 TEST_F(SocketTest, MoveConstructorV6ClosedSocket)
 {
-    ndt::UDP::Socket s1(ndt::UDP::V6());
+    ndt::UDP::Socket s1(ctx, ndt::UDP::V6());
 
     ndt::UDP::Socket s2(std::move(s1));
 
@@ -388,7 +388,7 @@ TEST_F(SocketTest, MoveConstructorV4OpenedSocket)
 
     using SocketT = ndt::Socket<ndt::UDP, SocketTest>;
 
-    SocketT s1(ndt::UDP::V4());
+    SocketT s1(ctx, ndt::UDP::V4());
     s1.open();
 
     ASSERT_EQ(s1.isOpen(), true);
@@ -408,7 +408,7 @@ TEST_F(SocketTest, MoveConstructorV6OpenedSocket)
 
     using SocketT = ndt::Socket<ndt::UDP, SocketTest>;
 
-    SocketT s1(ndt::UDP::V6());
+    SocketT s1(ctx, ndt::UDP::V6());
     s1.open();
 
     ASSERT_EQ(s1.isOpen(), true);
@@ -428,10 +428,10 @@ TEST_F(SocketTest, MoveAssignmentV4OpenedToV6Closed)
 
     using SocketT = ndt::Socket<ndt::UDP, SocketTest>;
 
-    SocketT s1(ndt::UDP::V4());
+    SocketT s1(ctx, ndt::UDP::V4());
     s1.open();
 
-    SocketT s2(ndt::UDP::V6());
+    SocketT s2(ctx, ndt::UDP::V6());
 
     s2 = std::move(s1);
 
@@ -449,7 +449,7 @@ TEST_F(SocketTest, MoveAssignmentV4OpenedToV6Closed)
 
 TEST_F(SocketTest, BindNotOpenedV4MustThrowError)
 {
-    ndt::UDP::Socket s(ndt::UDP::V4());
+    ndt::UDP::Socket s(ctx, ndt::UDP::V4());
 
     EXPECT_THROW(
         {
@@ -467,7 +467,7 @@ TEST_F(SocketTest, BindNotOpenedV4MustThrowError)
 
 TEST_F(SocketTest, BindNotOpenedV6MustThrowError)
 {
-    ndt::UDP::Socket s(ndt::UDP::V6());
+    ndt::UDP::Socket s(ctx, ndt::UDP::V6());
 
     EXPECT_THROW(
         {
@@ -490,7 +490,7 @@ TEST_F(SocketTest, BindOpenedV4MustNotThrow)
     mDetails->expectBindSucceded(kV4Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4());
     s.open();
 
     EXPECT_NO_THROW(s.bind(10));
@@ -504,7 +504,7 @@ TEST_F(SocketTest, BindOpenedV6MustNotThrow)
     mDetails->expectBindSucceded(kV6Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6());
     s.open();
 
     EXPECT_NO_THROW(s.bind(10));
@@ -519,7 +519,7 @@ TEST_F(SocketTest, BindAlreadyBoundV4MustThrowError)
     mDetails->expectBindFailed(kV4Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
 
     EXPECT_THROW(
         {
@@ -544,7 +544,7 @@ TEST_F(SocketTest, BindAlreadyBoundV6MustThrowError)
     mDetails->expectBindFailed(kV6Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6(), 11);
 
     EXPECT_THROW(
         {
@@ -563,7 +563,7 @@ TEST_F(SocketTest, BindAlreadyBoundV6MustThrowError)
 
 TEST_F(SocketTest, CloseNotOpenedSocketV4MustNotThrow)
 {
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4());
 
     EXPECT_NO_THROW(s.close());
     ASSERT_EQ(s.isOpen(), false);
@@ -571,7 +571,7 @@ TEST_F(SocketTest, CloseNotOpenedSocketV4MustNotThrow)
 
 TEST_F(SocketTest, CloseNotOpenedSocketV6MustNotThrow)
 {
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6());
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6());
 
     EXPECT_NO_THROW(s.close());
     ASSERT_EQ(s.isOpen(), false);
@@ -584,7 +584,7 @@ TEST_F(SocketTest, SuccessfulCloseV4MustSetIsOpenedFlagToFalse)
     mDetails->expectBindSucceded(kV4Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
 
     ASSERT_EQ(s.isOpen(), true);
     EXPECT_NO_THROW(s.close());
@@ -598,7 +598,7 @@ TEST_F(SocketTest, SuccessfulCloseV6MustSetIsOpenedFlagToFalse)
     mDetails->expectBindSucceded(kV6Size);
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6(), 11);
 
     ASSERT_EQ(s.isOpen(), true);
     EXPECT_NO_THROW(s.close());
@@ -613,7 +613,7 @@ TEST_F(SocketTest, FailedCloseV4MustThrowError)
     mDetails->expectCloseFailed();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
 
     ASSERT_EQ(s.isOpen(), true);
 
@@ -640,7 +640,7 @@ TEST_F(SocketTest, FailedCloseV6MustThrowError)
     mDetails->expectCloseFailed();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V6(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V6(), 11);
 
     ASSERT_EQ(s.isOpen(), true);
 
@@ -667,16 +667,14 @@ TEST_F(SocketTest, FailedSendToMustThrowError)
     mDetails->expectSendToFailed();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
     ndt::Address dst;
-    ndt::cbuf_t buf = nullptr;
-    const ndt::dlen_t bufLen = 0;
 
     EXPECT_THROW(
         {
             try
             {
-                s.sendTo(dst, buf, bufLen);
+                s.sendTo(dst, {static_cast<ndt::cbufp_t>(nullptr), 0});
             }
             catch (const ndt::Error &e)
             {
@@ -695,11 +693,10 @@ TEST_F(SocketTest, SuccessfulSendToMustReturnCountBytesSent)
     mDetails->expectSendToSucceded();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
     ndt::Address dst;
-    ndt::cbuf_t buf = nullptr;
-    const ndt::dlen_t bufLen = 0;
-    ASSERT_EQ(s.sendTo(dst, buf, bufLen), kSendtoSucceeded);
+    ASSERT_EQ(s.sendTo(dst, {static_cast<ndt::cbufp_t>(nullptr), 0}),
+              kSendtoSucceeded);
     s.close();
 }
 
@@ -711,11 +708,10 @@ TEST_F(SocketTest, SuccessfulRecvFromMustReturnCountBytesRecieved)
     mDetails->expectRecvFromSucceded();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
     ndt::Address dst;
-    ndt::buf_t buf = nullptr;
-    const ndt::dlen_t bufLen = 0;
-    ASSERT_EQ(s.recvFrom(buf, bufLen, dst), kRecvfromSucceeded);
+    ndt::Buffer buf({static_cast<ndt::bufp_t>(nullptr), 0});
+    ASSERT_EQ(s.recvFrom(buf, dst), kRecvfromSucceeded);
     s.close();
 }
 
@@ -727,16 +723,15 @@ TEST_F(SocketTest, FailedRecvFromMustThrowError)
     mDetails->expectRecvFromFailed();
     mDetails->expectCloseSucceded();
 
-    ndt::Socket<ndt::UDP, SocketTest> s(ndt::UDP::V4(), 11);
+    ndt::Socket<ndt::UDP, SocketTest> s(ctx, ndt::UDP::V4(), 11);
     ndt::Address dst;
-    ndt::buf_t buf = nullptr;
-    const ndt::dlen_t bufLen = 0;
 
     EXPECT_THROW(
         {
             try
             {
-                s.recvFrom(buf, bufLen, dst);
+                ndt::Buffer buf({static_cast<ndt::bufp_t>(nullptr), 0});
+                s.recvFrom(buf, dst);
             }
             catch (const ndt::Error &e)
             {
@@ -749,8 +744,8 @@ TEST_F(SocketTest, FailedRecvFromMustThrowError)
 
 TEST(SocketTests, SetNonBlockingMode)
 {
-    ndt::Context c;
-    ndt::UDP::Socket s(ndt::UDP::V4(), 111);
+    ndt::Context ctx;
+    ndt::UDP::Socket s(ctx, ndt::UDP::V4(), 111);
     ASSERT_EQ(s.nonBlocking(), false);
     auto action = [](ndt::UDP::Socket &sRef) {
         sRef.nonBlocking(true);
@@ -764,8 +759,8 @@ TEST(SocketTests, SetNonBlockingMode)
 
 TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 {
-    ndt::Context c;
-    ndt::UDP::Socket s(ndt::UDP::V6(), 111);
+    ndt::Context ctx;
+    ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 111);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);
 
@@ -777,8 +772,8 @@ TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 
 TEST(SocketTests, MoveAssignmentWithNonBlockingMode)
 {
-    ndt::Context c;
-    ndt::UDP::Socket s(ndt::UDP::V6(), 112);
+    ndt::Context ctx;
+    ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 112);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);
 

@@ -32,7 +32,7 @@ std::error_condition ContextErrorCategory::default_error_condition(
     return std::error_condition(c, *this);
 }
 
-Context::~Context()
+ContextBase::~ContextBase()
 {
     if (instanceCount_.fetch_sub(1, std::memory_order_relaxed) == 1)
     {
@@ -40,15 +40,10 @@ Context::~Context()
     }
     std::error_code ec;
     cleanUp(ec);
-    if (ec)
-    {
-        fmt::print("error >>\ncategory: {}\ncode: {}\nmessage: {}\n",
-                   ec.category().name(), ec.value(), ec.message());
-        assert(false && "context clean up error");
-    }
+    logAndExit(ec, "context clean up error");
 }
 
-Context::Context()
+ContextBase::ContextBase() noexcept
 {
     if (instanceCount_.fetch_add(1, std::memory_order_relaxed))
     {
@@ -56,19 +51,16 @@ Context::Context()
     }
     std::error_code ec;
     startUp(ec);
-    throw_if_error(ec);
+    logAndExit(ec, "context start up error");
 }
 
-Context::Context(std::error_code &aEc)
+int ContextBase::instanceCount() noexcept
 {
-    if (instanceCount_.fetch_add(1, std::memory_order_relaxed))
-    {
-        return;
-    }
-    startUp(aEc);
+    return std::atomic_load_explicit(&instanceCount_,
+                                     std::memory_order_relaxed);
 }
 
-void Context::startUp([[maybe_unused]] std::error_code &aEc) noexcept
+void ContextBase::startUp([[maybe_unused]] std::error_code &aEc) noexcept
 {
 #ifdef _WIN32
     WSADATA wsaData;
@@ -101,11 +93,41 @@ void Context::startUp([[maybe_unused]] std::error_code &aEc) noexcept
     /* The WinSock DLL is acceptable. Proceed. */
 #endif
 }
-void Context::cleanUp([[maybe_unused]] std::error_code &aEc) noexcept
+
+void ContextBase::cleanUp([[maybe_unused]] std::error_code &aEc) noexcept
 {
 #ifdef _WIN32
     WSACleanup();
 #endif
 }
+
+void ContextBase::logAndExit(std::error_code &aEc,
+                             [[maybe_unused]] const char *aMsg) noexcept
+{
+    if (aEc)
+    {
+        fmt::print("error >>\ncategory: {}\ncode: {}\nmessage: {}\n",
+                   aEc.category().name(), aEc.value(), aEc.message());
+        assert(false && aMsg);
+        exit(aEc.value());
+    }
+}
+
+Context::~Context() {}
+
+Context::Context() {}
+
+void Context::run()
+{
+    isRunning_ = true;
+    do
+    {
+        executor_();
+    } while (isRunning_);
+}
+
+void Context::stop() { isRunning_ = false; }
+
+ExecutorSelect &Context::executor() noexcept { return executor_; }
 
 }  // namespace ndt

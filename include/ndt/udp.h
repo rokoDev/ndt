@@ -6,12 +6,6 @@
 
 namespace ndt
 {
-template <typename FlagsT, typename SFuncsT>
-class Socket;
-
-template <typename FlagsT, typename SFuncsT>
-class SocketAddress;
-
 class UDP final
 {
    public:
@@ -35,7 +29,6 @@ class UDP final
     explicit UDP(const eAddressFamily aAF) noexcept;
     int _af;
 };
-
 }  // namespace ndt
 
 #endif /* ndt_udp_h */

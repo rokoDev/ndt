@@ -77,6 +77,8 @@ struct AddressFamily<eAddressFamily>
 
 class Address final
 {
+    friend class SocketBase;
+
     template <typename FlagsT, typename SFuncsT>
     friend class Socket;
 
@@ -134,9 +136,9 @@ class Address final
     std::size_t capacity() const noexcept;
 
     template <typename SysWrapperT = System>
-    void ipStr(buffer aBuf) const;
+    void ipStr(Buffer aBuf) const;
     template <typename SysWrapperT = System>
-    void ipStr(buffer aBuf, std::error_code &aEc) const noexcept;
+    void ipStr(Buffer aBuf, std::error_code &aEc) const noexcept;
 
     static void validateAddressFamily(const eAddressFamily aAddressFamily,
                                       std::error_code &aEc) noexcept;
@@ -245,7 +247,7 @@ void Address::ip(const char *aIPCStr)
 }
 
 template <typename SysWrapperT>
-void Address::ipStr(buffer aBuf) const
+void Address::ipStr(Buffer aBuf) const
 {
     std::error_code ec;
     ipStr<SysWrapperT>(aBuf, ec);
@@ -253,13 +255,13 @@ void Address::ipStr(buffer aBuf) const
 }
 
 template <typename SysWrapperT>
-void Address::ipStr(buffer aBuf, std::error_code &aEc) const noexcept
+void Address::ipStr(Buffer aBuf, std::error_code &aEc) const noexcept
 {
     if (const auto ipPointer = ipPtr(); ipPointer)
     {
-        const char *result = SysWrapperT::inet_ntop(
-            addressFamilySys(), ipPointer, aBuf.charPtr(),
-            static_cast<salen_t>(aBuf.size()));
+        const char *result =
+            SysWrapperT::inet_ntop(addressFamilySys(), ipPointer,
+                                   aBuf.data<char>(), aBuf.size<salen_t>());
         if (!result)
         {
             aEc.assign(systemErrorCodeGetter(), std::system_category());
