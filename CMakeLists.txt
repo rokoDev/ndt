@@ -7,6 +7,7 @@ set(ProjectName "ndt")
 project(${ProjectName}
 		VERSION 0.1.1
 		LANGUAGES CXX)
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -118,9 +119,7 @@ endif()
 
 include_directories("${INCLUDE_DIRS}")
 
-if(NOT TARGET fmt)
-  add_subdirectory(fmt)
-endif()
+add_subdirectory(deps)
 
 # Create library
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
@@ -135,9 +134,7 @@ target_include_directories(${ProjectName} PUBLIC
 )
 
 # Things typically only needed if we are the top level project
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+if(TEST_NDT OR CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   # Setup testing
-  add_subdirectory(googletest)
-  enable_testing()
   add_subdirectory(tests)
 endif()

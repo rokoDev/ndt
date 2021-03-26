@@ -4,6 +4,12 @@ set(outProjectName ${ProjectName})
 set(ProjectName ${ProjectName}_tests)
 project(${ProjectName})
 
+FetchContent_Declare(googletest
+	GIT_REPOSITORY https://github.com/google/googletest.git
+	GIT_TAG df7fee587d442b372ef43bd66c6a2f5c9af8c5eb)
+
+FetchContent_MakeAvailable(googletest)
+
 if (WIN32)
 	option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
 	option(GTEST_DISABLE_PTHREADS "Disable uses of pthreads in gtest." ON)
