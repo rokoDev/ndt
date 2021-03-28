@@ -77,6 +77,7 @@ struct AddressFamily<eAddressFamily>
 
 class Address final
 {
+    template <typename SysWrapperT>
     friend class SocketBase;
 
     template <typename FlagsT, typename SFuncsT>
@@ -188,7 +189,7 @@ void Address::ipV4(const char *aIPCStr, std::error_code &aEc) noexcept
     }
     else
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
     }
 }
 
@@ -215,7 +216,7 @@ void Address::ipV6(const char *aIPCStr, std::error_code &aEc) noexcept
     }
     else
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
     }
 }
 
@@ -264,7 +265,7 @@ void Address::ipStr(Buffer aBuf, std::error_code &aEc) const noexcept
                                    aBuf.data<char>(), aBuf.size<salen_t>());
         if (!result)
         {
-            aEc.assign(systemErrorCodeGetter(), std::system_category());
+            aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
         }
     }
     else

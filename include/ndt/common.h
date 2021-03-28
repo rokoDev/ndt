@@ -108,15 +108,6 @@ using ch_t = char;
 
 std::size_t getSysErrorDescr(const int aErrorCode, ch_t *aBuf,
                              const std::size_t aBufLen);
-
-namespace details
-{
-inline int lastErrorCode() { return err_code; }
-}  // namespace details
-
-typedef int (*ErrorCodeGetterT)();
-
-inline ErrorCodeGetterT systemErrorCodeGetter = &details::lastErrorCode;
 }  // namespace ndt
 
 #endif /* ndt_common_h */

@@ -15,6 +15,7 @@ class System final
     System &operator=(System &&) = delete;
 
    public:
+    inline static int lastErrorCode() { return err_code; }
     static int bind(sock_t sockfd, const struct sockaddr *addr,
                     ndt::salen_t addrlen) noexcept;
     static sdlen_t recvfrom(sock_t sockfd, ndt::bufp_t buf, ndt::dlen_t len,
@@ -34,6 +35,8 @@ class System final
                                     struct timeval *timeout) noexcept;
 #if _WIN32
     static int ioctlsocket(sock_t s, long cmd, u_long *argp) noexcept;
+    static int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData) noexcept;
+    static int WSACleanup() noexcept;
 #else
     static int fcntl(sock_t s, int cmd, int arg) noexcept;
 #endif

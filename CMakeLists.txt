@@ -78,7 +78,10 @@ set(HEADERS
 	${MAIN_INCLUDE_DIR}/ndt/nocopyable.h
 	${MAIN_INCLUDE_DIR}/ndt/executor_select_base.h
 	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
 	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
     ${MAIN_INCLUDE_DIR}/ndt/event_handler_select.h
     ${MAIN_INCLUDE_DIR}/ndt/executor_select.h
 	)
@@ -92,18 +95,14 @@ set(SOURCES
 	${SOURCE_DIR}/common.cpp
 	${SOURCE_DIR}/thread_pool.cpp
 	${SOURCE_DIR}/system_wrappers.cpp
-	${SOURCE_DIR}/context.cpp
-    ${SOURCE_DIR}/socket.cpp
-    ${SOURCE_DIR}/platform/nix/executor_select_impl.cpp
-	${SOURCE_DIR}/platform/win/executor_select_impl.cpp
-    ${SOURCE_DIR}/event_handler_select.cpp
+    ${SOURCE_DIR}/platform/win/context_base_error.cpp
 	)
 
 if(WIN32)
       # Don't need to compile this files for Windows platforms
       set_source_files_properties(
       	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
-      	${SOURCE_DIR}/platform/nix/executor_select_impl.cpp
+        ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
        PROPERTIES
           HEADER_FILE_ONLY YES
       )
@@ -111,7 +110,9 @@ else()
 	# Don't need to compile this file for non-Windows platforms
       set_source_files_properties(
       	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
-      	${SOURCE_DIR}/platform/win/executor_select_impl.cpp
+        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
+        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
+        ${SOURCE_DIR}/platform/win/context_base_error.cpp
       	PROPERTIES
           HEADER_FILE_ONLY YES
       )

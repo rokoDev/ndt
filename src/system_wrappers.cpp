@@ -50,6 +50,15 @@ int System::ioctlsocket(sock_t s, long cmd, u_long *argp) noexcept
 {
     return ::ioctlsocket(s, cmd, argp);
 }
+
+int System::WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData) noexcept
+{
+    return ::WSAStartup(wVersionRequired, lpWSAData);
+    ;
+}
+
+int System::WSACleanup() noexcept { return ::WSACleanup(); }
+
 #else
 int System::fcntl(sock_t s, int cmd, int arg) noexcept
 {

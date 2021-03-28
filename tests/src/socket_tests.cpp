@@ -9,7 +9,6 @@
 #include "ndt/exception.h"
 #include "ndt/socket.h"
 #include "ndt/udp.h"
-#include "test/sys_error_code_getter.h"
 
 using ::testing::_;
 using ::testing::InSequence;
@@ -99,13 +98,14 @@ class MockDetails
 class SocketTest : public ::testing::Test
 {
    public:
-    ndt::test::SysErrorCodeGetter sysErrorGetter;
-    ndt::Context ctx;
+    ndt::Context<SocketTest> ctx;
     SocketTest() = default;
     SocketTest(const SocketTest &) = delete;
     SocketTest &operator=(const SocketTest &) = delete;
     SocketTest(SocketTest &&) = delete;
     SocketTest &operator=(SocketTest &&) = delete;
+
+    inline static int lastErrorCode() { return 10; }
 
     static int bind(ndt::sock_t sockfd, const struct sockaddr *addr,
                     ndt::salen_t addrlen)
@@ -135,6 +135,20 @@ class SocketTest : public ::testing::Test
     }
 
     static int close(ndt::sock_t fd) { return mDetails->close(fd); }
+
+#if _WIN32
+    static int ioctlsocket(ndt::sock_t s, long cmd, u_long *argp) noexcept
+    {
+        return ndt::System::ioctlsocket(s, cmd, argp);
+    }
+
+    static int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData) noexcept
+    {
+        return ndt::System::WSAStartup(wVersionRequired, lpWSAData);
+    }
+
+    static int WSACleanup() noexcept { return ndt::System::WSACleanup(); }
+#endif
 
     static std::unique_ptr<MockDetails> mDetails;
 
@@ -356,8 +370,9 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
         ndt::Error);
 }
 
-TEST_F(SocketTest, MoveConstructorV4ClosedSocket)
+TEST(SocketTests, MoveConstructorV4ClosedSocket)
 {
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s1(ctx, ndt::UDP::V4());
 
     ndt::UDP::Socket s2(std::move(s1));
@@ -368,8 +383,9 @@ TEST_F(SocketTest, MoveConstructorV4ClosedSocket)
     ASSERT_EQ(s2.flags().getSocketType(), ndt::eSocketType::kDgram);
 }
 
-TEST_F(SocketTest, MoveConstructorV6ClosedSocket)
+TEST(SocketTests, MoveConstructorV6ClosedSocket)
 {
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s1(ctx, ndt::UDP::V6());
 
     ndt::UDP::Socket s2(std::move(s1));
@@ -447,8 +463,9 @@ TEST_F(SocketTest, MoveAssignmentV4OpenedToV6Closed)
     s2.close();
 }
 
-TEST_F(SocketTest, BindNotOpenedV4MustThrowError)
+TEST(SocketTests, BindNotOpenedV4MustThrowError)
 {
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V4());
 
     EXPECT_THROW(
@@ -465,8 +482,9 @@ TEST_F(SocketTest, BindNotOpenedV4MustThrowError)
         ndt::Error);
 }
 
-TEST_F(SocketTest, BindNotOpenedV6MustThrowError)
+TEST(SocketTests, BindNotOpenedV6MustThrowError)
 {
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6());
 
     EXPECT_THROW(
@@ -744,7 +762,7 @@ TEST_F(SocketTest, FailedRecvFromMustThrowError)
 
 TEST(SocketTests, SetNonBlockingMode)
 {
-    ndt::Context ctx;
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V4(), 111);
     ASSERT_EQ(s.nonBlocking(), false);
     auto action = [](ndt::UDP::Socket &sRef) {
@@ -759,7 +777,7 @@ TEST(SocketTests, SetNonBlockingMode)
 
 TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 {
-    ndt::Context ctx;
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 111);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);
@@ -772,7 +790,7 @@ TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 
 TEST(SocketTests, MoveAssignmentWithNonBlockingMode)
 {
-    ndt::Context ctx;
+    ndt::Context<ndt::System> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 112);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);

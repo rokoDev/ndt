@@ -17,11 +17,8 @@ if (WIN32)
 endif (WIN32)
 
 macro(package_add_test TESTNAME)
-	set(TEST_HEADERS
-	include/test/sys_error_code_getter.h
-	)
 	include_directories("include")
-    add_executable(${TESTNAME} ${ARGN} ${TEST_HEADERS})
+    add_executable(${TESTNAME} ${ARGN})
     target_link_libraries(${TESTNAME} gtest gmock gtest_main ${outProjectName})
     add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)

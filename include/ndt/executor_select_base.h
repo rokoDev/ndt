@@ -15,16 +15,20 @@
 
 namespace ndt
 {
+template <typename SysWrapperT>
 class SocketBase;
-template <typename ImplT>
+
+template <typename ImplT, typename SysWrapperT>
 class ExecutorSelectBase
 {
+    friend class ExecutorSelect<SysWrapperT>;
+
    public:
     void operator()();
 
-    void addSocket(SocketBase *aSocket);
-    void delHandler(HandlerSelectBase *aHandler);
-    void delSocket(SocketBase const *aSocket);
+    void addSocket(SocketBase<SysWrapperT> *aSocket);
+    void delHandler(HandlerSelectBase<SysWrapperT> *aHandler);
+    void delSocket(SocketBase<SysWrapperT> const *aSocket);
 
     inline timeval const *timeout() const noexcept;
     void setTimeout(const timeval aTimeout) noexcept;
@@ -50,7 +54,7 @@ class ExecutorSelectBase
     fd_set masterReadFDs_;
     fd_set masterWriteFDs_;
     fd_set masterExceptFDs_;
-    std::array<SocketBase *, kMaxFDCount> fdInfos_{};
+    std::array<SocketBase<SysWrapperT> *, kMaxFDCount> fdInfos_{};
     fd_set readfds_;
     fd_set writefds_;
     fd_set exceptfds_;
@@ -63,25 +67,25 @@ class ExecutorSelectBase
         [](std::error_code) {};
 };
 
-template <typename ImplT>
-ExecutorSelectBase<ImplT>::~ExecutorSelectBase() = default;
+template <typename ImplT, typename SysWrapperT>
+ExecutorSelectBase<ImplT, SysWrapperT>::~ExecutorSelectBase() = default;
 
-template <typename ImplT>
-ExecutorSelectBase<ImplT>::ExecutorSelectBase() noexcept
+template <typename ImplT, typename SysWrapperT>
+ExecutorSelectBase<ImplT, SysWrapperT>::ExecutorSelectBase() noexcept
 {
     FD_ZERO(&masterReadFDs_);
     FD_ZERO(&masterWriteFDs_);
     FD_ZERO(&masterExceptFDs_);
 }
 
-template <typename ImplT>
-ImplT &ExecutorSelectBase<ImplT>::impl() noexcept
+template <typename ImplT, typename SysWrapperT>
+ImplT &ExecutorSelectBase<ImplT, SysWrapperT>::impl() noexcept
 {
     return static_cast<ImplT &>(*this);
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::operator()()
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::operator()()
 {
     initSelectArgs();
 
@@ -102,13 +106,14 @@ void ExecutorSelectBase<ImplT>::operator()()
     else
     {
         // handle error
-        errorHandler_(
-            std::error_code(systemErrorCodeGetter(), std::system_category()));
+        errorHandler_(std::error_code(SysWrapperT::lastErrorCode(),
+                                      std::system_category()));
     }
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::addSocket(SocketBase *aSocket)
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::addSocket(
+    SocketBase<SysWrapperT> *aSocket)
 {
     if ((aSocket == nullptr) || !aSocket->isOpen() ||
         (aSocket->handler() == nullptr))
@@ -119,19 +124,23 @@ void ExecutorSelectBase<ImplT>::addSocket(SocketBase *aSocket)
     const auto socketHandle = aSocket->nativeHandle();
     const auto eventMask = aSocket->handler()->eventMask_;
 
-    setFlag(socketHandle, HandlerSelectBase::eTrakingEvents::kRead & eventMask,
-            &masterReadFDs_);
-    setFlag(socketHandle, HandlerSelectBase::eTrakingEvents::kWrite & eventMask,
-            &masterWriteFDs_);
     setFlag(socketHandle,
-            HandlerSelectBase::eTrakingEvents::kExceptCond & eventMask,
-            &masterExceptFDs_);
+            HandlerSelectBase<SysWrapperT>::eTrakingEvents::kRead & eventMask,
+            &masterReadFDs_);
+    setFlag(socketHandle,
+            HandlerSelectBase<SysWrapperT>::eTrakingEvents::kWrite & eventMask,
+            &masterWriteFDs_);
+    setFlag(
+        socketHandle,
+        HandlerSelectBase<SysWrapperT>::eTrakingEvents::kExceptCond & eventMask,
+        &masterExceptFDs_);
 
     impl().addSocketImpl(aSocket);
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::delHandler(HandlerSelectBase *aHandler)
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::delHandler(
+    HandlerSelectBase<SysWrapperT> *aHandler)
 {
     if (!aHandler)
     {
@@ -140,8 +149,9 @@ void ExecutorSelectBase<ImplT>::delHandler(HandlerSelectBase *aHandler)
     impl().delHandlerImpl(aHandler);
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::delSocket(SocketBase const *aSocket)
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::delSocket(
+    SocketBase<SysWrapperT> const *aSocket)
 {
     if ((aSocket == nullptr) || !aSocket->isOpen() ||
         (aSocket->handler() == nullptr))
@@ -156,27 +166,28 @@ void ExecutorSelectBase<ImplT>::delSocket(SocketBase const *aSocket)
     impl().delNativeHandleImpl(socketHandle);
 }
 
-template <typename ImplT>
-timeval const *ExecutorSelectBase<ImplT>::timeout() const noexcept
+template <typename ImplT, typename SysWrapperT>
+timeval const *ExecutorSelectBase<ImplT, SysWrapperT>::timeout() const noexcept
 {
     return infiniteTimeout_ ? nullptr : &masterTimeout_;
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::setTimeout(const timeval aTimeout) noexcept
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::setTimeout(
+    const timeval aTimeout) noexcept
 {
     masterTimeout_ = aTimeout;
     infiniteTimeout_ = false;
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::setTimeoutInfinite() noexcept
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::setTimeoutInfinite() noexcept
 {
     infiniteTimeout_ = true;
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::setTimeoutHandler(
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::setTimeoutHandler(
     const std::function<void()> aTimeoutHandler) noexcept
 {
     if (aTimeoutHandler)
@@ -189,8 +200,8 @@ void ExecutorSelectBase<ImplT>::setTimeoutHandler(
     }
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::setErrorHandler(
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::setErrorHandler(
     const std::function<void(std::error_code aEc)> aErrorHandler) noexcept
 {
     if (aErrorHandler)
@@ -203,10 +214,10 @@ void ExecutorSelectBase<ImplT>::setErrorHandler(
     }
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::setFlag(const sock_t aSocketHandle,
-                                        const bool aState,
-                                        fd_set *aFDs) noexcept
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::setFlag(const sock_t aSocketHandle,
+                                                     const bool aState,
+                                                     fd_set *aFDs) noexcept
 {
     if (aState)
     {
@@ -218,16 +229,17 @@ void ExecutorSelectBase<ImplT>::setFlag(const sock_t aSocketHandle,
     }
 }
 
-template <typename ImplT>
-bool ExecutorSelectBase<ImplT>::isTracked(const sock_t aHandle) const noexcept
+template <typename ImplT, typename SysWrapperT>
+bool ExecutorSelectBase<ImplT, SysWrapperT>::isTracked(
+    const sock_t aHandle) const noexcept
 {
     return FD_ISSET(aHandle, &masterReadFDs_) &&
            FD_ISSET(aHandle, &masterWriteFDs_) &&
            FD_ISSET(aHandle, &masterExceptFDs_);
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::initSelectArgs() noexcept
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::initSelectArgs() noexcept
 {
     FD_COPY(&masterReadFDs_, &readfds_);
     FD_COPY(&masterWriteFDs_, &writefds_);
@@ -244,8 +256,8 @@ void ExecutorSelectBase<ImplT>::initSelectArgs() noexcept
     }
 }
 
-template <typename ImplT>
-void ExecutorSelectBase<ImplT>::iterateResult(const int aResult)
+template <typename ImplT, typename SysWrapperT>
+void ExecutorSelectBase<ImplT, SysWrapperT>::iterateResult(const int aResult)
 {
     std::size_t processed = 0;
     const std::size_t readyFDCount = static_cast<std::size_t>(aResult);
@@ -256,14 +268,14 @@ void ExecutorSelectBase<ImplT>::iterateResult(const int aResult)
         if (FD_ISSET(impl().nativeHandleImpl(i), &readfds_))
         {
             // data can be read from socket without blocking
-            HandlerSelectBase *handler = fdInfos_[i]->handler_;
+            HandlerSelectBase<SysWrapperT> *handler = fdInfos_[i]->handler_;
             handler->inDataHandler_(*fdInfos_[i], handler);
             processed = 1;
         }
         if (FD_ISSET(impl().nativeHandleImpl(i), &writefds_))
         {
             // data can be written to socket without blocking
-            HandlerSelectBase *handler = fdInfos_[i]->handler_;
+            HandlerSelectBase<SysWrapperT> *handler = fdInfos_[i]->handler_;
             handler->outDataHandler_(*fdInfos_[i], handler);
             processed = 1;
         }
@@ -271,7 +283,7 @@ void ExecutorSelectBase<ImplT>::iterateResult(const int aResult)
         {
             // exception conditions occured in this socket can be handled
             // without blocking
-            HandlerSelectBase *handler = fdInfos_[i]->handler_;
+            HandlerSelectBase<SysWrapperT> *handler = fdInfos_[i]->handler_;
             handler->exceptCondHandler_(*fdInfos_[i], handler);
             processed = 1;
         }

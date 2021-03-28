@@ -14,21 +14,21 @@ TEST(ContextTest, MultithreadConstructionDestruction)
     constexpr std::size_t kOriginContextCount = 50000;
     const std::function<void()> createContexts_1 = []() {
         constexpr std::size_t kContextCount = kOriginContextCount;
-        std::vector<std::unique_ptr<ndt::Context>> contexts;
+        std::vector<std::unique_ptr<ndt::Context<ndt::System>>> contexts;
         contexts.reserve(kContextCount);
         for (int i = 0; i < kContextCount; ++i)
         {
-            contexts.push_back(std::make_unique<ndt::Context>());
+            contexts.push_back(std::make_unique<ndt::Context<ndt::System>>());
         }
     };
 
     const std::function<void()> createContexts_2 = []() {
         constexpr std::size_t kContextCount = 2 * kOriginContextCount;
-        std::vector<std::unique_ptr<ndt::Context>> contexts;
+        std::vector<std::unique_ptr<ndt::Context<ndt::System>>> contexts;
         contexts.reserve(kContextCount);
         for (int i = 0; i < kContextCount; ++i)
         {
-            contexts.push_back(std::make_unique<ndt::Context>());
+            contexts.push_back(std::make_unique<ndt::Context<ndt::System>>());
         }
     };
 
@@ -62,5 +62,5 @@ TEST(ContextTest, MultithreadConstructionDestruction)
     };
 
     EXPECT_NO_THROW(action());
-    ASSERT_EQ(ndt::Context::instanceCount(), 0);
+    ASSERT_EQ(ndt::Context<ndt::System>::instanceCount(), 0);
 }

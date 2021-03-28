@@ -13,81 +13,176 @@
 
 namespace ndt
 {
+template <typename SysWrapperT>
 class Context;
+
+template <typename SysWrapperT>
 class ExecutorSelect;
+
+template <typename SysWrapperT>
 class HandlerSelectBase;
 
+template <typename SysWrapperT>
 class SocketBase : private Nocopyable
 {
-    template <typename ImplT>
+    template <typename ImplT, typename SysWrappersT>
     friend class ExecutorSelectBase;
+
+    template <typename SysWrappersT>
     friend class ExecutorSelect;
 
    public:
     sock_t nativeHandle() const noexcept;
     bool nonBlocking() const noexcept;
     bool isOpen() const noexcept;
-    HandlerSelectBase *handler() const noexcept;
-    void handler(HandlerSelectBase *aHandler);
+    HandlerSelectBase<SysWrapperT> *handler() const noexcept;
+    void handler(HandlerSelectBase<SysWrapperT> *aHandler);
 
-    template <typename SFuncsT>
     std::size_t sendTo(const Address &aDst, CBuffer aBuf);
-
-    template <typename SFuncsT>
     std::size_t sendTo(const Address &aDst, CBuffer aBuf, std::error_code &aEc);
-
-    template <typename SFuncsT>
     std::size_t recvFrom(Buffer &aBuf, Address &aSender);
-
-    template <typename SFuncsT>
     std::size_t recvFrom(Buffer &aBuf, Address &aSender, std::error_code &aEc);
-
-    template <typename SFuncsT>
     void close();
-
-    template <typename SFuncsT>
     void close(std::error_code &aEc);
-
-    template <typename SFuncsT>
     void nonBlocking(const bool isNonBlocking);
-
-    template <typename SFuncsT>
     void nonBlocking(const bool isNonBlocking, std::error_code &aEc) noexcept;
 
    protected:
     ~SocketBase();
     SocketBase() = delete;
-    SocketBase(Context &aContext) noexcept;
+    SocketBase(Context<SysWrapperT> &aContext) noexcept;
     SocketBase(SocketBase &&aOther) noexcept;
     SocketBase &operator=(SocketBase &&aOther) noexcept;
 
     // TODO: rewrite code to get rid of this method
     void setIsSubscribed(bool aIsSubscribed);
 
-    template <typename SFuncsT>
     void open(int socket_family, int socket_type, int protocol,
               std::error_code &aEc);
 
-    template <typename SFuncsT>
     void bind(const uint8_t socket_family, const uint16_t aPort,
               std::error_code &aEc);
 
     sock_t socketHandle_ = kInvalidSocket;
     bool isOpen_ = false;
     bool isNonBlocking_ = false;
-    std::reference_wrapper<Context> context_;
-    HandlerSelectBase *handler_ = nullptr;
+    std::reference_wrapper<Context<SysWrapperT>> context_;
+    HandlerSelectBase<SysWrapperT> *handler_ = nullptr;
 };
 
-template <typename SFuncsT>
-void SocketBase::open(int socket_family, int socket_type, int protocol,
-                      std::error_code &aEc)
+template <typename SysWrapperT>
+SocketBase<SysWrapperT>::~SocketBase()
+{
+    assert(!isOpen_ && "Error: socket must be closed before destruction");
+}
+
+template <typename SysWrapperT>
+SocketBase<SysWrapperT>::SocketBase(Context<SysWrapperT> &aContext) noexcept
+    : socketHandle_(kInvalidSocket)
+    , isOpen_(false)
+    , isNonBlocking_(false)
+    , context_(aContext)
+    , handler_(nullptr)
+{
+}
+
+template <typename SysWrapperT>
+SocketBase<SysWrapperT>::SocketBase(SocketBase &&aOther) noexcept
+    : socketHandle_(std::exchange(aOther.socketHandle_, kInvalidSocket))
+    , isOpen_(std::exchange(aOther.isOpen_, false))
+    , isNonBlocking_(std::exchange(aOther.isNonBlocking_, false))
+    , context_(aOther.context_)
+    , handler_(nullptr)
+{
+    handler(aOther.handler_);
+}
+
+template <typename SysWrapperT>
+SocketBase<SysWrapperT> &SocketBase<SysWrapperT>::operator=(
+    SocketBase &&aOther) noexcept
+{
+    assert(!isOpen_ &&
+           "Error: move assignment to opened socket is not allowed");
+    std::swap(aOther.socketHandle_, socketHandle_);
+    std::swap(aOther.isOpen_, isOpen_);
+    std::swap(aOther.isNonBlocking_, isNonBlocking_);
+    context_ = aOther.context_;
+    handler_ = aOther.handler_;
+    return *this;
+}
+
+template <typename SysWrapperT>
+sock_t SocketBase<SysWrapperT>::nativeHandle() const noexcept
+{
+    return socketHandle_;
+}
+
+template <typename SysWrapperT>
+bool SocketBase<SysWrapperT>::nonBlocking() const noexcept
+{
+    return isNonBlocking_;
+}
+
+template <typename SysWrapperT>
+bool SocketBase<SysWrapperT>::isOpen() const noexcept
+{
+    return isOpen_;
+}
+
+template <typename SysWrapperT>
+HandlerSelectBase<SysWrapperT> *SocketBase<SysWrapperT>::handler()
+    const noexcept
+{
+    return handler_;
+}
+
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::handler(HandlerSelectBase<SysWrapperT> *aHandler)
+{
+    if (aHandler == handler_)
+    {
+        return;
+    }
+    handler_ = aHandler;
+    if (!isOpen())
+    {
+        return;
+    }
+    if (aHandler != nullptr)
+    {
+        context_.get().executor().addSocket(this);
+    }
+    else
+    {
+        context_.get().executor().delSocket(this);
+    }
+}
+
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::setIsSubscribed(bool aIsSubscribed)
+{
+    if (handler_)
+    {
+        if (aIsSubscribed)
+        {
+            context_.get().executor().addSocket(this);
+        }
+        else
+        {
+            context_.get().executor().delSocket(this);
+        }
+    }
+}
+
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::open(int socket_family, int socket_type,
+                                   int protocol, std::error_code &aEc)
 {
     const auto socketHandle =
-        SFuncsT::socket(socket_family, socket_type, protocol);
+        SysWrapperT::socket(socket_family, socket_type, protocol);
     if (kInvalidSocket == socketHandle)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
         return;
     }
     socketHandle_ = socketHandle;
@@ -95,145 +190,147 @@ void SocketBase::open(int socket_family, int socket_type, int protocol,
     setIsSubscribed(true);
 }
 
-template <typename SFuncsT>
-void SocketBase::bind(const uint8_t socket_family, const uint16_t aPort,
-                      std::error_code &aEc)
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::bind(const uint8_t socket_family,
+                                   const uint16_t aPort, std::error_code &aEc)
 {
     Address sa(socket_family, aPort);
-    const auto result = SFuncsT::bind(socketHandle_, sa.nativeDataConst(),
-                                      static_cast<ndt::salen_t>(sa.capacity()));
+    const auto result =
+        SysWrapperT::bind(socketHandle_, sa.nativeDataConst(),
+                          static_cast<ndt::salen_t>(sa.capacity()));
     if (ndt::kSocketError == result)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
     }
 }
 
-template <typename SFuncsT>
-std::size_t SocketBase::sendTo(const Address &aDst, CBuffer aBuf)
+template <typename SysWrapperT>
+std::size_t SocketBase<SysWrapperT>::sendTo(const Address &aDst, CBuffer aBuf)
 {
     std::error_code ec;
-    const auto bytesSent = SocketBase::sendTo<SFuncsT>(aDst, aBuf, ec);
+    const auto bytesSent = SocketBase::sendTo(aDst, aBuf, ec);
     throw_if_error(ec);
     return static_cast<std::size_t>(bytesSent);
 }
 
-template <typename SFuncsT>
-std::size_t SocketBase::sendTo(const Address &aDst, CBuffer aBuf,
-                               std::error_code &aEc)
+template <typename SysWrapperT>
+std::size_t SocketBase<SysWrapperT>::sendTo(const Address &aDst, CBuffer aBuf,
+                                            std::error_code &aEc)
 {
-    const auto bytesSent = SFuncsT::sendto(
+    const auto bytesSent = SysWrapperT::sendto(
         socketHandle_, aBuf.data(), aBuf.size(), 0, aDst.nativeDataConst(),
         static_cast<ndt::salen_t>(aDst.capacity()));
     if (ndt::kSocketError == bytesSent)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
     }
     return static_cast<std::size_t>(bytesSent);
 }
 
-template <typename SFuncsT>
-std::size_t SocketBase::recvFrom(Buffer &aBuf, Address &aSender)
+template <typename SysWrapperT>
+std::size_t SocketBase<SysWrapperT>::recvFrom(Buffer &aBuf, Address &aSender)
 {
     std::error_code ec;
-    const auto bytesReceived = SocketBase::recvFrom<SFuncsT>(aBuf, aSender, ec);
+    const auto bytesReceived = SocketBase::recvFrom(aBuf, aSender, ec);
     throw_if_error(ec);
     return static_cast<std::size_t>(bytesReceived);
 }
 
-template <typename SFuncsT>
-std::size_t SocketBase::recvFrom(Buffer &aBuf, Address &aSender,
-                                 std::error_code &aEc)
+template <typename SysWrapperT>
+std::size_t SocketBase<SysWrapperT>::recvFrom(Buffer &aBuf, Address &aSender,
+                                              std::error_code &aEc)
 {
     ndt::salen_t addrlen = static_cast<ndt::salen_t>(kV6Capacity);
     const auto bytesReceived =
-        SFuncsT::recvfrom(socketHandle_, aBuf.data(), aBuf.size(), 0,
-                          aSender.nativeData(), &addrlen);
+        SysWrapperT::recvfrom(socketHandle_, aBuf.data(), aBuf.size(), 0,
+                              aSender.nativeData(), &addrlen);
     if (ndt::kSocketError != bytesReceived)
     {
         aBuf.setSize(bytesReceived);
     }
     else
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
     }
     return static_cast<std::size_t>(bytesReceived);
 }
 
-template <typename SFuncsT>
-void SocketBase::close()
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::close()
 {
     std::error_code ec;
-    SocketBase::close<SFuncsT>(ec);
+    SocketBase::close(ec);
     throw_if_error(ec);
 }
 
-template <typename SFuncsT>
-void SocketBase::close(std::error_code &aEc)
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::close(std::error_code &aEc)
 {
     if (!isOpen_)
     {
         return;
     }
     setIsSubscribed(false);
-    const auto result = SFuncsT::close(socketHandle_);
+    const auto result = SysWrapperT::close(socketHandle_);
     if (ndt::kSocketError == result)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
         return;
     }
     socketHandle_ = kInvalidSocket;
     isOpen_ = false;
 }
 
-template <typename SFuncsT>
-void SocketBase::nonBlocking(const bool isNonBlocking)
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::nonBlocking(const bool isNonBlocking)
 {
     std::error_code ec;
-    SocketBase::nonBlocking<SFuncsT>(isNonBlocking, ec);
+    SocketBase::nonBlocking(isNonBlocking, ec);
     throw_if_error(ec);
 }
 
-template <typename SFuncsT>
-void SocketBase::nonBlocking(const bool isNonBlocking,
-                             std::error_code &aEc) noexcept
+template <typename SysWrapperT>
+void SocketBase<SysWrapperT>::nonBlocking(const bool isNonBlocking,
+                                          std::error_code &aEc) noexcept
 {
 #if _WIN32
     u_long isNonBlockingArg = isNonBlocking ? 1 : 0;
     const int flags =
-        SFuncsT::ioctlsocket(socketHandle_, FIONBIO, &isNonBlockingArg);
+        SysWrapperT::ioctlsocket(socketHandle_, FIONBIO, &isNonBlockingArg);
 #else
-    int flags = SFuncsT::fcntl(socketHandle_, F_GETFL, 0);
+    int flags = SysWrapperT::fcntl(socketHandle_, F_GETFL, 0);
     if (flags == kSocketError)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
         return;
     }
 
     flags = isNonBlocking ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK);
-    flags = SFuncsT::fcntl(socketHandle_, F_SETFL, flags);
+    flags = SysWrapperT::fcntl(socketHandle_, F_SETFL, flags);
 #endif
     if (flags == kSocketError)
     {
-        aEc.assign(systemErrorCodeGetter(), std::system_category());
+        aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
         return;
     }
     isNonBlocking_ = isNonBlocking;
 }
 
-template <typename FlagsT, typename SFuncsT>
-class Socket final : public SocketBase
+template <typename FlagsT, typename SysWrapperT>
+class Socket final : public SocketBase<SysWrapperT>
 {
-    friend class ExecutorSelect;
+    friend class ExecutorSelect<SysWrapperT>;
 
    public:
     typedef FlagsT SocketT;
-    typedef SFuncsT SysCallsT;
+    typedef SysWrapperT SysCallsT;
     ~Socket();
     Socket() = delete;
     Socket(Socket &&) noexcept;
     Socket &operator=(Socket &&) noexcept;
-    Socket(Context &aContext, const FlagsT &flags) noexcept;
-    Socket(Context &aContext, const FlagsT &aFlags, uint16_t aPort);
+    Socket(Context<SysWrapperT> &aContext, const FlagsT &flags) noexcept;
+    Socket(Context<SysWrapperT> &aContext, const FlagsT &aFlags,
+           uint16_t aPort);
 
     void open();
     void open(std::error_code &aEc);
@@ -255,36 +352,38 @@ class Socket final : public SocketBase
     FlagsT flags_;
 };
 
-template <typename FlagsT, typename SFuncsT>
-Socket<FlagsT, SFuncsT>::~Socket()
+template <typename FlagsT, typename SysWrapperT>
+Socket<FlagsT, SysWrapperT>::~Socket()
 {
 }
 
-template <typename FlagsT, typename SFuncsT>
-Socket<FlagsT, SFuncsT>::Socket(Socket &&aOther) noexcept
-    : SocketBase(std::move(aOther)), flags_(std::move(aOther.flags_))
+template <typename FlagsT, typename SysWrapperT>
+Socket<FlagsT, SysWrapperT>::Socket(Socket &&aOther) noexcept
+    : SocketBase<SysWrapperT>(std::move(aOther))
+    , flags_(std::move(aOther.flags_))
 {
 }
 
-template <typename FlagsT, typename SFuncsT>
-Socket<FlagsT, SFuncsT> &Socket<FlagsT, SFuncsT>::operator=(
+template <typename FlagsT, typename SysWrapperT>
+Socket<FlagsT, SysWrapperT> &Socket<FlagsT, SysWrapperT>::operator=(
     Socket &&aOther) noexcept
 {
-    SocketBase::operator=(std::move(aOther));
+    SocketBase<SysWrapperT>::operator=(std::move(aOther));
     std::swap(aOther.flags_, flags_);
 
     return *this;
 }
 
-template <typename FlagsT, typename SFuncsT>
-Socket<FlagsT, SFuncsT>::Socket(Context &aContext, const FlagsT &flags) noexcept
-    : SocketBase(aContext), flags_(flags)
+template <typename FlagsT, typename SysWrapperT>
+Socket<FlagsT, SysWrapperT>::Socket(Context<SysWrapperT> &aContext,
+                                    const FlagsT &flags) noexcept
+    : SocketBase<SysWrapperT>(aContext), flags_(flags)
 {
 }
 
-template <typename FlagsT, typename SFuncsT>
-Socket<FlagsT, SFuncsT>::Socket(Context &aContext, const FlagsT &aFlags,
-                                uint16_t aPort)
+template <typename FlagsT, typename SysWrapperT>
+Socket<FlagsT, SysWrapperT>::Socket(Context<SysWrapperT> &aContext,
+                                    const FlagsT &aFlags, uint16_t aPort)
     : Socket(aContext, aFlags)
 {
     open();
@@ -299,94 +398,99 @@ Socket<FlagsT, SFuncsT>::Socket(Context &aContext, const FlagsT &aFlags,
     }
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::open()
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::open()
 {
     std::error_code ec;
-    Socket<FlagsT, SFuncsT>::open(ec);
+    Socket<FlagsT, SysWrapperT>::open(ec);
     throw_if_error(ec);
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::open(std::error_code &aEc)
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::open(std::error_code &aEc)
 {
-    SocketBase::open<SFuncsT>(flags_.sysFamily(), flags_.sysSocketType(),
-                              flags_.sysProtocol(), aEc);
+    SocketBase<SysWrapperT>::open(flags_.sysFamily(), flags_.sysSocketType(),
+                                  flags_.sysProtocol(), aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::bind(const uint16_t aPort)
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::bind(const uint16_t aPort)
 {
     std::error_code ec;
-    Socket<FlagsT, SFuncsT>::bind(aPort, ec);
+    Socket<FlagsT, SysWrapperT>::bind(aPort, ec);
     throw_if_error(ec);
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::bind(const uint16_t aPort, std::error_code &aEc)
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::bind(const uint16_t aPort,
+                                       std::error_code &aEc)
 {
-    SocketBase::bind<SFuncsT>(flags_.sysFamily(), aPort, aEc);
+    SocketBase<SysWrapperT>::bind(flags_.sysFamily(), aPort, aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-std::size_t Socket<FlagsT, SFuncsT>::sendTo(const Address &aDst, CBuffer aBuf)
+template <typename FlagsT, typename SysWrapperT>
+std::size_t Socket<FlagsT, SysWrapperT>::sendTo(const Address &aDst,
+                                                CBuffer aBuf)
 {
-    return SocketBase::sendTo<SFuncsT>(aDst, aBuf);
+    return SocketBase<SysWrapperT>::sendTo(aDst, aBuf);
 }
 
-template <typename FlagsT, typename SFuncsT>
-std::size_t Socket<FlagsT, SFuncsT>::sendTo(const Address &aDst, CBuffer aBuf,
-                                            std::error_code &aEc)
+template <typename FlagsT, typename SysWrapperT>
+std::size_t Socket<FlagsT, SysWrapperT>::sendTo(const Address &aDst,
+                                                CBuffer aBuf,
+                                                std::error_code &aEc)
 {
-    return SocketBase::sendTo<SFuncsT>(aDst, aBuf, aEc);
+    return SocketBase<SysWrapperT>::sendTo(aDst, aBuf, aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-std::size_t Socket<FlagsT, SFuncsT>::recvFrom(Buffer &aBuf, Address &aSender)
+template <typename FlagsT, typename SysWrapperT>
+std::size_t Socket<FlagsT, SysWrapperT>::recvFrom(Buffer &aBuf,
+                                                  Address &aSender)
 {
-    return SocketBase::recvFrom<SFuncsT>(aBuf, aSender);
+    return SocketBase<SysWrapperT>::recvFrom(aBuf, aSender);
 }
 
-template <typename FlagsT, typename SFuncsT>
-std::size_t Socket<FlagsT, SFuncsT>::recvFrom(Buffer &aBuf, Address &aSender,
-                                              std::error_code &aEc)
+template <typename FlagsT, typename SysWrapperT>
+std::size_t Socket<FlagsT, SysWrapperT>::recvFrom(Buffer &aBuf,
+                                                  Address &aSender,
+                                                  std::error_code &aEc)
 {
-    return SocketBase::recvFrom<SFuncsT>(aBuf, aSender, aEc);
+    return SocketBase<SysWrapperT>::recvFrom(aBuf, aSender, aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::close()
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::close()
 {
-    SocketBase::close<SFuncsT>();
+    SocketBase<SysWrapperT>::close();
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::close(std::error_code &aEc)
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::close(std::error_code &aEc)
 {
-    SocketBase::close<SFuncsT>(aEc);
+    SocketBase<SysWrapperT>::close(aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-bool Socket<FlagsT, SFuncsT>::nonBlocking() const noexcept
+template <typename FlagsT, typename SysWrapperT>
+bool Socket<FlagsT, SysWrapperT>::nonBlocking() const noexcept
 {
-    return SocketBase::nonBlocking();
+    return SocketBase<SysWrapperT>::nonBlocking();
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::nonBlocking(const bool isNonBlocking)
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::nonBlocking(const bool isNonBlocking)
 {
-    SocketBase::nonBlocking<SFuncsT>(isNonBlocking);
+    SocketBase<SysWrapperT>::nonBlocking(isNonBlocking);
 }
 
-template <typename FlagsT, typename SFuncsT>
-void Socket<FlagsT, SFuncsT>::nonBlocking(const bool isNonBlocking,
-                                          std::error_code &aEc) noexcept
+template <typename FlagsT, typename SysWrapperT>
+void Socket<FlagsT, SysWrapperT>::nonBlocking(const bool isNonBlocking,
+                                              std::error_code &aEc) noexcept
 {
-    SocketBase::nonBlocking<SFuncsT>(isNonBlocking, aEc);
+    SocketBase<SysWrapperT>::nonBlocking(isNonBlocking, aEc);
 }
 
-template <typename FlagsT, typename SFuncsT>
-FlagsT Socket<FlagsT, SFuncsT>::flags() const noexcept
+template <typename FlagsT, typename SysWrapperT>
+FlagsT Socket<FlagsT, SysWrapperT>::flags() const noexcept
 {
     return flags_;
 }

@@ -6,22 +6,10 @@
 #include "gtest/gtest.h"
 #include "ndt/address.h"
 #include "ndt/exception.h"
-#include "test/sys_error_code_getter.h"
 
 inline const char *kSystemCStr = "system";
 
-class AddressTest : public ::testing::Test
-{
-   public:
-    ndt::test::SysErrorCodeGetter sysErrorGetter;
-    AddressTest() = default;
-    AddressTest(const AddressTest &) = delete;
-    AddressTest &operator=(const AddressTest &) = delete;
-    AddressTest(AddressTest &&) = delete;
-    AddressTest &operator=(AddressTest &&) = delete;
-};
-
-TEST_F(AddressTest, DefaultConstructor)
+TEST(AddressTest, DefaultConstructor)
 {
     ndt::Address a;
 
@@ -32,7 +20,7 @@ TEST_F(AddressTest, DefaultConstructor)
     ASSERT_EQ(ndt::utils::memvcmp(a.nativeDataConst(), 0, a.capacity()), true);
 }
 
-TEST_F(AddressTest, CopyConstructorEmptySource)
+TEST(AddressTest, CopyConstructorEmptySource)
 {
     ndt::Address b;
     ndt::Address a(b);
@@ -47,7 +35,7 @@ TEST_F(AddressTest, CopyConstructorEmptySource)
         std::memcmp(a.nativeDataConst(), b.nativeDataConst(), a.capacity()), 0);
 }
 
-TEST_F(AddressTest, CopyConstructorFilledSourceIPv4)
+TEST(AddressTest, CopyConstructorFilledSourceIPv4)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv4, 25);
     ndt::Address a(b);
@@ -62,7 +50,7 @@ TEST_F(AddressTest, CopyConstructorFilledSourceIPv4)
         std::memcmp(a.nativeDataConst(), b.nativeDataConst(), a.capacity()), 0);
 }
 
-TEST_F(AddressTest, CopyConstructorFilledSourceIPv6)
+TEST(AddressTest, CopyConstructorFilledSourceIPv6)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv6, 1025);
     ndt::Address a(b);
@@ -77,7 +65,7 @@ TEST_F(AddressTest, CopyConstructorFilledSourceIPv6)
         std::memcmp(a.nativeDataConst(), b.nativeDataConst(), a.capacity()), 0);
 }
 
-TEST_F(AddressTest, CopyAssignmentEmptySource)
+TEST(AddressTest, CopyAssignmentEmptySource)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv6, 12345);
     ndt::Address b;
@@ -95,7 +83,7 @@ TEST_F(AddressTest, CopyAssignmentEmptySource)
     ASSERT_EQ(a, b);
 }
 
-TEST_F(AddressTest, CopyAssignmentIPv4Source)
+TEST(AddressTest, CopyAssignmentIPv4Source)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv6, 12345);
     ndt::Address b(ndt::eAddressFamily::kIPv4, 123);
@@ -113,7 +101,7 @@ TEST_F(AddressTest, CopyAssignmentIPv4Source)
     ASSERT_EQ(a, b);
 }
 
-TEST_F(AddressTest, CopyAssignmentIPv6Source)
+TEST(AddressTest, CopyAssignmentIPv6Source)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv4, 12345);
     ndt::Address b(ndt::eAddressFamily::kIPv6, 123);
@@ -131,7 +119,7 @@ TEST_F(AddressTest, CopyAssignmentIPv6Source)
     ASSERT_EQ(a, b);
 }
 
-TEST_F(AddressTest, MoveConstructorEmptySource)
+TEST(AddressTest, MoveConstructorEmptySource)
 {
     ndt::Address b;
     ndt::Address a(std::move(b));
@@ -143,7 +131,7 @@ TEST_F(AddressTest, MoveConstructorEmptySource)
     ASSERT_EQ(ndt::utils::memvcmp(a.nativeDataConst(), 0, a.capacity()), true);
 }
 
-TEST_F(AddressTest, MoveAssignmentEmptySource)
+TEST(AddressTest, MoveAssignmentEmptySource)
 {
     ndt::Address b;
     ndt::Address a(ndt::eAddressFamily::kIPv4, 12345);
@@ -156,7 +144,7 @@ TEST_F(AddressTest, MoveAssignmentEmptySource)
     ASSERT_EQ(ndt::utils::memvcmp(a.nativeDataConst(), 0, a.capacity()), true);
 }
 
-TEST_F(AddressTest, MoveAssignmentIPv4Source)
+TEST(AddressTest, MoveAssignmentIPv4Source)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv4, 12345);
     ndt::Address a(ndt::eAddressFamily::kIPv6, 345);
@@ -169,7 +157,7 @@ TEST_F(AddressTest, MoveAssignmentIPv4Source)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, MoveAssignmentIPv6Source)
+TEST(AddressTest, MoveAssignmentIPv6Source)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv6, 333);
     ndt::Address a(ndt::eAddressFamily::kIPv4, 12345);
@@ -182,7 +170,7 @@ TEST_F(AddressTest, MoveAssignmentIPv6Source)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, MoveConstructorIPv4Source)
+TEST(AddressTest, MoveConstructorIPv4Source)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv4, 100);
     ndt::Address a(std::move(b));
@@ -194,7 +182,7 @@ TEST_F(AddressTest, MoveConstructorIPv4Source)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, MoveConstructorIPv6Source)
+TEST(AddressTest, MoveConstructorIPv6Source)
 {
     ndt::Address b(ndt::eAddressFamily::kIPv6, 100);
     ndt::Address a(std::move(b));
@@ -206,7 +194,7 @@ TEST_F(AddressTest, MoveConstructorIPv6Source)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, ConstructorFamilykUnspecThrowLogicError)
+TEST(AddressTest, ConstructorFamilykUnspecThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -223,7 +211,7 @@ TEST_F(AddressTest, ConstructorFamilykUnspecThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv4NotThrow)
+TEST(AddressTest, ConstructorFamilykIPv4NotThrow)
 {
     const auto constructWithIPv4 = []() {
         ndt::Address a(ndt::eAddressFamily::kIPv4);
@@ -231,7 +219,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv4NotThrow)
     EXPECT_NO_THROW(constructWithIPv4());
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv6NotThrow)
+TEST(AddressTest, ConstructorFamilykIPv6NotThrow)
 {
     const auto constructWithIPv6 = []() {
         ndt::Address a(ndt::eAddressFamily::kIPv6);
@@ -239,7 +227,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv6NotThrow)
     EXPECT_NO_THROW(constructWithIPv6());
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyInvalidThrowLogicError)
+TEST(AddressTest, ConstructorSysFamilyInvalidThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -265,7 +253,7 @@ TEST_F(AddressTest, ConstructorSysFamilyInvalidThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyAFUNSPECThrowLogicError)
+TEST(AddressTest, ConstructorSysFamilyAFUNSPECThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -282,19 +270,19 @@ TEST_F(AddressTest, ConstructorSysFamilyAFUNSPECThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv4NotThrow)
+TEST(AddressTest, ConstructorSysFamilykIPv4NotThrow)
 {
     const auto constructWithIPv4 = []() { ndt::Address a(AF_INET); };
     EXPECT_NO_THROW(constructWithIPv4());
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv6NotThrow)
+TEST(AddressTest, ConstructorSysFamilykIPv6NotThrow)
 {
     const auto constructWithIPv6 = []() { ndt::Address a(AF_INET6); };
     EXPECT_NO_THROW(constructWithIPv6());
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv4ValidInit)
+TEST(AddressTest, ConstructorFamilykIPv4ValidInit)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv4);
     ASSERT_EQ(a.port(), 0);
@@ -304,7 +292,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv4ValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv6ValidInit)
+TEST(AddressTest, ConstructorFamilykIPv6ValidInit)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv6);
     ASSERT_EQ(a.port(), 0);
@@ -314,7 +302,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv6ValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyAFINETValidInit)
+TEST(AddressTest, ConstructorSysFamilyAFINETValidInit)
 {
     ndt::Address a(AF_INET);
     ASSERT_EQ(a.port(), 0);
@@ -324,7 +312,7 @@ TEST_F(AddressTest, ConstructorSysFamilyAFINETValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyAFINET6ValidInit)
+TEST(AddressTest, ConstructorSysFamilyAFINET6ValidInit)
 {
     ndt::Address a(AF_INET6);
     ASSERT_EQ(a.port(), 0);
@@ -334,7 +322,7 @@ TEST_F(AddressTest, ConstructorSysFamilyAFINET6ValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, ConstructorFamilykUnspecPortThrowLogicError)
+TEST(AddressTest, ConstructorFamilykUnspecPortThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -351,7 +339,7 @@ TEST_F(AddressTest, ConstructorFamilykUnspecPortThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv4PortNotThrow)
+TEST(AddressTest, ConstructorFamilykIPv4PortNotThrow)
 {
     const auto constructWithIPv4 = []() {
         ndt::Address a(ndt::eAddressFamily::kIPv4, 333);
@@ -359,7 +347,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv4PortNotThrow)
     EXPECT_NO_THROW(constructWithIPv4());
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv6PortNotThrow)
+TEST(AddressTest, ConstructorFamilykIPv6PortNotThrow)
 {
     const auto constructWithIPv6 = []() {
         ndt::Address a(ndt::eAddressFamily::kIPv6, 333);
@@ -367,7 +355,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv6PortNotThrow)
     EXPECT_NO_THROW(constructWithIPv6());
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv4PortValidInit)
+TEST(AddressTest, ConstructorFamilykIPv4PortValidInit)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv4, 123);
     ASSERT_EQ(a.port(), 123);
@@ -377,7 +365,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv4PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ConstructorFamilykIPv6PortValidInit)
+TEST(AddressTest, ConstructorFamilykIPv6PortValidInit)
 {
     ndt::Address a(ndt::eAddressFamily::kIPv6, 123);
     ASSERT_EQ(a.port(), 123);
@@ -387,7 +375,7 @@ TEST_F(AddressTest, ConstructorFamilykIPv6PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyAFUNSPECPortThrowLogicError)
+TEST(AddressTest, ConstructorSysFamilyAFUNSPECPortThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -404,7 +392,7 @@ TEST_F(AddressTest, ConstructorSysFamilyAFUNSPECPortThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilyInvalidPortThrowLogicError)
+TEST(AddressTest, ConstructorSysFamilyInvalidPortThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -430,19 +418,19 @@ TEST_F(AddressTest, ConstructorSysFamilyInvalidPortThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv4PortNotThrow)
+TEST(AddressTest, ConstructorSysFamilykIPv4PortNotThrow)
 {
     const auto constructWithIPv4 = []() { ndt::Address a(AF_INET, 123); };
     EXPECT_NO_THROW(constructWithIPv4());
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv6PortNotThrow)
+TEST(AddressTest, ConstructorSysFamilykIPv6PortNotThrow)
 {
     const auto constructWithIPv6 = []() { ndt::Address a(AF_INET6, 123); };
     EXPECT_NO_THROW(constructWithIPv6());
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv4PortValidInit)
+TEST(AddressTest, ConstructorSysFamilykIPv4PortValidInit)
 {
     ndt::Address a(AF_INET, 123);
     ASSERT_EQ(a.port(), 123);
@@ -452,7 +440,7 @@ TEST_F(AddressTest, ConstructorSysFamilykIPv4PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ConstructorSysFamilykIPv6PortValidInit)
+TEST(AddressTest, ConstructorSysFamilykIPv6PortValidInit)
 {
     ndt::Address a(AF_INET6, 123);
     ASSERT_EQ(a.port(), 123);
@@ -462,7 +450,7 @@ TEST_F(AddressTest, ConstructorSysFamilykIPv6PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, ConstructorIPkIPv4PortValidInit)
+TEST(AddressTest, ConstructorIPkIPv4PortValidInit)
 {
     ndt::Address a(ndt::kIPv4Loopback, 123);
     ASSERT_EQ(a.port(), 123);
@@ -472,7 +460,7 @@ TEST_F(AddressTest, ConstructorIPkIPv4PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Loopback);
 }
 
-TEST_F(AddressTest, ConstructorIPkIPv6PortValidInit)
+TEST(AddressTest, ConstructorIPkIPv6PortValidInit)
 {
     ndt::Address a(ndt::kIPv6Loopback, 123);
     ASSERT_EQ(a.port(), 123);
@@ -482,7 +470,7 @@ TEST_F(AddressTest, ConstructorIPkIPv6PortValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Loopback);
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithInvalidFamilyThrowLogicError)
+TEST(AddressTest, ConstructorSockaddrWithInvalidFamilyThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -509,7 +497,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithInvalidFamilyThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithAFUNSPECFamilyThrowLogicError)
+TEST(AddressTest, ConstructorSockaddrWithAFUNSPECFamilyThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -528,7 +516,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithAFUNSPECFamilyThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithAFINETFamilyNotThrow)
+TEST(AddressTest, ConstructorSockaddrWithAFINETFamilyNotThrow)
 {
     const auto constructWithAF_INET = []() {
         sockaddr_in sa4;
@@ -539,7 +527,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithAFINETFamilyNotThrow)
     EXPECT_NO_THROW(constructWithAF_INET());
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithAFINET6FamilyNotThrow)
+TEST(AddressTest, ConstructorSockaddrWithAFINET6FamilyNotThrow)
 {
     const auto constructWithAF_INET6 = []() {
         sockaddr_in6 sa6;
@@ -550,7 +538,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithAFINET6FamilyNotThrow)
     EXPECT_NO_THROW(constructWithAF_INET6());
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithAFINETFamilyValidInit)
+TEST(AddressTest, ConstructorSockaddrWithAFINETFamilyValidInit)
 {
     sockaddr_in sa4;
     std::memset(&sa4, 0, sizeof(sa4));
@@ -566,7 +554,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithAFINETFamilyValidInit)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ConstructorSockaddrWithAFINET6FamilyValidInit)
+TEST(AddressTest, ConstructorSockaddrWithAFINET6FamilyValidInit)
 {
     sockaddr_in6 sa6;
     std::memset(&sa6, 0, sizeof(sa6));
@@ -582,7 +570,7 @@ TEST_F(AddressTest, ConstructorSockaddrWithAFINET6FamilyValidInit)
     ASSERT_EQ(std::get<ndt::ipv6_t>(a.ip()), ndt::kIPv6Any);
 }
 
-TEST_F(AddressTest, AddressFamilySetkUnspecThrowLogicError)
+TEST(AddressTest, AddressFamilySetkUnspecThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -600,7 +588,7 @@ TEST_F(AddressTest, AddressFamilySetkUnspecThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, AddressFamilySetAFUNSPECThrowLogicError)
+TEST(AddressTest, AddressFamilySetAFUNSPECThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -618,7 +606,7 @@ TEST_F(AddressTest, AddressFamilySetAFUNSPECThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, AddressFamilySetInvalidThrowLogicError)
+TEST(AddressTest, AddressFamilySetInvalidThrowLogicError)
 {
     EXPECT_THROW(
         {
@@ -645,7 +633,7 @@ TEST_F(AddressTest, AddressFamilySetInvalidThrowLogicError)
         ndt::Error);
 }
 
-TEST_F(AddressTest, AddressFamilyGetSetCorrectness)
+TEST(AddressTest, AddressFamilyGetSetCorrectness)
 {
     ndt::Address a;
 
@@ -685,7 +673,7 @@ TEST_F(AddressTest, AddressFamilyGetSetCorrectness)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, ipGetSetCorrectness)
+TEST(AddressTest, ipGetSetCorrectness)
 {
     ndt::Address a;
 
@@ -711,7 +699,7 @@ TEST_F(AddressTest, ipGetSetCorrectness)
     ASSERT_EQ(std::get<ndt::ipv4_t>(a.ip()), ndt::kIPv4Any);
 }
 
-TEST_F(AddressTest, portGetSetCorrectness)
+TEST(AddressTest, portGetSetCorrectness)
 {
     ndt::Address a;
 
@@ -719,7 +707,7 @@ TEST_F(AddressTest, portGetSetCorrectness)
     ASSERT_EQ(a.port(), 423);
 }
 
-TEST_F(AddressTest, resetCorrectness)
+TEST(AddressTest, resetCorrectness)
 {
     ndt::Address a(ndt::kIPv4Loopback, 23);
     a.reset();
@@ -730,7 +718,7 @@ TEST_F(AddressTest, resetCorrectness)
     ASSERT_EQ(ndt::utils::memvcmp(a.nativeDataConst(), 0, a.capacity()), true);
 }
 
-TEST_F(AddressTest, capacityCorrectness)
+TEST(AddressTest, capacityCorrectness)
 {
     ndt::Address a;
     ASSERT_EQ(a.capacity(), sizeof(sockaddr_in6));
@@ -751,7 +739,7 @@ TEST_F(AddressTest, capacityCorrectness)
     ASSERT_EQ(f.capacity(), sizeof(sockaddr_in6));
 }
 
-TEST_F(AddressTest, EqualityOperatorCorrectness)
+TEST(AddressTest, EqualityOperatorCorrectness)
 {
     ndt::Address a;
     ndt::Address b;
@@ -790,7 +778,7 @@ TEST_F(AddressTest, EqualityOperatorCorrectness)
     ASSERT_EQ(a, b);
 }
 
-TEST_F(AddressTest, swapCorrectness)
+TEST(AddressTest, swapCorrectness)
 {
     ndt::Address a(AF_INET6, 112);
     const auto aCopy = a;
@@ -801,7 +789,7 @@ TEST_F(AddressTest, swapCorrectness)
     ASSERT_EQ(b, aCopy);
 }
 
-TEST_F(AddressTest, IPv4ToStringNotThrow)
+TEST(AddressTest, IPv4ToStringNotThrow)
 {
     char ipBuf[INET_ADDRSTRLEN];
     auto action = [&ipBuf]() {
@@ -814,7 +802,7 @@ TEST_F(AddressTest, IPv4ToStringNotThrow)
     EXPECT_STREQ(ipStr.data(), "0.0.0.0");
 }
 
-TEST_F(AddressTest, IPv6ToStringNotThrow)
+TEST(AddressTest, IPv6ToStringNotThrow)
 {
     char ipBuf[INET6_ADDRSTRLEN];
     auto action = [&ipBuf]() {
@@ -827,7 +815,7 @@ TEST_F(AddressTest, IPv6ToStringNotThrow)
     EXPECT_STREQ(ipStr.data(), "::");
 }
 
-TEST_F(AddressTest, IPkUnspecToStringThrow)
+TEST(AddressTest, IPkUnspecToStringThrow)
 {
     EXPECT_THROW(
         {
@@ -847,7 +835,7 @@ TEST_F(AddressTest, IPkUnspecToStringThrow)
         ndt::Error);
 }
 
-TEST_F(AddressTest, ValidateAddressFamilyUserkUnspec)
+TEST(AddressTest, ValidateAddressFamilyUserkUnspec)
 {
     const ndt::eAddressFamily af = ndt::eAddressFamily::kUnspec;
     std::error_code ec;
@@ -860,7 +848,7 @@ TEST_F(AddressTest, ValidateAddressFamilyUserkUnspec)
               static_cast<int>(ndt::eAddressErrorCode::kInvalidAddressFamily));
 }
 
-TEST_F(AddressTest, ValidateAddressFamilyUserkIPv4)
+TEST(AddressTest, ValidateAddressFamilyUserkIPv4)
 {
     const ndt::eAddressFamily af = ndt::eAddressFamily::kIPv4;
     std::error_code ec;
@@ -870,7 +858,7 @@ TEST_F(AddressTest, ValidateAddressFamilyUserkIPv4)
     ASSERT_EQ(ec.value(), 0);
 }
 
-TEST_F(AddressTest, ValidateAddressFamilyUserkIPv6)
+TEST(AddressTest, ValidateAddressFamilyUserkIPv6)
 {
     const ndt::eAddressFamily af = ndt::eAddressFamily::kIPv6;
     std::error_code ec;
@@ -880,7 +868,7 @@ TEST_F(AddressTest, ValidateAddressFamilyUserkIPv6)
     ASSERT_EQ(ec.value(), 0);
 }
 
-TEST_F(AddressTest, ValidateAddressFamilySystemUNSPEC)
+TEST(AddressTest, ValidateAddressFamilySystemUNSPEC)
 {
     const uint8_t af = AF_UNSPEC;
     std::error_code ec;
@@ -893,7 +881,7 @@ TEST_F(AddressTest, ValidateAddressFamilySystemUNSPEC)
               static_cast<int>(ndt::eAddressErrorCode::kInvalidAddressFamily));
 }
 
-TEST_F(AddressTest, ValidateAddressFamilySystemInvalid)
+TEST(AddressTest, ValidateAddressFamilySystemInvalid)
 {
     const uint8_t af = AF_APPLETALK;
     std::error_code ec;
@@ -907,7 +895,7 @@ TEST_F(AddressTest, ValidateAddressFamilySystemInvalid)
         static_cast<int>(ndt::eAddressErrorCode::kAddressUnknownFamilyDescr));
 }
 
-TEST_F(AddressTest, ValidateAddressFamilySystemINET)
+TEST(AddressTest, ValidateAddressFamilySystemINET)
 {
     const uint8_t af = AF_INET;
     std::error_code ec;
@@ -917,7 +905,7 @@ TEST_F(AddressTest, ValidateAddressFamilySystemINET)
     ASSERT_EQ(ec.value(), 0);
 }
 
-TEST_F(AddressTest, ValidateAddressFamilySystemINET6)
+TEST(AddressTest, ValidateAddressFamilySystemINET6)
 {
     const uint8_t af = AF_INET6;
     std::error_code ec;
@@ -927,7 +915,7 @@ TEST_F(AddressTest, ValidateAddressFamilySystemINET6)
     ASSERT_EQ(ec.value(), 0);
 }
 
-TEST_F(AddressTest, IpToStrNotThrow)
+TEST(AddressTest, IpToStrNotThrow)
 {
     ndt::Address a;
     char ipResult[INET6_ADDRSTRLEN] = {0};
@@ -971,7 +959,7 @@ TEST_F(AddressTest, IpToStrNotThrow)
     }
 }
 
-TEST_F(AddressTest, UnspecIpToStrThrow)
+TEST(AddressTest, UnspecIpToStrThrow)
 {
     EXPECT_THROW(
         {
