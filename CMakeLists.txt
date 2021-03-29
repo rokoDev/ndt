@@ -118,6 +118,18 @@ else()
       )
 endif()
 
+source_group(
+	TREE   ${MAIN_INCLUDE_DIR}
+	PREFIX "include"
+	FILES  ${HEADERS}
+)
+
+source_group(
+	TREE   ${SOURCE_DIR}
+	PREFIX "src"
+	FILES  ${SOURCES}
+)
+
 include_directories("${INCLUDE_DIRS}")
 
 add_subdirectory(deps)
