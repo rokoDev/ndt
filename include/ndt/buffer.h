@@ -31,7 +31,7 @@ class Buffer
     template <typename T = buf_t>
     T *data() noexcept
     {
-        return static_cast<T *>(data_);
+        return reinterpret_cast<T *>(data_);
     }
 
     template <typename T = buf_t>
@@ -108,6 +108,7 @@ class Buffer
     }
 
     void resetIndex() noexcept { index_ = 0; }
+    uint16_t index() const noexcept { return index_; }
 
    private:
     union FloatInt
