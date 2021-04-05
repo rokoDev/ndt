@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(TestBigEndian)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/VersionHelper")
 include(VersionInfoUtils)
 m_generate_version_info(PROJECT_NAME ${ProjectName}
@@ -31,11 +33,13 @@ list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
 	"-Wextra"
 	"-Wconversion"
 	"-Wsign-conversion"
-	"-Wshadow"
+	"-Wshadow-all"
 	"-Wunreachable-code"
 	"-Wuninitialized"
 	"-Wold-style-cast"
 	"-Wfloat-equal"
+	"-Wcast-align"
+	"-Winvalid-constexpr"
 	)
 
 list(APPEND WIN_BUILD_TYPES_CLANG_FLAGS
@@ -75,8 +79,8 @@ set(HEADERS
 	${MAIN_INCLUDE_DIR}/ndt/buffer.h
 	${MAIN_INCLUDE_DIR}/ndt/system_wrappers.h
 	${MAIN_INCLUDE_DIR}/ndt/context.h
-	${MAIN_INCLUDE_DIR}/ndt/nocopyable.h
-	${MAIN_INCLUDE_DIR}/ndt/executor_select_base.h
+	${MAIN_INCLUDE_DIR}/ndt/useful_base_types.h
+    ${MAIN_INCLUDE_DIR}/ndt/executor_select_base.h
 	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
     ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
 	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
@@ -84,6 +88,8 @@ set(HEADERS
     ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
     ${MAIN_INCLUDE_DIR}/ndt/event_handler_select.h
     ${MAIN_INCLUDE_DIR}/ndt/executor_select.h
+    ${MAIN_INCLUDE_DIR}/ndt/bin_rw.h
+    ${MAIN_INCLUDE_DIR}/ndt/endian.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -96,6 +102,7 @@ set(SOURCES
 	${SOURCE_DIR}/thread_pool.cpp
 	${SOURCE_DIR}/system_wrappers.cpp
     ${SOURCE_DIR}/platform/win/context_base_error.cpp
+    ${SOURCE_DIR}/endian.cpp
 	)
 
 if(WIN32)
@@ -137,7 +144,13 @@ add_subdirectory(deps)
 # Create library
 message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 add_library(${ProjectName} ${SOURCES} ${HEADERS})
-target_compile_definitions(${ProjectName} PUBLIC $<UPPER_CASE:$<CONFIG>>)
+
+test_big_endian(HOST_BIG_ENDIAN)
+if(HOST_BIG_ENDIAN)
+    target_compile_definitions(${ProjectName} PRIVATE HOST_BIG_ENDIAN)
+endif()
+
+target_compile_definitions(${ProjectName} PRIVATE $<UPPER_CASE:$<CONFIG>>)
 target_compile_options(${ProjectName} PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(${ProjectName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(${ProjectName} PUBLIC "${ProjectName}_versionInfo" fmt)

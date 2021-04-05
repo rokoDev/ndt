@@ -8,7 +8,7 @@
 #include "buffer.h"
 #include "common.h"
 #include "exception.h"
-#include "nocopyable.h"
+#include "useful_base_types.h"
 #include "utils.h"
 
 namespace ndt
@@ -23,7 +23,7 @@ template <typename SysWrapperT>
 class HandlerSelectBase;
 
 template <typename SysWrapperT>
-class SocketBase : private Nocopyable
+class SocketBase : private NoCopyAble
 {
     template <typename ImplT, typename SysWrappersT>
     friend class ExecutorSelectBase;

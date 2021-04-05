@@ -5,13 +5,13 @@
 #include <system_error>
 
 #include "../../common.h"
-#include "../../nocopyable.h"
+#include "../../useful_base_types.h"
 #include "context_base_error.h"
 
 namespace ndt
 {
 template <typename SysWrapperT>
-class ContextBase : private Nocopyable
+class ContextBase : private NoCopyAble
 {
    public:
     ~ContextBase();

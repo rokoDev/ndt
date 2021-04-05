@@ -1,6 +1,8 @@
 #ifndef ndt_utils_h
 #define ndt_utils_h
 
+#include <cstring>
+#include <type_traits>
 #include <unordered_map>
 
 #include "common.h"
@@ -78,6 +80,121 @@ inline constexpr std::size_t kV6Capacity = sizeof(sockaddr_in6);
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
+
+constexpr uint8_t bits_count(const uint64_t aValue)
+{
+    return (aValue == 0) ? 0 : 1 + bits_count(aValue >> 1);
+}
+
+template <uint8_t BitsCount>
+struct uint_from_nbits
+{
+   private:
+    static constexpr auto getType()
+    {
+        if constexpr ((BitsCount > 0) && (BitsCount <= 8))
+        {
+            return uint8_t();
+        }
+        else if constexpr ((BitsCount > 8) && (BitsCount <= 16))
+        {
+            return uint16_t();
+        }
+        else if constexpr ((BitsCount > 16) && (BitsCount <= 32))
+        {
+            return uint32_t();
+        }
+        else if constexpr ((BitsCount > 32) && (BitsCount <= 64))
+        {
+            return uint64_t();
+        }
+        else
+        {
+            static_assert(BitsCount < sizeof(uint64_t) * 8,
+                          "BitsCount count can't be more than 64");
+            return uint8_t();
+        }
+    }
+
+   public:
+    using type = decltype(getType());
+};
+
+template <uint8_t BitsCount>
+using uint_from_nbits_t = typename uint_from_nbits<BitsCount>::type;
+
+template <typename T>
+struct enum_properties
+{
+    static constexpr uint8_t numBits =
+        bits_count(static_cast<uint64_t>(T::Count));
+    using SerializeT = uint_from_nbits_t<numBits>;
+};
+
+template <typename T>
+constexpr std::size_t num_bits()
+{
+    return 8 * sizeof(T);
+}
+
+template <>
+constexpr std::size_t num_bits<bool>()
+{
+    return 1;
+}
+
+template <typename... Ts>
+constexpr std::size_t sum_size()
+{
+    constexpr std::size_t bits_size = (num_bits<Ts>() + ...);
+    if constexpr (bits_size % 8 > 0)
+    {
+        return bits_size / 8 + 1;
+    }
+    else
+    {
+        return bits_size / 8;
+    }
+}
+
+template <typename F, typename... Ts>
+void for_each_arg(F&& f, Ts&&... ts)
+{
+    using I = std::initializer_list<int>;
+    (void)I{(std::forward<F>(f)(std::forward<Ts>(ts)), 0)...};
+}
+
+template <typename F, typename T>
+void for_each_in_tuple(F&& f, T&& t)
+{
+    std::apply(
+        [&f](auto&&... xs) {
+            for_each_arg(f, std::forward<decltype(xs)>(xs)...);
+        },
+        std::forward<T>(t));
+}
+
+template <class To, class From>
+typename std::enable_if_t<sizeof(To) == sizeof(From) &&
+                              std::is_trivially_copyable_v<From> &&
+                              std::is_trivially_copyable_v<To>,
+                          To>
+bit_cast(const From& src) noexcept
+{
+    static_assert(std::is_trivially_constructible_v<To>,
+                  "This implementation additionally requires destination type "
+                  "to be trivially constructible");
+
+    To dst;
+    std::memcpy(&dst, &src, sizeof(To));
+    return dst;
+}
+
+template <typename E>
+constexpr auto to_underlying(E e) noexcept
+{
+    return static_cast<typename std::underlying_type_t<E>>(e);
+}
 
 }  // namespace utils
 }  // namespace ndt

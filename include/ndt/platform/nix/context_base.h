@@ -3,12 +3,12 @@
 
 #include <atomic>
 
-#include "../../nocopyable.h"
+#include "../../useful_base_types.h"
 
 namespace ndt
 {
 template <typename SysWrapperT>
-class ContextBase : private Nocopyable
+class ContextBase : private NoCopyAble
 {
    public:
     ~ContextBase();
