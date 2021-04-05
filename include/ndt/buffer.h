@@ -48,50 +48,52 @@ class Buffer
 
     uint32_t readInt32() const noexcept
     {
-        assert(index_ + sizeof(uint32_t) <= size_);
-        const uint32_t result = ntohl(
-            *reinterpret_cast<uint32_t const *>(dataConst<char>() + index_));
-        index_ += sizeof(uint32_t);
+        assert(byteIndex_ + sizeof(uint32_t) <= size_);
+        const uint32_t result = ntohl(*reinterpret_cast<uint32_t const *>(
+            dataConst<char>() + byteIndex_));
+        byteIndex_ += sizeof(uint32_t);
         return result;
     }
 
     void saveInt32(const uint32_t aValue) noexcept
     {
-        assert(index_ + sizeof(uint32_t) <= size_);
-        *reinterpret_cast<uint32_t *>(data<char>() + index_) = htonl(aValue);
-        index_ += sizeof(aValue);
+        assert(byteIndex_ + sizeof(uint32_t) <= size_);
+        *reinterpret_cast<uint32_t *>(data<char>() + byteIndex_) =
+            htonl(aValue);
+        byteIndex_ += sizeof(aValue);
     }
 
     uint16_t readInt16() const noexcept
     {
-        assert(index_ + sizeof(uint16_t) <= size_);
-        const uint16_t result = ntohs(
-            *reinterpret_cast<uint16_t const *>(dataConst<char>() + index_));
-        index_ += sizeof(uint16_t);
+        assert(byteIndex_ + sizeof(uint16_t) <= size_);
+        const uint16_t result = ntohs(*reinterpret_cast<uint16_t const *>(
+            dataConst<char>() + byteIndex_));
+        byteIndex_ += sizeof(uint16_t);
         return result;
     }
 
     void saveInt16(const uint16_t aValue) noexcept
     {
-        assert(index_ + sizeof(uint16_t) <= size_);
-        *reinterpret_cast<uint16_t *>(data<char>() + index_) = htons(aValue);
-        index_ += sizeof(aValue);
+        assert(byteIndex_ + sizeof(uint16_t) <= size_);
+        *reinterpret_cast<uint16_t *>(data<char>() + byteIndex_) =
+            htons(aValue);
+        byteIndex_ += sizeof(aValue);
     }
 
     uint8_t readInt8() const noexcept
     {
-        assert(index_ + sizeof(uint8_t) <= size_);
+        assert(byteIndex_ + sizeof(uint8_t) <= size_);
         const uint8_t result =
-            *reinterpret_cast<uint8_t const *>(dataConst<char>() + index_);
-        index_ += sizeof(uint8_t);
+            *reinterpret_cast<uint8_t const *>(dataConst<char>() + byteIndex_);
+        byteIndex_ += sizeof(uint8_t);
         return result;
     }
 
     void saveInt8(const uint8_t aValue) noexcept
     {
-        assert(index_ + sizeof(uint8_t) <= size_);
-        *(data<uint8_t>() + index_) = aValue;
-        index_ += sizeof(aValue);
+        assert(byteIndex_ + sizeof(uint8_t) <= size_);
+        *(data<uint8_t>() + byteIndex_) = aValue;
+        byteIndex_ += sizeof(aValue);
     }
 
     float readFloat() const noexcept
@@ -107,8 +109,8 @@ class Buffer
         saveInt32(tmpVal.uintVal);
     }
 
-    void resetIndex() noexcept { index_ = 0; }
-    uint16_t index() const noexcept { return index_; }
+    void resetIndex() noexcept { byteIndex_ = 0; }
+    uint16_t byteIndex() const noexcept { return byteIndex_; }
 
    private:
     union FloatInt
@@ -119,7 +121,7 @@ class Buffer
 
     bufp_t data_ = nullptr;
     dlen_t size_ = 0;
-    mutable uint16_t index_ = 0;
+    mutable uint16_t byteIndex_ = 0;
 };
 
 class CBuffer

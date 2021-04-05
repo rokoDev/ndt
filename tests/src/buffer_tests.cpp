@@ -5,32 +5,32 @@ TEST(BufferTests, SaveRead)
 {
     char arr[15] = {0};
     ndt::Buffer buf(arr);
-    ASSERT_EQ(buf.index(), 0);
+    ASSERT_EQ(buf.byteIndex(), 0);
 
     const uint32_t value1 = 123;
     buf.saveInt32(value1);
     uint16_t savedSize = sizeof(value1);
-    ASSERT_EQ(buf.index(), savedSize);
+    ASSERT_EQ(buf.byteIndex(), savedSize);
 
     const uint8_t value2 = 100;
     buf.saveInt8(value2);
     savedSize += sizeof(value2);
-    ASSERT_EQ(buf.index(), savedSize);
+    ASSERT_EQ(buf.byteIndex(), savedSize);
 
     const uint16_t value3 = 1234;
     buf.saveInt16(value3);
     savedSize += sizeof(value3);
-    ASSERT_EQ(buf.index(), savedSize);
+    ASSERT_EQ(buf.byteIndex(), savedSize);
 
     const uint32_t value4 = 123456789;
     buf.saveInt32(value4);
     savedSize += sizeof(value4);
-    ASSERT_EQ(buf.index(), savedSize);
+    ASSERT_EQ(buf.byteIndex(), savedSize);
 
     const float value5 = 4321.543f;
     buf.saveFloat(value5);
     savedSize += sizeof(value5);
-    ASSERT_EQ(buf.index(), savedSize);
+    ASSERT_EQ(buf.byteIndex(), savedSize);
 
     buf.resetIndex();
 
