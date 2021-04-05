@@ -1,6 +1,7 @@
 #ifndef ndt_buffer_h
 #define ndt_buffer_h
 
+#include <cassert>
 #include <cstddef>
 
 #include "common.h"
@@ -33,15 +34,91 @@ class Buffer
         return static_cast<T *>(data_);
     }
 
+    template <typename T = buf_t>
+    T const *dataConst() const noexcept
+    {
+        return static_cast<T const *>(data_);
+    }
+
     template <typename T = dlen_t>
     T size() const noexcept
     {
         return static_cast<T>(size_);
     }
 
+    uint32_t readInt32() const noexcept
+    {
+        assert(index_ + sizeof(uint32_t) <= size_);
+        const uint32_t result = ntohl(
+            *reinterpret_cast<uint32_t const *>(dataConst<char>() + index_));
+        index_ += sizeof(uint32_t);
+        return result;
+    }
+
+    void saveInt32(const uint32_t aValue) noexcept
+    {
+        assert(index_ + sizeof(uint32_t) <= size_);
+        *reinterpret_cast<uint32_t *>(data<char>() + index_) = htonl(aValue);
+        index_ += sizeof(aValue);
+    }
+
+    uint16_t readInt16() const noexcept
+    {
+        assert(index_ + sizeof(uint16_t) <= size_);
+        const uint16_t result = ntohs(
+            *reinterpret_cast<uint16_t const *>(dataConst<char>() + index_));
+        index_ += sizeof(uint16_t);
+        return result;
+    }
+
+    void saveInt16(const uint16_t aValue) noexcept
+    {
+        assert(index_ + sizeof(uint16_t) <= size_);
+        *reinterpret_cast<uint16_t *>(data<char>() + index_) = htons(aValue);
+        index_ += sizeof(aValue);
+    }
+
+    uint8_t readInt8() const noexcept
+    {
+        assert(index_ + sizeof(uint8_t) <= size_);
+        const uint8_t result =
+            *reinterpret_cast<uint8_t const *>(dataConst<char>() + index_);
+        index_ += sizeof(uint8_t);
+        return result;
+    }
+
+    void saveInt8(const uint8_t aValue) noexcept
+    {
+        assert(index_ + sizeof(uint8_t) <= size_);
+        *(data<uint8_t>() + index_) = aValue;
+        index_ += sizeof(aValue);
+    }
+
+    float readFloat() const noexcept
+    {
+        FloatInt tmpVal;
+        tmpVal.uintVal = readInt32();
+        return tmpVal.floatVal;
+    }
+
+    void saveFloat(const float aValue) noexcept
+    {
+        FloatInt tmpVal{aValue};
+        saveInt32(tmpVal.uintVal);
+    }
+
+    void resetIndex() noexcept { index_ = 0; }
+
    private:
+    union FloatInt
+    {
+        float floatVal;
+        uint32_t uintVal;
+    };
+
     bufp_t data_ = nullptr;
     dlen_t size_ = 0;
+    mutable uint16_t index_ = 0;
 };
 
 class CBuffer
@@ -56,8 +133,8 @@ class CBuffer
     {
     }
 
-    CBuffer(Buffer &aBuffer) noexcept
-        : data_(aBuffer.data()), size_(aBuffer.size())
+    explicit CBuffer(const Buffer &aBuffer) noexcept
+        : data_(aBuffer.dataConst()), size_(aBuffer.size())
     {
     }
 
