@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <type_traits>
 
 #include "common.h"
 
@@ -11,22 +12,23 @@ namespace ndt
 class Buffer
 {
    public:
-    Buffer(void *aData, std::size_t aSize) noexcept
-        : data_(static_cast<bufp_t>(aData)), size_(aSize)
-    {
-    }
-    Buffer(char *aData, std::size_t aSize) noexcept
+    constexpr Buffer(void *aData, std::size_t aSize) noexcept
         : data_(static_cast<bufp_t>(aData)), size_(aSize)
     {
     }
 
+    constexpr Buffer(char *aData, std::size_t aSize) noexcept
+        : data_(static_cast<bufp_t>(aData)), size_(aSize)
+    {
+    }
+
+    void setSize(const std::size_t aSize);
+
     template <size_t N, typename T>
-    explicit Buffer(T (&aData)[N])
+    constexpr explicit Buffer(T (&aData)[N]) noexcept
         : data_(static_cast<bufp_t>(aData)), size_(sizeof(T) * N)
     {
     }
-
-    void setSize(const std::size_t aSize) { size_ = aSize; }
 
     template <typename T = buf_t>
     T *data() noexcept
@@ -46,103 +48,30 @@ class Buffer
         return static_cast<T>(size_);
     }
 
-    uint32_t readInt32() const noexcept
-    {
-        assert(byteIndex_ + sizeof(uint32_t) <= size_);
-        const uint32_t result = ntohl(*reinterpret_cast<uint32_t const *>(
-            dataConst<char>() + byteIndex_));
-        byteIndex_ += sizeof(uint32_t);
-        return result;
-    }
-
-    void saveInt32(const uint32_t aValue) noexcept
-    {
-        assert(byteIndex_ + sizeof(uint32_t) <= size_);
-        *reinterpret_cast<uint32_t *>(data<char>() + byteIndex_) =
-            htonl(aValue);
-        byteIndex_ += sizeof(aValue);
-    }
-
-    uint16_t readInt16() const noexcept
-    {
-        assert(byteIndex_ + sizeof(uint16_t) <= size_);
-        const uint16_t result = ntohs(*reinterpret_cast<uint16_t const *>(
-            dataConst<char>() + byteIndex_));
-        byteIndex_ += sizeof(uint16_t);
-        return result;
-    }
-
-    void saveInt16(const uint16_t aValue) noexcept
-    {
-        assert(byteIndex_ + sizeof(uint16_t) <= size_);
-        *reinterpret_cast<uint16_t *>(data<char>() + byteIndex_) =
-            htons(aValue);
-        byteIndex_ += sizeof(aValue);
-    }
-
-    uint8_t readInt8() const noexcept
-    {
-        assert(byteIndex_ + sizeof(uint8_t) <= size_);
-        const uint8_t result =
-            *reinterpret_cast<uint8_t const *>(dataConst<char>() + byteIndex_);
-        byteIndex_ += sizeof(uint8_t);
-        return result;
-    }
-
-    void saveInt8(const uint8_t aValue) noexcept
-    {
-        assert(byteIndex_ + sizeof(uint8_t) <= size_);
-        *(data<uint8_t>() + byteIndex_) = aValue;
-        byteIndex_ += sizeof(aValue);
-    }
-
-    float readFloat() const noexcept
-    {
-        FloatInt tmpVal;
-        tmpVal.uintVal = readInt32();
-        return tmpVal.floatVal;
-    }
-
-    void saveFloat(const float aValue) noexcept
-    {
-        FloatInt tmpVal{aValue};
-        saveInt32(tmpVal.uintVal);
-    }
-
-    void resetIndex() noexcept { byteIndex_ = 0; }
-    uint16_t byteIndex() const noexcept { return byteIndex_; }
-
    private:
-    union FloatInt
-    {
-        float floatVal;
-        uint32_t uintVal;
-    };
-
     bufp_t data_ = nullptr;
     dlen_t size_ = 0;
-    mutable uint16_t byteIndex_ = 0;
 };
 
 class CBuffer
 {
    public:
-    CBuffer(void const *aData, std::size_t aSize) noexcept
+    constexpr CBuffer(void const *aData, std::size_t aSize) noexcept
         : data_(static_cast<cbufp_t>(aData)), size_(aSize)
     {
     }
-    CBuffer(char const *aData, std::size_t aSize) noexcept
+    constexpr CBuffer(char const *aData, std::size_t aSize) noexcept
         : data_(static_cast<cbufp_t>(aData)), size_(aSize)
     {
     }
 
-    explicit CBuffer(const Buffer &aBuffer) noexcept
+    constexpr explicit CBuffer(const Buffer &aBuffer) noexcept
         : data_(aBuffer.dataConst()), size_(aBuffer.size())
     {
     }
 
     template <size_t N, typename T>
-    explicit CBuffer(T (&aData)[N])
+    constexpr explicit CBuffer(T (&aData)[N])
         : data_(static_cast<cbufp_t>(aData)), size_(sizeof(T) * N)
     {
     }
@@ -162,6 +91,130 @@ class CBuffer
    private:
     cbufp_t data_ = nullptr;
     dlen_t size_ = 0;
+};
+
+class BufferReader
+{
+   public:
+    constexpr explicit BufferReader(CBuffer aBuf) noexcept : buffer_(aBuf) {}
+
+    template <typename T>
+    std::remove_const_t<T> get() const noexcept
+    {
+        return get<std::remove_const_t<T>, sizeof(T)>();
+    }
+
+    uint16_t byteIndex() const noexcept;
+    uint8_t bitIndex() const noexcept;
+
+   private:
+    template <typename T, std::size_t n>
+    T get() const noexcept
+    {
+        if constexpr (std::is_integral_v<T>)
+        {
+            assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
+            if constexpr (n == 1)
+            {
+                const T result = *reinterpret_cast<T const *>(
+                    buffer_.data<char>() + byteIndex_);
+                byteIndex_ += sizeof(T);
+                return result;
+            }
+            else if constexpr (n == 2)
+            {
+                const T result = ntohs(*reinterpret_cast<T const *>(
+                    buffer_.data<char>() + byteIndex_));
+                byteIndex_ += sizeof(T);
+                return result;
+            }
+            else if constexpr (n == 4)
+            {
+                const T result = ntohl(*reinterpret_cast<T const *>(
+                    buffer_.data<char>() + byteIndex_));
+                byteIndex_ += sizeof(T);
+                return result;
+            }
+            else
+            {
+                static_assert((n == 1) || (n == 2) || (n == 4),
+                              "error: unsupported integral type");
+            }
+        }
+        else
+        {
+            static_assert(!std::is_integral_v<T>, "error: unsupported type");
+        }
+    }
+    union FloatInt
+    {
+        float floatVal;
+        uint32_t uintVal;
+    };
+
+    CBuffer buffer_;
+    mutable uint16_t byteIndex_ = 0;
+    mutable uint8_t bitIndex_ = 0;
+};
+
+class BufferWriter
+{
+   public:
+    ~BufferWriter();
+    BufferWriter(Buffer aBuf);
+
+    template <typename T>
+    void add(const T aValue) noexcept
+    {
+        add<std::remove_const_t<T>, sizeof(T)>(aValue);
+    }
+
+    uint16_t byteIndex() const noexcept;
+    uint8_t bitIndex() const noexcept;
+
+   private:
+    template <typename T, std::size_t n>
+    void add(const T aValue) noexcept
+    {
+        if constexpr (std::is_integral_v<T>)
+        {
+            assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
+            if constexpr (n == 1)
+            {
+                *(buffer_.data<uint8_t>() + byteIndex_) = aValue;
+            }
+            else if constexpr (n == 2)
+            {
+                *reinterpret_cast<uint16_t *>(buffer_.data<char>() +
+                                              byteIndex_) = htons(aValue);
+            }
+            else if constexpr (n == 4)
+            {
+                *reinterpret_cast<uint32_t *>(buffer_.data<char>() +
+                                              byteIndex_) = htonl(aValue);
+            }
+            else
+            {
+                static_assert((n == 1) || (n == 2) || (n == 4),
+                              "error: unsupported integral type");
+            }
+            byteIndex_ += sizeof(aValue);
+        }
+        else
+        {
+            static_assert(!std::is_integral_v<T>, "error: unsupported type");
+        }
+    }
+
+    union FloatInt
+    {
+        float floatVal;
+        uint32_t uintVal;
+    };
+
+    Buffer buffer_;
+    mutable uint16_t byteIndex_ = 0;
+    mutable uint8_t bitIndex_ = 0;
 };
 }  // namespace ndt
 

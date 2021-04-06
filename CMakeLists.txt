@@ -95,6 +95,7 @@ set(SOURCES
 	${SOURCE_DIR}/common.cpp
 	${SOURCE_DIR}/thread_pool.cpp
 	${SOURCE_DIR}/system_wrappers.cpp
+    ${SOURCE_DIR}/buffer.cpp
     ${SOURCE_DIR}/platform/win/context_base_error.cpp
 	)
 
