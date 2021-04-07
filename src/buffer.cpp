@@ -14,6 +14,15 @@ float BufferReader::get<float, sizeof(float)>() const noexcept
     return tmpVal.floatVal;
 }
 
+template <>
+bool BufferReader::get<bool, sizeof(bool)>() const noexcept
+{
+    const bool result = (buffer_[byteIndex_] >> bitIndex_) & uint8_t{1};
+    byteIndex_ += (bitIndex_ + 1) / 8;
+    bitIndex_ = (bitIndex_ + 1) % 8;
+    return result;
+}
+
 uint16_t BufferReader::byteIndex() const noexcept { return byteIndex_; }
 uint8_t BufferReader::bitIndex() const noexcept { return bitIndex_; }
 
@@ -34,7 +43,18 @@ void BufferWriter::add<float, sizeof(float)>(const float aValue) noexcept
 template <>
 void BufferWriter::add<bool, sizeof(bool)>(const bool aValue) noexcept
 {
-    assert(false && aValue && "error: currently bool is unsupported");
+    if (aValue)
+    {
+        // set bit
+        buffer_[byteIndex_] = buffer_[byteIndex_] | uint8_t(1 << bitIndex_);
+    }
+    else
+    {
+        // reset bit
+        buffer_[byteIndex_] = buffer_[byteIndex_] & ~uint8_t(1 << bitIndex_);
+    }
+    byteIndex_ += (bitIndex_ + 1) / 8;
+    bitIndex_ = (bitIndex_ + 1) % 8;
 }
 
 }  // namespace ndt

@@ -45,10 +45,21 @@ void testDataInTuple(T&& testData)
     ndt::BufferWriter writer(buf);
 
     uint16_t savedSize = 0;
+    uint8_t bits = 0;
     for_each_in_tuple(
-        [&writer, &savedSize](const auto value) {
+        [&writer, &savedSize, &bits](const auto value) {
             writer.add(value);
-            savedSize += sizeof(value);
+            if constexpr (std::is_same_v<
+                              bool, typename std::decay_t<decltype(value)>>)
+            {
+                savedSize += (bits + 1) / 8;
+                bits = (bits + 1) % 8;
+                assert_eq(writer.bitIndex(), bits);
+            }
+            else
+            {
+                savedSize += sizeof(value);
+            }
             assert_eq(writer.byteIndex(), savedSize);
         },
         testData);
@@ -85,5 +96,14 @@ TEST(BufferTests, SaveReadNegative)
                        0,
                        std::numeric_limits<float>::min(),
                        std::numeric_limits<float>::max()};
+    testDataInTuple(testData);
+}
+
+TEST(BufferTests, SaveReadBoolOnly)
+{
+    using TestDataT = std::tuple<bool, bool, bool, bool, bool, bool, bool, bool,
+                                 bool, bool, bool>;
+    TestDataT testData{true,  false, true, true,  false, false,
+                       false, true,  true, false, true};
     testDataInTuple(testData);
 }

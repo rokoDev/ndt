@@ -25,6 +25,12 @@ class Buffer
 
     void setSize(const std::size_t aSize);
 
+    template <typename T = uint8_t>
+    T &operator[](std::size_t aIndex) noexcept
+    {
+        return *(reinterpret_cast<T *>(data_) + aIndex);
+    }
+
     template <size_t N, typename T>
     constexpr explicit Buffer(T (&aData)[N]) noexcept
         : data_(static_cast<bufp_t>(aData)), size_(sizeof(T) * N)
@@ -77,6 +83,12 @@ class CBuffer
     {
     }
 
+    template <typename T = uint8_t>
+    const T &operator[](std::size_t aIndex) const noexcept
+    {
+        return *(reinterpret_cast<const T *>(data_) + aIndex);
+    }
+
     template <typename T = buf_t>
     T const *data() const noexcept
     {
@@ -102,7 +114,7 @@ class BufferReader
     template <typename T>
     std::remove_const_t<T> get() const noexcept
     {
-        return get<std::remove_const_t<T>, sizeof(T)>();
+        return get<std::decay_t<T>, sizeof(std::decay_t<T>)>();
     }
 
     uint16_t byteIndex() const noexcept;
@@ -150,6 +162,9 @@ class BufferReader
     template <>
     float get<float, sizeof(float)>() const noexcept;
 
+    template <>
+    bool get<bool, sizeof(bool)>() const noexcept;
+
     union FloatInt
     {
         float floatVal;
@@ -170,7 +185,7 @@ class BufferWriter
     template <typename T>
     void add(const T aValue) noexcept
     {
-        add<std::remove_const_t<T>, sizeof(T)>(aValue);
+        add<std::decay_t<T>, sizeof(std::decay_t<T>)>(aValue);
     }
 
     uint16_t byteIndex() const noexcept;
@@ -212,6 +227,9 @@ class BufferWriter
 
     template <>
     void add<float, sizeof(float)>(const float aValue) noexcept;
+
+    template <>
+    void add<bool, sizeof(bool)>(const bool aValue) noexcept;
 
     union FloatInt
     {
