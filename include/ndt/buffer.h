@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <type_traits>
 
 #include "common.h"
@@ -111,29 +112,27 @@ class BufferReader
     template <typename T, std::size_t n>
     T get() const noexcept
     {
+        T result{};
         if constexpr (std::is_integral_v<T>)
         {
             assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
             if constexpr (n == 1)
             {
-                const T result = *reinterpret_cast<T const *>(
-                    buffer_.data<char>() + byteIndex_);
+                result = *reinterpret_cast<T const *>(buffer_.data<char>() +
+                                                      byteIndex_);
                 byteIndex_ += sizeof(T);
-                return result;
             }
             else if constexpr (n == 2)
             {
-                const T result = ntohs(*reinterpret_cast<T const *>(
+                result = ntohs(*reinterpret_cast<T const *>(
                     buffer_.data<char>() + byteIndex_));
                 byteIndex_ += sizeof(T);
-                return result;
             }
             else if constexpr (n == 4)
             {
-                const T result = ntohl(*reinterpret_cast<T const *>(
+                result = ntohl(*reinterpret_cast<T const *>(
                     buffer_.data<char>() + byteIndex_));
                 byteIndex_ += sizeof(T);
-                return result;
             }
             else
             {
@@ -143,9 +142,14 @@ class BufferReader
         }
         else
         {
-            static_assert(!std::is_integral_v<T>, "error: unsupported type");
+            static_assert(std::is_integral_v<T>, "error: unsupported type");
         }
+        return result;
     }
+
+    template <>
+    float get<float, sizeof(float)>() const noexcept;
+
     union FloatInt
     {
         float floatVal;
@@ -202,9 +206,12 @@ class BufferWriter
         }
         else
         {
-            static_assert(!std::is_integral_v<T>, "error: unsupported type");
+            static_assert(std::is_integral_v<T>, "error: unsupported type");
         }
     }
+
+    template <>
+    void add<float, sizeof(float)>(const float aValue) noexcept;
 
     union FloatInt
     {
