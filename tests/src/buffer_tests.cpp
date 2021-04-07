@@ -1,6 +1,7 @@
 #include <fmt/core.h>
 
 #include <initializer_list>
+#include <limits>
 #include <tuple>
 #include <utility>
 
@@ -71,8 +72,18 @@ TEST(BufferTests, SaveRead)
 
 TEST(BufferTests, SaveReadNegative)
 {
-    using TestDataT =
-        std::tuple<uint32_t, int8_t, int16_t, int32_t, float, char>;
-    TestDataT testData{123, -100, -1234, -123456789, -4321.543f, -123};
+    using TestDataT = std::tuple<uint32_t, int8_t, int16_t, int32_t, float,
+                                 char, int, int, uint8_t, float, float>;
+    TestDataT testData{123,
+                       -100,
+                       -1234,
+                       -123456789,
+                       -4321.543f,
+                       -123,
+                       std::numeric_limits<int>::min(),
+                       std::numeric_limits<int>::max(),
+                       0,
+                       std::numeric_limits<float>::min(),
+                       std::numeric_limits<float>::max()};
     testDataInTuple(testData);
 }
