@@ -139,7 +139,6 @@ class BufferReader
                 }
                 else
                 {
-                    // fmt::print("filledTarget: {:0>16b}\n", filledTarget);
                     result =
                         buffer_.operator[]<uint16_t>(byteIndex_) >> bitIndex_;
                 }
@@ -193,7 +192,7 @@ class BufferReader
                     const uint32_t lsbOriginal =
                         buffer_.operator[]<uint32_t>(byteIndex_ + 1)
                         << (8 - bitIndex_);
-                    result = ntohs(msbOriginal | lsbOriginal);
+                    result = ntohl(msbOriginal | lsbOriginal);
                 }
                 byteIndex_ += sizeof(T);
             }
@@ -275,11 +274,11 @@ class BufferWriter
                 else
                 {
                     const uint16_t target = htons(aValue);
-                    const uint16_t msbTarget = target << bitIndex_;
-                    const uint16_t msbCleared = ~uint16_t(0xffff << bitIndex_);
-                    const uint16_t msbOriginal =
-                        buffer_.operator[]<uint16_t>(byteIndex_);
-                    buffer_.operator[]<uint16_t>(byteIndex_) =
+                    const uint8_t msbTarget = target << bitIndex_;
+                    const uint8_t msbCleared = ~uint8_t(0xff << bitIndex_);
+                    const uint8_t msbOriginal =
+                        buffer_.operator[]<uint8_t>(byteIndex_);
+                    buffer_.operator[]<uint8_t>(byteIndex_) =
                         (msbCleared & msbOriginal) | msbTarget;
 
                     const uint16_t lsbTarget = target >> (8 - bitIndex_);
@@ -301,16 +300,17 @@ class BufferWriter
                 else
                 {
                     const uint32_t target = htonl(aValue);
-                    const uint32_t msbTarget = target << bitIndex_;
-                    const uint32_t msbCleared = ~uint32_t(0xffff << bitIndex_);
-                    const uint32_t msbOriginal =
-                        buffer_.operator[]<uint32_t>(byteIndex_);
-                    buffer_.operator[]<uint32_t>(byteIndex_) =
+                    const uint8_t msbTarget =
+                        static_cast<uint8_t>(target << bitIndex_);
+                    const uint8_t msbCleared = ~uint8_t(0xff << bitIndex_);
+                    const uint8_t msbOriginal =
+                        buffer_.operator[]<uint8_t>(byteIndex_);
+                    buffer_.operator[]<uint8_t>(byteIndex_) =
                         (msbCleared & msbOriginal) | msbTarget;
 
                     const uint32_t lsbTarget = target >> (8 - bitIndex_);
                     const uint32_t lsbCleared =
-                        ~uint32_t(0xffff >> (8 - bitIndex_));
+                        ~uint32_t(0xffffffff >> (8 - bitIndex_));
                     const uint32_t lsbOriginal =
                         buffer_.operator[]<uint32_t>(byteIndex_ + 1);
                     buffer_.operator[]<uint32_t>(byteIndex_ + 1) =

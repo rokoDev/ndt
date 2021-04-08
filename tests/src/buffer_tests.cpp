@@ -6,6 +6,32 @@
 
 #include "gtest/gtest.h"
 #include "ndt/buffer.h"
+template <typename T>
+constexpr std::size_t get_bits_size()
+{
+    return 8 * sizeof(T);
+}
+
+template <>
+constexpr std::size_t get_bits_size<bool>()
+{
+    return 1;
+}
+
+template <typename... Ts>
+constexpr std::size_t sum_size()
+{
+    constexpr std::size_t bits_size = (get_bits_size<Ts>() + ...);
+    constexpr std::size_t result = bits_size / 8;
+    if constexpr (bits_size % 8 > 0)
+    {
+        return bits_size / 8 + 1;
+    }
+    else
+    {
+        return bits_size / 8;
+    }
+}
 
 template <typename F, typename... Ts>
 void for_each_arg(F&& f, Ts&&... ts)
@@ -36,10 +62,10 @@ void assert_eq<float>(const float arg1, const float arg2)
     ASSERT_FLOAT_EQ(arg1, arg2);
 }
 
-template <typename T>
-void testDataInTuple(T&& testData)
+template <typename... Ts>
+void testDataInTuple(std::tuple<Ts...> const& testData)
 {
-    char arr[sizeof testData] = {0};
+    char arr[sum_size<Ts...>()] = {0};
     ndt::Buffer buf(arr);
     ndt::BufferWriter writer(buf);
 
@@ -109,9 +135,36 @@ TEST(BufferTests, SaveReadBoolOnly)
 
 TEST(BufferTests, SaveReadMixed)
 {
-    using TestDataT = std::tuple<bool, bool, bool, float, bool, bool, bool,
-                                 int16_t, bool, bool, int32_t>;
-    TestDataT testData{true,  false, true, 1234.98f, false,  false,
-                       false, 65535, true, false,    -123456};
+    using TestDataT = std::tuple<bool, bool, char, float, bool, bool, bool,
+                                 int16_t, bool, bool, uint32_t, bool, uint32_t>;
+    TestDataT testData{true,
+                       false,
+                       'k',
+                       1234.98f,
+                       false,
+                       false,
+                       false,
+                       65535,
+                       true,
+                       false,
+                       std::numeric_limits<uint32_t>::max(),
+                       true,
+                       std::numeric_limits<uint32_t>::max() - 12345};
+    testDataInTuple(testData);
+}
+
+TEST(BufferTests, SaveReadMixed2)
+{
+    using TestDataT = std::tuple<bool, bool, uint16_t>;
+    TestDataT testData{true, false,
+                       std::numeric_limits<uint16_t>::max() - 12345};
+    testDataInTuple(testData);
+}
+
+TEST(BufferTests, SaveReadMixed3)
+{
+    using TestDataT = std::tuple<bool, bool, bool, uint32_t>;
+    TestDataT testData{true, false, true,
+                       std::numeric_limits<uint32_t>::max() - 12345};
     testDataInTuple(testData);
 }
