@@ -28,7 +28,8 @@ class Buffer
     template <typename T = uint8_t>
     T &operator[](std::size_t aIndex) noexcept
     {
-        return *(reinterpret_cast<T *>(data_) + aIndex);
+        return *(
+            reinterpret_cast<T *>(reinterpret_cast<uint8_t *>(data_) + aIndex));
     }
 
     template <size_t N, typename T>
@@ -86,7 +87,8 @@ class CBuffer
     template <typename T = uint8_t>
     const T &operator[](std::size_t aIndex) const noexcept
     {
-        return *(reinterpret_cast<const T *>(data_) + aIndex);
+        return *(reinterpret_cast<T const *>(
+            reinterpret_cast<uint8_t const *>(data_) + aIndex));
     }
 
     template <typename T = buf_t>
@@ -130,20 +132,69 @@ class BufferReader
             assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
             if constexpr (n == 1)
             {
-                result = *reinterpret_cast<T const *>(buffer_.data<char>() +
-                                                      byteIndex_);
+                if (bitIndex_ == 0)
+                {
+                    result = *reinterpret_cast<T const *>(buffer_.data<char>() +
+                                                          byteIndex_);
+                }
+                else
+                {
+                    // fmt::print("filledTarget: {:0>16b}\n", filledTarget);
+                    result =
+                        buffer_.operator[]<uint16_t>(byteIndex_) >> bitIndex_;
+                }
+
                 byteIndex_ += sizeof(T);
             }
             else if constexpr (n == 2)
             {
-                result = ntohs(*reinterpret_cast<T const *>(
-                    buffer_.data<char>() + byteIndex_));
+                if (bitIndex_ == 0)
+                {
+                    result = ntohs(*reinterpret_cast<T const *>(
+                        buffer_.data<char>() + byteIndex_));
+                }
+                else if (byteIndex_ + sizeof(uint32_t) <=
+                         buffer_.size<uint32_t>())
+                {
+                    const uint16_t value = static_cast<uint16_t>(
+                        buffer_.operator[]<uint32_t>(byteIndex_) >> bitIndex_);
+                    result = ntohs(value);
+                }
+                else
+                {
+                    const uint16_t msbOriginal =
+                        buffer_.operator[]<uint16_t>(byteIndex_) >> bitIndex_;
+                    const uint16_t lsbOriginal = static_cast<uint16_t>(
+                        buffer_.operator[]<uint16_t>(byteIndex_ + 1)
+                        << (8 - bitIndex_));
+                    result = ntohs(msbOriginal | lsbOriginal);
+                }
+
                 byteIndex_ += sizeof(T);
             }
             else if constexpr (n == 4)
             {
-                result = ntohl(*reinterpret_cast<T const *>(
-                    buffer_.data<char>() + byteIndex_));
+                if (bitIndex_ == 0)
+                {
+                    result = ntohl(*reinterpret_cast<T const *>(
+                        buffer_.data<char>() + byteIndex_));
+                }
+                else if (byteIndex_ + sizeof(uint64_t) <=
+                         buffer_.size<uint64_t>())
+                {
+                    const uint32_t value = static_cast<uint32_t>(
+                        buffer_.operator[]<uint64_t>(byteIndex_) >> bitIndex_);
+                    result = ntohl(value);
+                }
+                else
+                {
+                    const uint32_t msbOriginal =
+                        buffer_.operator[]<uint32_t>(byteIndex_) >> bitIndex_;
+                    const uint32_t lsbOriginal =
+                        buffer_.operator[]<uint32_t>(byteIndex_ + 1)
+                        << (8 - bitIndex_);
+                    result = ntohs(msbOriginal | lsbOriginal);
+                }
                 byteIndex_ += sizeof(T);
             }
             else
@@ -200,17 +251,71 @@ class BufferWriter
             assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
             if constexpr (n == 1)
             {
-                *(buffer_.data<uint8_t>() + byteIndex_) = aValue;
+                if (bitIndex_ == 0)
+                {
+                    *(buffer_.data<uint8_t>() + byteIndex_) = aValue;
+                }
+                else
+                {
+                    const uint16_t target = aValue << bitIndex_;
+                    const uint16_t clearedTarget = ~uint16_t(0xff << bitIndex_);
+                    const uint16_t original =
+                        buffer_.operator[]<uint16_t>(byteIndex_);
+                    buffer_.operator[]<uint16_t>(byteIndex_) =
+                        (clearedTarget & original) | target;
+                }
             }
             else if constexpr (n == 2)
             {
-                *reinterpret_cast<uint16_t *>(buffer_.data<char>() +
-                                              byteIndex_) = htons(aValue);
+                if (bitIndex_ == 0)
+                {
+                    *reinterpret_cast<uint16_t *>(buffer_.data<char>() +
+                                                  byteIndex_) = htons(aValue);
+                }
+                else
+                {
+                    const uint16_t target = htons(aValue);
+                    const uint16_t msbTarget = target << bitIndex_;
+                    const uint16_t msbCleared = ~uint16_t(0xffff << bitIndex_);
+                    const uint16_t msbOriginal =
+                        buffer_.operator[]<uint16_t>(byteIndex_);
+                    buffer_.operator[]<uint16_t>(byteIndex_) =
+                        (msbCleared & msbOriginal) | msbTarget;
+
+                    const uint16_t lsbTarget = target >> (8 - bitIndex_);
+                    const uint16_t lsbCleared =
+                        ~uint16_t(0xffff >> (8 - bitIndex_));
+                    const uint16_t lsbOriginal =
+                        buffer_.operator[]<uint16_t>(byteIndex_ + 1);
+                    buffer_.operator[]<uint16_t>(byteIndex_ + 1) =
+                        (lsbCleared & lsbOriginal) | lsbTarget;
+                }
             }
             else if constexpr (n == 4)
             {
-                *reinterpret_cast<uint32_t *>(buffer_.data<char>() +
-                                              byteIndex_) = htonl(aValue);
+                if (bitIndex_ == 0)
+                {
+                    *reinterpret_cast<uint32_t *>(buffer_.data<char>() +
+                                                  byteIndex_) = htonl(aValue);
+                }
+                else
+                {
+                    const uint32_t target = htonl(aValue);
+                    const uint32_t msbTarget = target << bitIndex_;
+                    const uint32_t msbCleared = ~uint32_t(0xffff << bitIndex_);
+                    const uint32_t msbOriginal =
+                        buffer_.operator[]<uint32_t>(byteIndex_);
+                    buffer_.operator[]<uint32_t>(byteIndex_) =
+                        (msbCleared & msbOriginal) | msbTarget;
+
+                    const uint32_t lsbTarget = target >> (8 - bitIndex_);
+                    const uint32_t lsbCleared =
+                        ~uint32_t(0xffff >> (8 - bitIndex_));
+                    const uint32_t lsbOriginal =
+                        buffer_.operator[]<uint32_t>(byteIndex_ + 1);
+                    buffer_.operator[]<uint32_t>(byteIndex_ + 1) =
+                        (lsbCleared & lsbOriginal) | lsbTarget;
+                }
             }
             else
             {

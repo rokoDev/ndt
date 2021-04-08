@@ -1,5 +1,4 @@
 #include <fmt/core.h>
-
 #include <initializer_list>
 #include <limits>
 #include <tuple>
@@ -104,6 +103,15 @@ TEST(BufferTests, SaveReadBoolOnly)
     using TestDataT = std::tuple<bool, bool, bool, bool, bool, bool, bool, bool,
                                  bool, bool, bool>;
     TestDataT testData{true,  false, true, true,  false, false,
-                       false, true,  true, false, true};
+                       false, true,  true, false, false};
+    testDataInTuple(testData);
+}
+
+TEST(BufferTests, SaveReadMixed)
+{
+    using TestDataT = std::tuple<bool, bool, bool, float, bool, bool, bool,
+                                 int16_t, bool, bool, int32_t>;
+    TestDataT testData{true,  false, true, 1234.98f, false,  false,
+                       false, 65535, true, false,    -123456};
     testDataInTuple(testData);
 }
