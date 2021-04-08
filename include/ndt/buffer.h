@@ -114,7 +114,7 @@ class BufferReader
     constexpr explicit BufferReader(CBuffer aBuf) noexcept : buffer_(aBuf) {}
 
     template <typename T>
-    std::remove_const_t<T> get() const noexcept
+    std::decay_t<T> get() const noexcept
     {
         return get<std::decay_t<T>, sizeof(std::decay_t<T>)>();
     }
@@ -132,18 +132,7 @@ class BufferReader
             assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
             if constexpr (n == 1)
             {
-                if (bitIndex_ == 0)
-                {
-                    result = *reinterpret_cast<T const *>(buffer_.data<char>() +
-                                                          byteIndex_);
-                }
-                else
-                {
-                    result =
-                        buffer_.operator[]<uint16_t>(byteIndex_) >> bitIndex_;
-                }
-
-                byteIndex_ += sizeof(T);
+                result = buffer_.operator[]<uint16_t>(byteIndex_) >> bitIndex_;
             }
             else if constexpr (n == 2)
             {
@@ -168,8 +157,6 @@ class BufferReader
                         << (8 - bitIndex_));
                     result = ntohs(msbOriginal | lsbOriginal);
                 }
-
-                byteIndex_ += sizeof(T);
             }
             else if constexpr (n == 4)
             {
@@ -194,7 +181,6 @@ class BufferReader
                         << (8 - bitIndex_);
                     result = ntohl(msbOriginal | lsbOriginal);
                 }
-                byteIndex_ += sizeof(T);
             }
             else
             {
@@ -206,6 +192,7 @@ class BufferReader
         {
             static_assert(std::is_integral_v<T>, "error: unsupported type");
         }
+        byteIndex_ += sizeof(T);
         return result;
     }
 
