@@ -75,6 +75,11 @@ extern const ipv6_t kIPv6Loopback;
 inline constexpr std::size_t kV4Capacity = sizeof(sockaddr_in);
 inline constexpr std::size_t kV6Capacity = sizeof(sockaddr_in6);
 
+constexpr uint8_t bit_count(const uint64_t aValue)
+{
+    return (aValue == 0) ? 0 : 1 + bit_count(aValue >> 1);
+}
+
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
