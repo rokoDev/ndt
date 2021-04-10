@@ -1,4 +1,6 @@
 #include <fmt/core.h>
+#include <gmock/gmock.h>
+
 #include <initializer_list>
 #include <limits>
 #include <tuple>
@@ -6,6 +8,7 @@
 
 #include "gtest/gtest.h"
 #include "ndt/buffer.h"
+
 template <typename T>
 constexpr std::size_t get_bits_size()
 {
@@ -99,6 +102,87 @@ void testDataInTuple(std::tuple<Ts...> const& testData)
         testData);
 }
 
+class OneByteBufTest : public ::testing::Test
+{
+   public:
+    OneByteBufTest()
+        : rawData_{0}
+        , buf_(rawData_)
+        , writer_(buf_)
+        , reader_(ndt::CBuffer(buf_))
+    {
+    }
+    OneByteBufTest(const OneByteBufTest &) = delete;
+    OneByteBufTest &operator=(const OneByteBufTest &) = delete;
+    OneByteBufTest(OneByteBufTest &&) = delete;
+    OneByteBufTest &operator=(OneByteBufTest &&) = delete;
+
+   protected:
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite() {}
+
+    char rawData_[1];
+    ndt::Buffer buf_;
+    ndt::BufferWriter writer_;
+    ndt::BufferReader reader_;
+};
+
+TEST_F(OneByteBufTest, WriteReadBoolTrue)
+{
+    writer_.add(true);
+    const bool value = reader_.get<bool>();
+    ASSERT_EQ(value, true);
+    ASSERT_EQ(writer_.byteIndex(), 0);
+    ASSERT_EQ(writer_.bitIndex(), 1);
+    ASSERT_EQ(reader_.byteIndex(), 0);
+    ASSERT_EQ(reader_.bitIndex(), 1);
+}
+
+TEST_F(OneByteBufTest, WriteReadBoolFalse)
+{
+    writer_.add(false);
+    const bool value = reader_.get<bool>();
+    ASSERT_EQ(value, false);
+    ASSERT_EQ(writer_.byteIndex(), 0);
+    ASSERT_EQ(writer_.bitIndex(), 1);
+    ASSERT_EQ(reader_.byteIndex(), 0);
+    ASSERT_EQ(reader_.bitIndex(), 1);
+}
+
+TEST_F(OneByteBufTest, WriteReadBool)
+{
+    writer_.add(false);
+    writer_.add(true);
+    writer_.add(true);
+    writer_.add(false);
+    writer_.add(true);
+    writer_.add(false);
+    writer_.add(true);
+    writer_.add(true);
+
+    for (std::size_t i = 0; i < 100; ++i)
+    {
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+        writer_.add(true);
+    }
+
+    fmt::print("writers byte index: {}\n", writer_.byteIndex());
+    fmt::print("writers bit index: {}\n", writer_.bitIndex());
+
+    const uint8_t value = reader_.get<uint8_t>();
+    ASSERT_EQ(value, 214);
+    // ASSERT_EQ(writer_.byteIndex(), 1);
+    // ASSERT_EQ(writer_.bitIndex(), 0);
+    ASSERT_EQ(reader_.byteIndex(), 1);
+    ASSERT_EQ(reader_.bitIndex(), 0);
+}
+
 TEST(BufferTests, SaveRead)
 {
     using TestDataT = std::tuple<uint32_t, uint8_t, uint16_t, uint32_t, float>;
@@ -166,5 +250,12 @@ TEST(BufferTests, SaveReadMixed3)
     using TestDataT = std::tuple<bool, bool, bool, uint32_t>;
     TestDataT testData{true, false, true,
                        std::numeric_limits<uint32_t>::max() - 12345};
+    testDataInTuple(testData);
+}
+
+TEST(BufferTests, SaveReadMixed4)
+{
+    using TestDataT = std::tuple<uint8_t>;
+    TestDataT testData{45};
     testDataInTuple(testData);
 }
