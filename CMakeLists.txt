@@ -36,6 +36,7 @@ list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
 	"-Wuninitialized"
 	"-Wold-style-cast"
 	"-Wfloat-equal"
+	"-Wcast-align"
 	)
 
 list(APPEND WIN_BUILD_TYPES_CLANG_FLAGS
@@ -76,6 +77,8 @@ set(HEADERS
 	${MAIN_INCLUDE_DIR}/ndt/system_wrappers.h
 	${MAIN_INCLUDE_DIR}/ndt/context.h
 	${MAIN_INCLUDE_DIR}/ndt/nocopyable.h
+    ${MAIN_INCLUDE_DIR}/ndt/nomoveable.h
+    ${MAIN_INCLUDE_DIR}/ndt/nodefaultconstructible.h
 	${MAIN_INCLUDE_DIR}/ndt/executor_select_base.h
 	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
     ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
@@ -84,6 +87,7 @@ set(HEADERS
     ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
     ${MAIN_INCLUDE_DIR}/ndt/event_handler_select.h
     ${MAIN_INCLUDE_DIR}/ndt/executor_select.h
+    ${MAIN_INCLUDE_DIR}/ndt/bin_rw.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -95,7 +99,6 @@ set(SOURCES
 	${SOURCE_DIR}/common.cpp
 	${SOURCE_DIR}/thread_pool.cpp
 	${SOURCE_DIR}/system_wrappers.cpp
-    ${SOURCE_DIR}/buffer.cpp
     ${SOURCE_DIR}/platform/win/context_base_error.cpp
 	)
 

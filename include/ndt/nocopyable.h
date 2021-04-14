@@ -3,13 +3,12 @@
 
 namespace ndt
 {
-class Nocopyable
+struct NoCopyAble
 {
-   protected:
-    Nocopyable() = default;
-    ~Nocopyable() = default;
-    Nocopyable(const Nocopyable&) = delete;
-    const Nocopyable& operator=(const Nocopyable&) = delete;
+    NoCopyAble() = default;
+    ~NoCopyAble() = default;
+    NoCopyAble(const NoCopyAble&) = delete;
+    const NoCopyAble& operator=(const NoCopyAble&) = delete;
 };
 }  // namespace ndt
 

@@ -23,11 +23,11 @@ class Buffer
     {
     }
 
-    void setSize(const std::size_t aSize);
+    inline void setSize(const std::size_t aSize) { size_ = aSize; }
 
-    uint8_t *operator[](std::size_t aIndex) noexcept
+    inline uint8_t *operator[](std::size_t aIndex) noexcept
     {
-        return reinterpret_cast<uint8_t *>(data_) + aIndex;
+        return static_cast<uint8_t *>(data_) + aIndex;
     }
 
     template <size_t N, typename T>
@@ -39,7 +39,7 @@ class Buffer
     template <typename T = buf_t>
     T *data() noexcept
     {
-        return reinterpret_cast<T *>(data_);
+        return static_cast<T *>(data_);
     }
 
     template <typename T = buf_t>
@@ -84,7 +84,7 @@ class CBuffer
 
     uint8_t const *operator[](std::size_t aIndex) const noexcept
     {
-        return reinterpret_cast<uint8_t const *>(data_) + aIndex;
+        return static_cast<uint8_t const *>(data_) + aIndex;
     }
 
     template <typename T = buf_t>
@@ -102,242 +102,6 @@ class CBuffer
    private:
     cbufp_t data_ = nullptr;
     dlen_t size_ = 0;
-};
-
-class BufferReader
-{
-   public:
-    constexpr explicit BufferReader(CBuffer aBuf) noexcept : buffer_(aBuf) {}
-
-    template <typename T>
-    std::decay_t<T> get() const noexcept
-    {
-        return get<std::decay_t<T>, sizeof(std::decay_t<T>)>();
-    }
-
-    uint16_t byteIndex() const noexcept;
-    uint8_t bitIndex() const noexcept;
-
-   private:
-    template <typename T, std::size_t n, std::size_t NumBits = sizeof(T) * 8>
-    T get() const noexcept
-    {
-        T result{};
-        if constexpr (std::is_integral_v<T>)
-        {
-            assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
-            if constexpr (n == 1)
-            {
-                result =
-                    *reinterpret_cast<uint16_t const *>(buffer_[byteIndex_]) >>
-                    bitIndex_;
-            }
-            else if constexpr (n == 2)
-            {
-                if (bitIndex_ == 0)
-                {
-                    result = ntohs(*reinterpret_cast<T const *>(
-                        buffer_.data<char>() + byteIndex_));
-                }
-                else if (byteIndex_ + sizeof(uint32_t) <=
-                         buffer_.size<uint32_t>())
-                {
-                    const uint16_t value = static_cast<uint16_t>(
-                        *reinterpret_cast<uint32_t const *>(
-                            buffer_[byteIndex_]) >>
-                        bitIndex_);
-                    result = ntohs(value);
-                }
-                else
-                {
-                    const uint16_t msbOriginal =
-                        *reinterpret_cast<uint16_t const *>(
-                            buffer_[byteIndex_]) >>
-                        bitIndex_;
-                    const uint16_t lsbOriginal = static_cast<uint16_t>(
-                        *reinterpret_cast<uint16_t const *>(
-                            buffer_[byteIndex_ + 1])
-                        << (8 - bitIndex_));
-                    result = ntohs(msbOriginal | lsbOriginal);
-                }
-            }
-            else if constexpr (n == 4)
-            {
-                if (bitIndex_ == 0)
-                {
-                    result = ntohl(*reinterpret_cast<T const *>(
-                        buffer_.data<char>() + byteIndex_));
-                }
-                else if (byteIndex_ + sizeof(uint64_t) <=
-                         buffer_.size<uint64_t>())
-                {
-                    const uint32_t value = static_cast<uint32_t>(
-                        *reinterpret_cast<uint64_t const *>(
-                            buffer_[byteIndex_]) >>
-                        bitIndex_);
-                    result = ntohl(value);
-                }
-                else
-                {
-                    const uint32_t msbOriginal =
-                        *reinterpret_cast<uint32_t const *>(
-                            buffer_[byteIndex_]) >>
-                        bitIndex_;
-                    const uint32_t lsbOriginal =
-                        *reinterpret_cast<uint32_t const *>(
-                            buffer_[byteIndex_ + 1])
-                        << (8 - bitIndex_);
-                    result = ntohl(msbOriginal | lsbOriginal);
-                }
-            }
-            else
-            {
-                static_assert((n == 1) || (n == 2) || (n == 4),
-                              "error: unsupported integral type");
-            }
-        }
-        else
-        {
-            static_assert(std::is_integral_v<T>, "error: unsupported type");
-        }
-        byteIndex_ += sizeof(T);
-        return result;
-    }
-
-    template <>
-    float get<float, sizeof(float), sizeof(float) * 8>() const noexcept;
-
-    template <>
-    bool get<bool, sizeof(bool), sizeof(bool) * 8>() const noexcept;
-
-    union FloatInt
-    {
-        float floatVal;
-        uint32_t uintVal;
-    };
-
-    CBuffer buffer_;
-    mutable uint16_t byteIndex_ = 0;
-    mutable uint8_t bitIndex_ = 0;
-};
-
-class BufferWriter
-{
-   public:
-    ~BufferWriter();
-    BufferWriter(Buffer aBuf);
-
-    template <typename T>
-    void add(const T aValue) noexcept
-    {
-        add<std::decay_t<T>, sizeof(std::decay_t<T>)>(aValue);
-    }
-
-    uint16_t byteIndex() const noexcept;
-    uint8_t bitIndex() const noexcept;
-
-   private:
-    template <typename T, std::size_t n>
-    void add(const T aValue) noexcept
-    {
-        if constexpr (std::is_integral_v<T>)
-        {
-            assert(byteIndex_ + sizeof(T) <= buffer_.size<uint32_t>());
-            if constexpr (n == 1)
-            {
-                if (bitIndex_ == 0)
-                {
-                    *(buffer_.data<uint8_t>() + byteIndex_) = aValue;
-                }
-                else
-                {
-                    const uint16_t target = aValue << bitIndex_;
-                    const uint16_t clearedTarget = ~uint16_t(0xff << bitIndex_);
-                    const uint16_t original =
-                        *reinterpret_cast<uint16_t *>(buffer_[byteIndex_]);
-                    *reinterpret_cast<uint16_t *>(buffer_[byteIndex_]) =
-                        (clearedTarget & original) | target;
-                }
-            }
-            else if constexpr (n == 2)
-            {
-                if (bitIndex_ == 0)
-                {
-                    *reinterpret_cast<uint16_t *>(buffer_.data<char>() +
-                                                  byteIndex_) = htons(aValue);
-                }
-                else
-                {
-                    const uint16_t target = htons(aValue);
-                    const uint8_t msbTarget = target << bitIndex_;
-                    const uint8_t msbCleared = ~uint8_t(0xff << bitIndex_);
-                    const uint8_t msbOriginal = *buffer_[byteIndex_];
-                    *buffer_[byteIndex_] =
-                        (msbCleared & msbOriginal) | msbTarget;
-
-                    const uint16_t lsbTarget = target >> (8 - bitIndex_);
-                    const uint16_t lsbCleared =
-                        ~uint16_t(0xffff >> (8 - bitIndex_));
-                    const uint16_t lsbOriginal =
-                        *reinterpret_cast<uint16_t *>(buffer_[byteIndex_ + 1]);
-                    *reinterpret_cast<uint16_t *>(buffer_[byteIndex_ + 1]) =
-                        (lsbCleared & lsbOriginal) | lsbTarget;
-                }
-            }
-            else if constexpr (n == 4)
-            {
-                if (bitIndex_ == 0)
-                {
-                    *reinterpret_cast<uint32_t *>(buffer_.data<char>() +
-                                                  byteIndex_) = htonl(aValue);
-                }
-                else
-                {
-                    const uint32_t target = htonl(aValue);
-                    const uint8_t msbTarget =
-                        static_cast<uint8_t>(target << bitIndex_);
-                    const uint8_t msbCleared = ~uint8_t(0xff << bitIndex_);
-                    const uint8_t msbOriginal = *buffer_[byteIndex_];
-                    *buffer_[byteIndex_] =
-                        (msbCleared & msbOriginal) | msbTarget;
-
-                    const uint32_t lsbTarget = target >> (8 - bitIndex_);
-                    const uint32_t lsbCleared =
-                        ~uint32_t(0xffffffff >> (8 - bitIndex_));
-                    const uint32_t lsbOriginal =
-                        *reinterpret_cast<uint32_t *>(buffer_[byteIndex_ + 1]);
-                    *reinterpret_cast<uint32_t *>(buffer_[byteIndex_ + 1]) =
-                        (lsbCleared & lsbOriginal) | lsbTarget;
-                }
-            }
-            else
-            {
-                static_assert((n == 1) || (n == 2) || (n == 4),
-                              "error: unsupported integral type");
-            }
-            byteIndex_ += sizeof(aValue);
-        }
-        else
-        {
-            static_assert(std::is_integral_v<T>, "error: unsupported type");
-        }
-    }
-
-    template <>
-    void add<float, sizeof(float)>(const float aValue) noexcept;
-
-    template <>
-    void add<bool, sizeof(bool)>(const bool aValue) noexcept;
-
-    union FloatInt
-    {
-        float floatVal;
-        uint32_t uintVal;
-    };
-
-    Buffer buffer_;
-    mutable uint16_t byteIndex_ = 0;
-    mutable uint8_t bitIndex_ = 0;
 };
 }  // namespace ndt
 

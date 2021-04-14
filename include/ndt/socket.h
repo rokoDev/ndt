@@ -23,7 +23,7 @@ template <typename SysWrapperT>
 class HandlerSelectBase;
 
 template <typename SysWrapperT>
-class SocketBase : private Nocopyable
+class SocketBase : private NoCopyAble
 {
     template <typename ImplT, typename SysWrappersT>
     friend class ExecutorSelectBase;

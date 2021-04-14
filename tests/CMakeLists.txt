@@ -31,6 +31,5 @@ package_add_test(${ProjectName}
 	src/socket_tests.cpp
 	src/thread_pool_tests.cpp
 	src/context_tests.cpp
-    src/buffer_tests.cpp
-    src/reader_tests.cpp
+    src/bin_rw_tests.cpp
 	)

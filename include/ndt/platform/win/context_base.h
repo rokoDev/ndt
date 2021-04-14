@@ -11,7 +11,7 @@
 namespace ndt
 {
 template <typename SysWrapperT>
-class ContextBase : private Nocopyable
+class ContextBase : private NoCopyAble
 {
    public:
     ~ContextBase();
