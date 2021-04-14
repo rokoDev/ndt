@@ -191,6 +191,18 @@ class ByteOrder<T, 8, void>
     static T toNet(const T aValue) noexcept { return htonll(aValue); }
 };
 
+template <typename T>
+T toHost(const T aValue) noexcept
+{
+    return ByteOrder<T>::toHost(aValue);
+}
+
+template <typename T>
+T toNet(const T aValue) noexcept
+{
+    return ByteOrder<T>::toNet(aValue);
+}
+
 }  // namespace utils
 }  // namespace ndt
 

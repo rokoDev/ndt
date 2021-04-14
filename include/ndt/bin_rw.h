@@ -63,12 +63,12 @@ class BinReader final : public details::BinBase<BinReader>
         ResultT result;
         static_assert(std::is_integral_v<ResultT>, "T must be integral type");
         memcpy(&result, buffer_[byteIndex_], sizeof(ResultT));
-        const ResultT filledMask = utils::ByteOrder<ResultT>::toNet(
+        const ResultT filledMask = utils::toNet<ResultT>(
             static_cast<ResultT>((
                 (~ResultT(0)) << (sizeof(ResultT) * kBitsInByte - aNumBits))) >>
             bitIndex_);
         result &= filledMask;
-        result = utils::ByteOrder<ResultT>::toHost(result) << bitIndex_;
+        result = utils::toHost<ResultT>(result) << bitIndex_;
         result >>= sizeof(ResultT) * kBitsInByte - aNumBits;
         if (aNumBits + bitIndex_ > sizeof(ResultT) * kBitsInByte)
         {
@@ -121,15 +121,15 @@ class BinWriter final : public details::BinBase<BinWriter>
     constexpr explicit BinWriter(Buffer aBuf) noexcept : buffer_(aBuf) {}
 
     template <typename T>
-    void add(const T aValue, const uint8_t aNumBits) noexcept
+    void add(const std::decay_t<T> aValue, const uint8_t aNumBits) noexcept
     {
         using ResultT = std::decay_t<T>;
         static_assert(std::is_integral_v<ResultT>, "T must be integral type");
         const ResultT leftAligned =
             aValue << (sizeof(ResultT) * kBitsInByte - aNumBits);
         const ResultT targetValue =
-            utils::ByteOrder<ResultT>::toNet(leftAligned >> bitIndex_);
-        const ResultT filledMask = utils::ByteOrder<ResultT>::toNet(
+            utils::toNet<ResultT>(leftAligned >> bitIndex_);
+        const ResultT filledMask = utils::toNet<ResultT>(
             static_cast<ResultT>((
                 (~ResultT(0)) << (sizeof(ResultT) * kBitsInByte - aNumBits))) >>
             bitIndex_);
