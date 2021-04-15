@@ -37,6 +37,7 @@ list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
 	"-Wold-style-cast"
 	"-Wfloat-equal"
 	"-Wcast-align"
+	"-Winvalid-constexpr"
 	)
 
 list(APPEND WIN_BUILD_TYPES_CLANG_FLAGS
