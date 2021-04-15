@@ -155,12 +155,6 @@ union UIntUnion
     UIntT uintVal;
 };
 
-template <typename T>
-using UIntUnion_T = typename UIntUnion<T>::UIntT;
-
-template <typename T>
-constexpr uint8_t UIntUnion_Bits = sizeof(UIntUnion_T<T>) * 8;
-
 template <typename... Ts>
 constexpr std::size_t sum_size()
 {

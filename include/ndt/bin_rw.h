@@ -54,9 +54,9 @@ class BinReader final : public details::BinBase<BinReader>
         {
             if constexpr (std::is_signed_v<T>)
             {
+                using UIntT = typename utils::UIntUnion<T>::UIntT;
                 utils::UIntUnion<T> toT;
-                toT.uintVal =
-                    get<utils::UIntUnion_T<T>>(utils::UIntUnion_Bits<T>);
+                toT.uintVal = get<UIntT>(sizeof(UIntT) * kBitsInByte);
                 return toT.originalVal;
             }
             else
@@ -128,9 +128,9 @@ class BinWriter final : public details::BinBase<BinWriter>
         {
             if constexpr (std::is_signed_v<T>)
             {
+                using UIntT = typename utils::UIntUnion<T>::UIntT;
                 utils::UIntUnion<T> toUInt(aValue);
-                add<utils::UIntUnion_T<T>>(toUInt.uintVal,
-                                           utils::UIntUnion_Bits<T>);
+                add<UIntT>(toUInt.uintVal, sizeof(UIntT) * kBitsInByte);
             }
             else
             {
