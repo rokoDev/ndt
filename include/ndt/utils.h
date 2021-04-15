@@ -1,6 +1,7 @@
 #ifndef ndt_utils_h
 #define ndt_utils_h
 
+#include <cstring>
 #include <type_traits>
 #include <unordered_map>
 
@@ -145,16 +146,6 @@ constexpr std::size_t get_bits_size<bool>()
     return 1;
 }
 
-template <typename T>
-union UIntUnion
-{
-    using UIntT = typename utils::uint_from_nbits_t<utils::get_bits_size<T>()>;
-    UIntUnion(T aValue) : originalVal(aValue) {}
-    UIntUnion() : uintVal(0) {}
-    T originalVal;
-    UIntT uintVal;
-};
-
 template <typename... Ts>
 constexpr std::size_t sum_size()
 {
@@ -184,6 +175,22 @@ void for_each_in_tuple(F&& f, T&& t)
             for_each_arg(f, std::forward<decltype(xs)>(xs)...);
         },
         std::forward<T>(t));
+}
+
+template <class To, class From>
+typename std::enable_if_t<sizeof(To) == sizeof(From) &&
+                              std::is_trivially_copyable_v<From> &&
+                              std::is_trivially_copyable_v<To>,
+                          To>
+bit_cast(const From& src) noexcept
+{
+    static_assert(std::is_trivially_constructible_v<To>,
+                  "This implementation additionally requires destination type "
+                  "to be trivially constructible");
+
+    To dst;
+    std::memcpy(&dst, &src, sizeof(To));
+    return dst;
 }
 
 template <typename T, std::size_t numBytes = sizeof(T),

@@ -29,14 +29,14 @@ class BinBase
         bitIndex_ = (bitIndex_ + numBits) % kBitsInByte;
     }
 
-    template <typename ResultT>
-    constexpr ResultT filledMask(const uint8_t aNumBits) const noexcept
+    template <typename UIntT>
+    constexpr UIntT filledMask(const uint8_t aNumBits) const noexcept
     {
-        const ResultT leftAlignedMask =
-            static_cast<ResultT>(static_cast<ResultT>(~ResultT(0))
-                                 << (sizeof(ResultT) * kBitsInByte - aNumBits));
-        const ResultT hostByteOrderMask = leftAlignedMask >> bitIndex_;
-        const ResultT mask = utils::toNet<ResultT>(hostByteOrderMask);
+        const UIntT leftAlignedMask =
+            static_cast<UIntT>(static_cast<UIntT>(~UIntT(0))
+                               << (sizeof(UIntT) * kBitsInByte - aNumBits));
+        const UIntT hostByteOrderMask = leftAlignedMask >> bitIndex_;
+        const UIntT mask = utils::toNet<UIntT>(hostByteOrderMask);
         return mask;
     }
 
@@ -65,10 +65,10 @@ class BinReader final : public details::BinBase<BinReader>
         {
             if constexpr (std::is_signed_v<T>)
             {
-                using UIntT = typename utils::UIntUnion<T>::UIntT;
-                utils::UIntUnion<T> toT;
-                toT.uintVal = get<UIntT>(sizeof(UIntT) * kBitsInByte);
-                return toT.originalVal;
+                using UIntT = typename utils::uint_from_nbits_t<
+                    utils::get_bits_size<T>()>;
+                const UIntT result = get<UIntT>(sizeof(UIntT) * kBitsInByte);
+                return utils::bit_cast<T>(result);
             }
             else
             {
@@ -97,19 +97,18 @@ class BinReader final : public details::BinBase<BinReader>
 template <typename T>
 T BinReader::get(const uint8_t aNumBits) const noexcept
 {
-    using ResultT = T;
-    static_assert(std::is_unsigned_v<ResultT>, "T must be unsigned type");
-    static_assert(std::is_integral_v<ResultT>, "T must be integral type");
-    ResultT result;
-    memcpy(&result, buffer_[byteIndex_], sizeof(ResultT));
-    result &= filledMask<ResultT>(aNumBits);
-    result = utils::toHost<ResultT>(result) << bitIndex_;
-    result >>= sizeof(ResultT) * kBitsInByte - aNumBits;
-    if (aNumBits + bitIndex_ > sizeof(ResultT) * kBitsInByte)
+    static_assert(std::is_unsigned_v<T>, "T must be unsigned type");
+    static_assert(std::is_integral_v<T>, "T must be integral type");
+    T result;
+    memcpy(&result, buffer_[byteIndex_], sizeof(T));
+    result &= filledMask<T>(aNumBits);
+    result = utils::toHost<T>(result) << bitIndex_;
+    result >>= sizeof(T) * kBitsInByte - aNumBits;
+    if (aNumBits + bitIndex_ > sizeof(T) * kBitsInByte)
     {
         uint8_t lsbOffset =
-            (1 + sizeof(ResultT)) * kBitsInByte - aNumBits - bitIndex_;
-        uint8_t lsbValue = *buffer_[byteIndex_ + sizeof(ResultT)] >> lsbOffset;
+            (1 + sizeof(T)) * kBitsInByte - aNumBits - bitIndex_;
+        uint8_t lsbValue = *buffer_[byteIndex_ + sizeof(T)] >> lsbOffset;
         result |= lsbValue;
     }
     updateIndices(aNumBits);
@@ -135,9 +134,10 @@ class BinWriter final : public details::BinBase<BinWriter>
         {
             if constexpr (std::is_signed_v<T>)
             {
-                using UIntT = typename utils::UIntUnion<T>::UIntT;
-                utils::UIntUnion<T> toUInt(aValue);
-                add<UIntT>(toUInt.uintVal, sizeof(UIntT) * kBitsInByte);
+                using UIntT = typename utils::uint_from_nbits_t<
+                    utils::get_bits_size<T>()>;
+                add<UIntT>(utils::bit_cast<UIntT>(aValue),
+                           sizeof(UIntT) * kBitsInByte);
             }
             else
             {
@@ -167,27 +167,25 @@ class BinWriter final : public details::BinBase<BinWriter>
 template <typename T>
 void BinWriter::add(const T aValue, const uint8_t aNumBits) noexcept
 {
-    using ResultT = T;
-    static_assert(std::is_unsigned_v<ResultT>, "T must be unsigned type");
-    static_assert(std::is_integral_v<ResultT>, "T must be integral type");
-    const ResultT leftAligned = aValue
-                                << (sizeof(ResultT) * kBitsInByte - aNumBits);
-    const ResultT targetValue = utils::toNet<ResultT>(leftAligned >> bitIndex_);
-    ResultT dest;
-    memcpy(&dest, buffer_[byteIndex_], sizeof(ResultT));
-    dest &= ~filledMask<ResultT>(aNumBits);
+    static_assert(std::is_unsigned_v<T>, "T must be unsigned type");
+    static_assert(std::is_integral_v<T>, "T must be integral type");
+    const T leftAligned = aValue << (sizeof(T) * kBitsInByte - aNumBits);
+    const T targetValue = utils::toNet<T>(leftAligned >> bitIndex_);
+    T dest;
+    memcpy(&dest, buffer_[byteIndex_], sizeof(T));
+    dest &= ~filledMask<T>(aNumBits);
     dest |= targetValue;
-    memcpy(buffer_[byteIndex_], &dest, sizeof(ResultT));
-    if (aNumBits + bitIndex_ > sizeof(ResultT) * kBitsInByte)
+    memcpy(buffer_[byteIndex_], &dest, sizeof(T));
+    if (aNumBits + bitIndex_ > sizeof(T) * kBitsInByte)
     {
         uint8_t lsbOffset =
-            (1 + sizeof(ResultT)) * kBitsInByte - aNumBits - bitIndex_;
+            (1 + sizeof(T)) * kBitsInByte - aNumBits - bitIndex_;
         uint8_t lsbValue =
             static_cast<uint8_t>(static_cast<uint8_t>(aValue) << lsbOffset);
         uint8_t lsbFilledMask = static_cast<uint8_t>(
             static_cast<uint8_t>(~uint8_t(0)) << lsbOffset);
-        *buffer_[byteIndex_ + sizeof(ResultT)] &= ~lsbFilledMask;
-        *buffer_[byteIndex_ + sizeof(ResultT)] |= lsbValue;
+        *buffer_[byteIndex_ + sizeof(T)] &= ~lsbFilledMask;
+        *buffer_[byteIndex_ + sizeof(T)] |= lsbValue;
     }
     updateIndices(aNumBits);
 }
