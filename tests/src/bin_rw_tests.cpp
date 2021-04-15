@@ -68,7 +68,7 @@ TEST_F(N1ByteTest, ReaderConstructor)
 
 TEST_F(N1ByteTest, ReadFirstBit)
 {
-    rawData_[0] = 1 << 7;
+    rawData_[0] = static_cast<uint8_t>(1 << 7);
     const bool result = reader.get<bool>();
     ASSERT_EQ(result, true);
     ASSERT_EQ(reader.byteIndex(), 0);
@@ -77,7 +77,7 @@ TEST_F(N1ByteTest, ReadFirstBit)
 
 TEST_F(N1ByteTest, ReadAllBits)
 {
-    rawData_[0] = 150;
+    rawData_[0] = static_cast<uint8_t>(150);
     for (std::size_t i = 0; i < 8; ++i)
     {
         const bool bit = reader.get<bool>();

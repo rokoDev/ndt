@@ -29,6 +29,17 @@ class BinBase
         bitIndex_ = (bitIndex_ + numBits) % kBitsInByte;
     }
 
+    template <typename ResultT>
+    constexpr ResultT filledMask(const uint8_t aNumBits) const noexcept
+    {
+        const ResultT leftAlignedMask =
+            static_cast<ResultT>(static_cast<ResultT>(~ResultT(0))
+                                 << (sizeof(ResultT) * kBitsInByte - aNumBits));
+        const ResultT hostByteOrderMask = leftAlignedMask >> bitIndex_;
+        const ResultT mask = utils::toNet<ResultT>(hostByteOrderMask);
+        return mask;
+    }
+
     mutable std::size_t byteIndex_ = 0;
     mutable uint8_t bitIndex_ = 0;
     static constexpr uint8_t kBitsInByte = 8;
@@ -91,11 +102,7 @@ T BinReader::get(const uint8_t aNumBits) const noexcept
     static_assert(std::is_integral_v<ResultT>, "T must be integral type");
     ResultT result;
     memcpy(&result, buffer_[byteIndex_], sizeof(ResultT));
-    const ResultT filledMask = utils::toNet<ResultT>(
-        static_cast<ResultT>(
-            ((~ResultT(0)) << (sizeof(ResultT) * kBitsInByte - aNumBits))) >>
-        bitIndex_);
-    result &= filledMask;
+    result &= filledMask<ResultT>(aNumBits);
     result = utils::toHost<ResultT>(result) << bitIndex_;
     result >>= sizeof(ResultT) * kBitsInByte - aNumBits;
     if (aNumBits + bitIndex_ > sizeof(ResultT) * kBitsInByte)
@@ -166,21 +173,19 @@ void BinWriter::add(const T aValue, const uint8_t aNumBits) noexcept
     const ResultT leftAligned = aValue
                                 << (sizeof(ResultT) * kBitsInByte - aNumBits);
     const ResultT targetValue = utils::toNet<ResultT>(leftAligned >> bitIndex_);
-    const ResultT filledMask = utils::toNet<ResultT>(
-        static_cast<ResultT>(
-            ((~ResultT(0)) << (sizeof(ResultT) * kBitsInByte - aNumBits))) >>
-        bitIndex_);
     ResultT dest;
     memcpy(&dest, buffer_[byteIndex_], sizeof(ResultT));
-    dest &= ~filledMask;
+    dest &= ~filledMask<ResultT>(aNumBits);
     dest |= targetValue;
     memcpy(buffer_[byteIndex_], &dest, sizeof(ResultT));
     if (aNumBits + bitIndex_ > sizeof(ResultT) * kBitsInByte)
     {
         uint8_t lsbOffset =
             (1 + sizeof(ResultT)) * kBitsInByte - aNumBits - bitIndex_;
-        uint8_t lsbValue = static_cast<uint8_t>(aValue) << lsbOffset;
-        uint8_t lsbFilledMask = ~uint8_t(0) << lsbOffset;
+        uint8_t lsbValue =
+            static_cast<uint8_t>(static_cast<uint8_t>(aValue) << lsbOffset);
+        uint8_t lsbFilledMask = static_cast<uint8_t>(
+            static_cast<uint8_t>(~uint8_t(0)) << lsbOffset);
         *buffer_[byteIndex_ + sizeof(ResultT)] &= ~lsbFilledMask;
         *buffer_[byteIndex_ + sizeof(ResultT)] |= lsbValue;
     }

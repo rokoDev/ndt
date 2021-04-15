@@ -17,17 +17,18 @@ void check(ndt::thread_pool &pool, const std::size_t taskCount,
 {
     std::vector<std::optional<std::future<int>>> results;
     results.reserve(taskCount);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(1000000, 100000000);
     for (int i = 0; i < taskCount; ++i)
     {
-        results.emplace_back(pool.push([i, &dist, &gen]() -> int {
-            int k = 1;
+        results.emplace_back(pool.push([i]() -> int {
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> dist(1000000, 10000000);
+
+            uint32_t k = 3;
             const auto kTargetVal = dist(gen);
             for (int j = 0; j < kTargetVal; ++j)
             {
-                k = j + k;
+                k = (j / k) + 2;
             }
             k = 0;
             return i * 2;

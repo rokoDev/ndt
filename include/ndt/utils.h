@@ -194,8 +194,8 @@ class ByteOrder
     , private NoDefaultConstructible
 {
    public:
-    static T toHost(const T aValue) noexcept;
-    static T toNet(const T aValue) noexcept;
+    static constexpr T toHost(const T aValue) noexcept;
+    static constexpr T toNet(const T aValue) noexcept;
 };
 
 template <typename T>
@@ -205,9 +205,8 @@ class ByteOrder<T, 1, void>
     , private NoDefaultConstructible
 {
    public:
-    static T toHost(const T aValue) noexcept { return aValue; }
-
-    static T toNet(const T aValue) noexcept { return aValue; }
+    static constexpr T toHost(const T aValue) noexcept { return aValue; }
+    static constexpr T toNet(const T aValue) noexcept { return aValue; }
 };
 
 template <typename T>
@@ -217,9 +216,8 @@ class ByteOrder<T, 2, void>
     , private NoDefaultConstructible
 {
    public:
-    static T toHost(const T aValue) noexcept { return ntohs(aValue); }
-
-    static T toNet(const T aValue) noexcept { return htons(aValue); }
+    static constexpr T toHost(const T aValue) noexcept { return ntohs(aValue); }
+    static constexpr T toNet(const T aValue) noexcept { return htons(aValue); }
 };
 
 template <typename T>
@@ -229,9 +227,8 @@ class ByteOrder<T, 4, void>
     , private NoDefaultConstructible
 {
    public:
-    static T toHost(const T aValue) noexcept { return ntohl(aValue); }
-
-    static T toNet(const T aValue) noexcept { return htonl(aValue); }
+    static constexpr T toHost(const T aValue) noexcept { return ntohl(aValue); }
+    static constexpr T toNet(const T aValue) noexcept { return htonl(aValue); }
 };
 
 template <typename T>
@@ -241,19 +238,21 @@ class ByteOrder<T, 8, void>
     , private NoDefaultConstructible
 {
    public:
-    static T toHost(const T aValue) noexcept { return ntohll(aValue); }
-
-    static T toNet(const T aValue) noexcept { return htonll(aValue); }
+    static constexpr T toHost(const T aValue) noexcept
+    {
+        return ntohll(aValue);
+    }
+    static constexpr T toNet(const T aValue) noexcept { return htonll(aValue); }
 };
 
 template <typename T>
-T toHost(const T aValue) noexcept
+constexpr T toHost(const T aValue) noexcept
 {
     return ByteOrder<T>::toHost(aValue);
 }
 
 template <typename T>
-T toNet(const T aValue) noexcept
+constexpr T toNet(const T aValue) noexcept
 {
     return ByteOrder<T>::toNet(aValue);
 }

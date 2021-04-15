@@ -7,6 +7,9 @@
 node_modules/
 dist/
 
+# type_name.h
+include/ndt/type_name.h
+
 # Compiled Java class files
 *.class
 
