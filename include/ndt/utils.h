@@ -88,39 +88,25 @@ constexpr uint8_t bits_count(const uint64_t aValue)
     return (aValue == 0) ? 0 : 1 + bits_count(aValue >> 1);
 }
 
-template <typename T, uint8_t minBitsCount, uint8_t maxBitsCount,
-          uint8_t numBits>
-struct UIntContainer
-{
-    static constexpr bool value =
-        (numBits > minBitsCount) && (numBits <= maxBitsCount);
-    // using type = typename std::enable_if_t<(numBits > minBitsCount)&&(numBits
-    // <= maxBitsCount), T>;
-};
-template <typename T, uint8_t minBitsCount, uint8_t maxBitsCount,
-          uint8_t numBits>
-inline constexpr bool UIntV =
-    UIntContainer<T, minBitsCount, maxBitsCount, numBits>::value;
-
 template <uint8_t BitsCount>
 struct uint_from_nbits
 {
    private:
     static constexpr auto getType()
     {
-        if constexpr (UIntV<uint8_t, 0, 8, BitsCount>)
+        if constexpr ((BitsCount > 0) && (BitsCount <= 8))
         {
             return uint8_t();
         }
-        else if constexpr (UIntV<uint16_t, 8, 16, BitsCount>)
+        else if constexpr ((BitsCount > 8) && (BitsCount <= 16))
         {
             return uint16_t();
         }
-        else if constexpr (UIntV<uint32_t, 16, 32, BitsCount>)
+        else if constexpr ((BitsCount > 16) && (BitsCount <= 32))
         {
             return uint32_t();
         }
-        else if constexpr (UIntV<uint64_t, 32, 64, BitsCount>)
+        else if constexpr ((BitsCount > 32) && (BitsCount <= 64))
         {
             return uint64_t();
         }
