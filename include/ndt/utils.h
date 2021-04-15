@@ -79,14 +79,73 @@ extern const ipv6_t kIPv6Loopback;
 inline constexpr std::size_t kV4Capacity = sizeof(sockaddr_in);
 inline constexpr std::size_t kV6Capacity = sizeof(sockaddr_in6);
 
-constexpr uint8_t bit_count(const uint64_t aValue)
-{
-    return (aValue == 0) ? 0 : 1 + bit_count(aValue >> 1);
-}
-
 namespace utils
 {
 bool memvcmp(const void* memptr, unsigned char val, const std::size_t size);
+
+constexpr uint8_t bits_count(const uint64_t aValue)
+{
+    return (aValue == 0) ? 0 : 1 + bits_count(aValue >> 1);
+}
+
+template <typename T, uint8_t minBitsCount, uint8_t maxBitsCount,
+          uint8_t numBits>
+struct UIntContainer
+{
+    static constexpr bool value =
+        (numBits > minBitsCount) && (numBits <= maxBitsCount);
+    // using type = typename std::enable_if_t<(numBits > minBitsCount)&&(numBits
+    // <= maxBitsCount), T>;
+};
+template <typename T, uint8_t minBitsCount, uint8_t maxBitsCount,
+          uint8_t numBits>
+inline constexpr bool UIntV =
+    UIntContainer<T, minBitsCount, maxBitsCount, numBits>::value;
+
+template <uint8_t BitsCount>
+struct uint_from_nbits
+{
+   private:
+    static constexpr auto getType()
+    {
+        if constexpr (UIntV<uint8_t, 0, 8, BitsCount>)
+        {
+            return uint8_t();
+        }
+        else if constexpr (UIntV<uint16_t, 8, 16, BitsCount>)
+        {
+            return uint16_t();
+        }
+        else if constexpr (UIntV<uint32_t, 16, 32, BitsCount>)
+        {
+            return uint32_t();
+        }
+        else if constexpr (UIntV<uint64_t, 32, 64, BitsCount>)
+        {
+            return uint64_t();
+        }
+        else
+        {
+            static_assert(BitsCount < sizeof(uint64_t) * 8,
+                          "BitsCount count can't be more than 64");
+            return uint8_t();
+        }
+    }
+
+   public:
+    using type = decltype(getType());
+};
+
+template <uint8_t BitsCount>
+using uint_from_nbits_t = typename uint_from_nbits<BitsCount>::type;
+
+template <typename T>
+struct enum_properties
+{
+    static constexpr uint8_t numBits =
+        bits_count(static_cast<uint64_t>(T::Count));
+    using SerializeT = uint_from_nbits_t<numBits>;
+};
 
 template <typename T>
 constexpr std::size_t get_bits_size()
@@ -99,6 +158,22 @@ constexpr std::size_t get_bits_size<bool>()
 {
     return 1;
 }
+
+template <typename T>
+union UIntUnion
+{
+    using UIntT = typename utils::uint_from_nbits_t<utils::get_bits_size<T>()>;
+    UIntUnion(T aValue) : originalVal(aValue) {}
+    UIntUnion() : uintVal(0) {}
+    T originalVal;
+    UIntT uintVal;
+};
+
+template <typename T>
+using UIntUnion_T = typename UIntUnion<T>::UIntT;
+
+template <typename T>
+constexpr uint8_t UIntUnion_Bits = sizeof(UIntUnion_T<T>) * 8;
 
 template <typename... Ts>
 constexpr std::size_t sum_size()
