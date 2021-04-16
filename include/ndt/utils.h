@@ -2,7 +2,6 @@
 #define ndt_utils_h
 
 #include <cstring>
-#include <string_view>
 #include <type_traits>
 #include <unordered_map>
 
@@ -265,45 +264,10 @@ constexpr T toNet(const T aValue) noexcept
     return ByteOrder<T>::toNet(aValue);
 }
 
-enum class eEndian
+template <typename E>
+constexpr std::underlying_type_t<E> to_underlying(E e) noexcept
 {
-    kLittle,
-    kBig,
-    kMixed
-};
-
-constexpr eEndian endian() noexcept
-{
-    constexpr uint32_t val = 0x1020304;
-    constexpr uint32_t rval = 0x4030201;
-    if constexpr (toNet<uint32_t>(val) == rval)
-    {
-        return eEndian::kLittle;
-    }
-    else if (toNet<uint32_t>(val) == val)
-    {
-        return eEndian::kBig;
-    }
-    else
-    {
-        return eEndian::kMixed;
-    }
-}
-
-constexpr std::string_view endianName() noexcept
-{
-    if constexpr (endian() == eEndian::kLittle)
-    {
-        return "kLittle";
-    }
-    else if (endian() == eEndian::kBig)
-    {
-        return "kBig";
-    }
-    else
-    {
-        return "kMixed";
-    }
+    return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
 }  // namespace utils
