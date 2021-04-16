@@ -265,9 +265,9 @@ constexpr T toNet(const T aValue) noexcept
 }
 
 template <typename E>
-constexpr std::underlying_type_t<E> to_underlying(E e) noexcept
+constexpr auto to_underlying(E e) noexcept
 {
-    return static_cast<typename std::underlying_type<E>::type>(e);
+    return static_cast<typename std::underlying_type_t<E>>(e);
 }
 
 }  // namespace utils
