@@ -34,7 +34,7 @@ class BinBase
     {
         const UIntT leftAlignedMask =
             static_cast<UIntT>(static_cast<UIntT>(~UIntT(0))
-                               << (sizeof(UIntT) * kBitsInByte - aNumBits));
+                               << (utils::num_bits<UIntT>() - aNumBits));
         const UIntT hostByteOrderMask = leftAlignedMask >> bitIndex_;
         const UIntT mask = utils::toNet<UIntT>(hostByteOrderMask);
         return mask;
@@ -65,14 +65,14 @@ class BinReader final : public details::BinBase<BinReader>
         {
             if constexpr (std::is_signed_v<T>)
             {
-                using UIntT = typename utils::uint_from_nbits_t<
-                    utils::get_bits_size<T>()>;
-                const UIntT result = get<UIntT>(sizeof(UIntT) * kBitsInByte);
+                using UIntT =
+                    typename utils::uint_from_nbits_t<utils::num_bits<T>()>;
+                const UIntT result = get<UIntT>(utils::num_bits<UIntT>());
                 return utils::bit_cast<T>(result);
             }
             else
             {
-                return get<T>(sizeof(T) * kBitsInByte);
+                return get<T>(utils::num_bits<T>());
             }
         }
     }
@@ -103,8 +103,8 @@ T BinReader::get(const uint8_t aNumBits) const noexcept
     memcpy(&result, buffer_[byteIndex_], sizeof(T));
     result &= filledMask<T>(aNumBits);
     result = utils::toHost<T>(result) << bitIndex_;
-    result >>= sizeof(T) * kBitsInByte - aNumBits;
-    if (aNumBits + bitIndex_ > sizeof(T) * kBitsInByte)
+    result >>= utils::num_bits<T>() - aNumBits;
+    if (aNumBits + bitIndex_ > utils::num_bits<T>())
     {
         uint8_t lsbOffset =
             (1 + sizeof(T)) * kBitsInByte - aNumBits - bitIndex_;
@@ -134,14 +134,14 @@ class BinWriter final : public details::BinBase<BinWriter>
         {
             if constexpr (std::is_signed_v<T>)
             {
-                using UIntT = typename utils::uint_from_nbits_t<
-                    utils::get_bits_size<T>()>;
+                using UIntT =
+                    typename utils::uint_from_nbits_t<utils::num_bits<T>()>;
                 add<UIntT>(utils::bit_cast<UIntT>(aValue),
-                           sizeof(UIntT) * kBitsInByte);
+                           utils::num_bits<UIntT>());
             }
             else
             {
-                add<T>(aValue, sizeof(T) * kBitsInByte);
+                add<T>(aValue, utils::num_bits<T>());
             }
         }
     }
@@ -169,14 +169,14 @@ void BinWriter::add(const T aValue, const uint8_t aNumBits) noexcept
 {
     static_assert(std::is_unsigned_v<T>, "T must be unsigned type");
     static_assert(std::is_integral_v<T>, "T must be integral type");
-    const T leftAligned = aValue << (sizeof(T) * kBitsInByte - aNumBits);
+    const T leftAligned = aValue << (utils::num_bits<T>() - aNumBits);
     const T targetValue = utils::toNet<T>(leftAligned >> bitIndex_);
     T dest;
     memcpy(&dest, buffer_[byteIndex_], sizeof(T));
     dest &= ~filledMask<T>(aNumBits);
     dest |= targetValue;
     memcpy(buffer_[byteIndex_], &dest, sizeof(T));
-    if (aNumBits + bitIndex_ > sizeof(T) * kBitsInByte)
+    if (aNumBits + bitIndex_ > utils::num_bits<T>())
     {
         uint8_t lsbOffset =
             (1 + sizeof(T)) * kBitsInByte - aNumBits - bitIndex_;

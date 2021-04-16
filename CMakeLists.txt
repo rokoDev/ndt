@@ -31,7 +31,7 @@ list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
 	"-Wextra"
 	"-Wconversion"
 	"-Wsign-conversion"
-	"-Wshadow"
+	"-Wshadow-all"
 	"-Wunreachable-code"
 	"-Wuninitialized"
 	"-Wold-style-cast"

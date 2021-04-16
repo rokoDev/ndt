@@ -27,7 +27,7 @@ class Buffer
 
     inline uint8_t *operator[](std::size_t aIndex) noexcept
     {
-        return static_cast<uint8_t *>(data_) + aIndex;
+        return static_cast<uint8_t *>(static_cast<void *>(data_)) + aIndex;
     }
 
     template <size_t N, typename T>
@@ -84,7 +84,8 @@ class CBuffer
 
     uint8_t const *operator[](std::size_t aIndex) const noexcept
     {
-        return static_cast<uint8_t const *>(data_) + aIndex;
+        return static_cast<uint8_t const *>(static_cast<void const *>(data_)) +
+               aIndex;
     }
 
     template <typename T = buf_t>

@@ -135,13 +135,13 @@ struct enum_properties
 };
 
 template <typename T>
-constexpr std::size_t get_bits_size()
+constexpr std::size_t num_bits()
 {
     return 8 * sizeof(T);
 }
 
 template <>
-constexpr std::size_t get_bits_size<bool>()
+constexpr std::size_t num_bits<bool>()
 {
     return 1;
 }
@@ -149,7 +149,7 @@ constexpr std::size_t get_bits_size<bool>()
 template <typename... Ts>
 constexpr std::size_t sum_size()
 {
-    constexpr std::size_t bits_size = (get_bits_size<Ts>() + ...);
+    constexpr std::size_t bits_size = (num_bits<Ts>() + ...);
     if constexpr (bits_size % 8 > 0)
     {
         return bits_size / 8 + 1;
