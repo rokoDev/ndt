@@ -90,6 +90,7 @@ set(HEADERS
     ${MAIN_INCLUDE_DIR}/ndt/executor_select.h
     ${MAIN_INCLUDE_DIR}/ndt/bin_rw.h
     ${MAIN_INCLUDE_DIR}/ndt/endian.h
+    ${MAIN_INCLUDE_DIR}/ndt/index_maker.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)

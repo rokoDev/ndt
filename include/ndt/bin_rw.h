@@ -58,21 +58,18 @@ class BinReader final : public details::BinBase<BinReader>
     template <typename T>
     T get() const noexcept
     {
+        static_assert(std::is_enum_v<T> || std::is_arithmetic_v<T>,
+                      "T must be enum or arithmetic");
         if constexpr (std::is_enum_v<T>)
         {
             return getEnum<T>();
         }
-        else if (std::is_arithmetic_v<T>)
+        else
         {
             using UIntT =
                 typename utils::uint_from_nbits_t<utils::num_bits<T>()>;
             const UIntT result = get<UIntT>(utils::num_bits<UIntT>());
             return utils::bit_cast<T>(result);
-        }
-        else
-        {
-            static_assert(std::is_enum_v<T> || std::is_arithmetic_v<T>,
-                          "T must be enum or arithmetic");
         }
     }
 
@@ -125,21 +122,18 @@ class BinWriter final : public details::BinBase<BinWriter>
     template <typename T>
     void add(T aValue) noexcept
     {
+        static_assert(std::is_enum_v<T> || std::is_arithmetic_v<T>,
+                      "T must be enum or arithmetic");
         if constexpr (std::is_enum_v<T>)
         {
             addEnum(aValue);
         }
-        else if (std::is_arithmetic_v<T>)
+        else
         {
             using UIntT =
                 typename utils::uint_from_nbits_t<utils::num_bits<T>()>;
             add<UIntT>(utils::bit_cast<UIntT>(aValue),
                        utils::num_bits<UIntT>());
-        }
-        else
-        {
-            static_assert(std::is_enum_v<T> || std::is_arithmetic_v<T>,
-                          "T must be enum or arithmetic");
         }
     }
 
