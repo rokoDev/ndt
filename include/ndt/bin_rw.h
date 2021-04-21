@@ -1,6 +1,8 @@
 #ifndef ndt_bin_rw_h
 #define ndt_bin_rw_h
 
+#include <algorithm>
+
 #include "buffer.h"
 #include "endian.h"
 #include "utils.h"
@@ -83,8 +85,16 @@ class BinReader final : public details::BinBase<BinReader>
     template <typename E, typename U = std::enable_if_t<std::is_enum_v<E>>>
     E getEnum() const noexcept
     {
+        static_assert(std::is_unsigned_v<std::underlying_type_t<E>>,
+                      "E must have unsigned underlying type");
+        static_assert(
+            utils::to_underlying(E::Error) == utils::to_underlying(E::Count),
+            "E::Count must be equal to E::Error");
         using UIntT = typename utils::enum_properties<E>::SerializeT;
-        return static_cast<E>(get<UIntT>(utils::enum_properties<E>::numBits));
+        const auto result =
+            std::min(get<UIntT>(utils::enum_properties<E>::numBits),
+                     static_cast<UIntT>(E::Count));
+        return static_cast<E>(result);
     }
 
     CBuffer buffer_;

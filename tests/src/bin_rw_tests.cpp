@@ -8,12 +8,14 @@ template <typename std::size_t BufSize>
 class ByteTest : public ::testing::Test
 {
    public:
-    enum class eMySuperState
+    enum class eMySuperState : uint32_t
     {
         kState1,
         kState2,
         kState3,
-        Count
+        kState4,
+        Count,
+        Error = Count
     };
 
     ByteTest()
@@ -253,11 +255,7 @@ TEST_F(N100ByteTest, WriteReadUInt16AndUpTo16Bits)
     ASSERT_EQ(reader.get<uint64_t>(), UINT64_C(10524353777411039616));
     ASSERT_EQ(reader.get<bool>(), true);
     ASSERT_DOUBLE_EQ(reader.get<double>(), 74787833.459);
-    const auto bitsIndex = reader.bitIndex();
-    const auto byteIndex = reader.byteIndex();
     ASSERT_EQ(reader.get<eMySuperState>(), eMySuperState::kState2);
-    ASSERT_EQ(reader.bitIndex(), (bitsIndex + 2) % 8);
-    ASSERT_EQ(reader.byteIndex(), byteIndex + (bitsIndex + 2) / 8);
     ASSERT_EQ(reader.get<bool>(), false);
     ASSERT_EQ(reader.get<uint8_t>(5), 22);
     ASSERT_EQ(reader.get<uint16_t>(), 54300);
@@ -293,4 +291,34 @@ TEST_F(N100ByteTest, WriteReadRefsAndConstRefs)
     ASSERT_DOUBLE_EQ(reader.get<double>(), doubleRef);
     ASSERT_EQ(reader.get<char>(), 'k');
     ASSERT_EQ(reader.get<wchar_t>(), L'A');
+}
+
+TEST_F(N1ByteTest, WriteReadEnumError)
+{
+    writer.add<bool>(true);
+    writer.add<uint8_t>(0b00000100, 3);
+
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 4);
+
+    ASSERT_EQ(reader.get<bool>(), true);
+    ASSERT_EQ(reader.get<eMySuperState>(), eMySuperState::Error);
+
+    ASSERT_EQ(reader.byteIndex(), 0);
+    ASSERT_EQ(reader.bitIndex(), 4);
+}
+
+TEST_F(N1ByteTest, WriteReadEnumOverflow)
+{
+    writer.add<bool>(true);
+    writer.add<uint8_t>(0b00000101, 3);
+
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 4);
+
+    ASSERT_EQ(reader.get<bool>(), true);
+    ASSERT_EQ(reader.get<eMySuperState>(), eMySuperState::Error);
+
+    ASSERT_EQ(reader.byteIndex(), 0);
+    ASSERT_EQ(reader.bitIndex(), 4);
 }
