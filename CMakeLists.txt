@@ -91,6 +91,7 @@ set(HEADERS
     ${MAIN_INCLUDE_DIR}/ndt/bin_rw.h
     ${MAIN_INCLUDE_DIR}/ndt/endian.h
     ${MAIN_INCLUDE_DIR}/ndt/index_maker.h
+    ${MAIN_INCLUDE_DIR}/ndt/packet.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -104,6 +105,7 @@ set(SOURCES
 	${SOURCE_DIR}/system_wrappers.cpp
     ${SOURCE_DIR}/platform/win/context_base_error.cpp
     ${SOURCE_DIR}/endian.cpp
+    ${SOURCE_DIR}/packet.cpp
 	)
 
 if(WIN32)

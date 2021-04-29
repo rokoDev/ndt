@@ -31,7 +31,7 @@ UDP::UDP(const eAddressFamily aAF) noexcept
 {
 }
 
-int UDP::sysFamily() const noexcept { return _af; }
+uint8_t UDP::sysFamily() const noexcept { return _af; }
 
 int UDP::sysSocketType() const noexcept { return SOCK_DGRAM; }
 

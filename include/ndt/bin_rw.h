@@ -17,6 +17,15 @@ class BinBase
    public:
     std::size_t byteIndex() const noexcept { return byteIndex_; }
     uint8_t bitIndex() const noexcept { return bitIndex_; }
+    std::size_t size() const noexcept
+    {
+        return byteIndex_ + ((bitIndex_ != 0) ? 1 : 0);
+    }
+    std::size_t bitSize() const noexcept { return byteIndex_ * 8 + bitIndex_; }
+    std::size_t bitCapacity() const noexcept
+    {
+        return (static_cast<T const *>(this))->bitCapacityImpl();
+    }
 
    protected:
     ~BinBase() = default;
@@ -51,6 +60,8 @@ class BinBase
 
 class BinReader final : public details::BinBase<BinReader>
 {
+    friend class details::BinBase<BinReader>;
+
    public:
     constexpr explicit BinReader(CBuffer aBuf) noexcept : buffer_(aBuf) {}
 
@@ -97,6 +108,11 @@ class BinReader final : public details::BinBase<BinReader>
         return static_cast<E>(result);
     }
 
+    std::size_t bitCapacityImpl() const noexcept
+    {
+        return buffer_.size() * kBitsInByte;
+    }
+
     CBuffer buffer_;
 };
 
@@ -108,7 +124,7 @@ T BinReader::get(const uint8_t aNumBits) const noexcept
     T result;
     memcpy(&result, buffer_[byteIndex_], sizeof(T));
     result &= filledMask<T>(aNumBits);
-    result = toHost<T>(result) << bitIndex_;
+    result = static_cast<T>(toHost<T>(result) << bitIndex_);
     result >>= utils::num_bits<T>() - aNumBits;
     if (aNumBits + bitIndex_ > utils::num_bits<T>())
     {
@@ -123,6 +139,8 @@ T BinReader::get(const uint8_t aNumBits) const noexcept
 
 class BinWriter final : public details::BinBase<BinWriter>
 {
+    friend class details::BinBase<BinWriter>;
+
    public:
     constexpr explicit BinWriter(Buffer aBuf) noexcept : buffer_(aBuf) {}
 
@@ -162,6 +180,11 @@ class BinWriter final : public details::BinBase<BinWriter>
                    utils::enum_properties<E>::numBits);
     }
 
+    std::size_t bitCapacityImpl() const noexcept
+    {
+        return buffer_.size() * kBitsInByte;
+    }
+
     Buffer buffer_;
 };
 
@@ -170,7 +193,8 @@ void BinWriter::add(const T aValue, const uint8_t aNumBits) noexcept
 {
     static_assert(std::is_unsigned_v<T>, "T must be unsigned type");
     static_assert(std::is_integral_v<T>, "T must be integral type");
-    const T leftAligned = aValue << (utils::num_bits<T>() - aNumBits);
+    const T leftAligned =
+        static_cast<T>(aValue << (utils::num_bits<T>() - aNumBits));
     const T targetValue = toNet<T>(leftAligned >> bitIndex_);
     T dest;
     memcpy(&dest, buffer_[byteIndex_], sizeof(T));

@@ -246,7 +246,7 @@ std::size_t SocketBase<SysWrapperT>::recvFrom(Buffer &aBuf, Address &aSender,
                               aSender.nativeData(), &addrlen);
     if (ndt::kSocketError != bytesReceived)
     {
-        aBuf.setSize(bytesReceived);
+        aBuf.setSize(static_cast<std::size_t>(bytesReceived));
     }
     else
     {

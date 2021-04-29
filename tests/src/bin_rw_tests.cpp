@@ -1,7 +1,7 @@
 #include <fmt/core.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
-#include "gtest/gtest.h"
 #include "ndt/bin_rw.h"
 
 template <typename std::size_t BufSize>
@@ -58,6 +58,7 @@ class ByteTest : public ::testing::Test
 };
 
 using N1ByteTest = ByteTest<1>;
+using N2ByteTest = ByteTest<2>;
 using N100ByteTest = ByteTest<100>;
 
 TEST_F(N1ByteTest, ReaderConstructor)
@@ -141,6 +142,7 @@ TEST_F(N100ByteTest, WriteReadBoolAndUpTo8Bits)
 
 TEST_F(N100ByteTest, WriteReadUInt8)
 {
+    ASSERT_EQ(writer.bitCapacity(), 100 * 8);
     writer.add<uint8_t>(120);
     writer.add<uint8_t>(255);
     writer.add<uint8_t>(0);
@@ -149,6 +151,8 @@ TEST_F(N100ByteTest, WriteReadUInt8)
 
     ASSERT_EQ(writer.byteIndex(), 5);
     ASSERT_EQ(writer.bitIndex(), 0);
+    ASSERT_EQ(writer.bitCapacity(), 100 * 8);
+    ASSERT_EQ(reader.bitCapacity(), 100 * 8);
 
     ASSERT_EQ(reader.get<uint8_t>(), 120);
     ASSERT_EQ(reader.get<uint8_t>(), 255);
@@ -158,6 +162,7 @@ TEST_F(N100ByteTest, WriteReadUInt8)
 
     ASSERT_EQ(reader.byteIndex(), 5);
     ASSERT_EQ(reader.bitIndex(), 0);
+    ASSERT_EQ(reader.bitCapacity(), 100 * 8);
 }
 
 TEST_F(N100ByteTest, WriteReadUInt16)
@@ -210,6 +215,7 @@ TEST_F(N100ByteTest, WriteReadUInt16AndUpTo8Bits)
 
 TEST_F(N100ByteTest, WriteReadUInt16AndUpTo16Bits)
 {
+    ASSERT_EQ(writer.bitCapacity(), 100 * 8);
     writer.add<uint16_t>(1200);
     writer.add<uint8_t>(40, 6);
     writer.add<uint32_t>(185691945, 28);
@@ -235,7 +241,9 @@ TEST_F(N100ByteTest, WriteReadUInt16AndUpTo16Bits)
     writer.add<uint16_t>(54300);
     writer.add(eMySuperState::kState3);
     writer.add<uint8_t>(73, 7);
+    ASSERT_EQ(writer.bitCapacity(), 100 * 8);
 
+    ASSERT_EQ(reader.bitCapacity(), 100 * 8);
     ASSERT_EQ(reader.get<uint16_t>(), 1200);
     ASSERT_EQ(reader.get<uint8_t>(6), 40);
     ASSERT_EQ(reader.get<uint32_t>(28), 185691945);
@@ -261,6 +269,7 @@ TEST_F(N100ByteTest, WriteReadUInt16AndUpTo16Bits)
     ASSERT_EQ(reader.get<uint16_t>(), 54300);
     ASSERT_EQ(reader.get<eMySuperState>(), eMySuperState::kState3);
     ASSERT_EQ(reader.get<uint8_t>(7), 73);
+    ASSERT_EQ(reader.bitCapacity(), 100 * 8);
 }
 
 TEST_F(N100ByteTest, WriteReadRefsAndConstRefs)
@@ -295,17 +304,21 @@ TEST_F(N100ByteTest, WriteReadRefsAndConstRefs)
 
 TEST_F(N1ByteTest, WriteReadEnumError)
 {
+    ASSERT_EQ(writer.bitCapacity(), 1 * 8);
     writer.add<bool>(true);
     writer.add<uint8_t>(0b00000100, 3);
 
     ASSERT_EQ(writer.byteIndex(), 0);
     ASSERT_EQ(writer.bitIndex(), 4);
+    ASSERT_EQ(writer.bitCapacity(), 1 * 8);
 
+    ASSERT_EQ(reader.bitCapacity(), 1 * 8);
     ASSERT_EQ(reader.get<bool>(), true);
     ASSERT_EQ(reader.get<eMySuperState>(), eMySuperState::Error);
 
     ASSERT_EQ(reader.byteIndex(), 0);
     ASSERT_EQ(reader.bitIndex(), 4);
+    ASSERT_EQ(reader.bitCapacity(), 1 * 8);
 }
 
 TEST_F(N1ByteTest, WriteReadEnumOverflow)
@@ -321,4 +334,56 @@ TEST_F(N1ByteTest, WriteReadEnumOverflow)
 
     ASSERT_EQ(reader.byteIndex(), 0);
     ASSERT_EQ(reader.bitIndex(), 4);
+}
+
+TEST_F(N2ByteTest, SizeAfterWrite)
+{
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 0);
+    ASSERT_EQ(writer.size(), 0);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 1);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 2);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 3);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 4);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 5);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 6);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 0);
+    ASSERT_EQ(writer.bitIndex(), 7);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 1);
+    ASSERT_EQ(writer.bitIndex(), 0);
+    ASSERT_EQ(writer.size(), 1);
+
+    writer.add<bool>(true);
+    ASSERT_EQ(writer.byteIndex(), 1);
+    ASSERT_EQ(writer.bitIndex(), 1);
+    ASSERT_EQ(writer.size(), 2);
 }

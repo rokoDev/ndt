@@ -18,7 +18,7 @@ class UDP final
     eSocketType getSocketType() const noexcept;
     eIPProtocol getProtocol() const noexcept;
 
-    int sysFamily() const noexcept;
+    uint8_t sysFamily() const noexcept;
     int sysSocketType() const noexcept;
     int sysProtocol() const noexcept;
 
@@ -27,7 +27,7 @@ class UDP final
 
    private:
     explicit UDP(const eAddressFamily aAF) noexcept;
-    int _af;
+    uint8_t _af;
 };
 }  // namespace ndt
 
