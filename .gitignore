@@ -27,6 +27,7 @@ target/
 dist/
 
 build/
+deps_content/
 
 # JetBrains IDE
 .idea/
