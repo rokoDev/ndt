@@ -35,4 +35,5 @@ package_add_test(${ProjectName}
     src/endian_tests.cpp
     src/index_maker_tests.cpp
     src/packet_tests.cpp
+    src/server_example.cpp
 	)

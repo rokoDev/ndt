@@ -92,6 +92,7 @@ set(HEADERS
     ${MAIN_INCLUDE_DIR}/ndt/endian.h
     ${MAIN_INCLUDE_DIR}/ndt/index_maker.h
     ${MAIN_INCLUDE_DIR}/ndt/packet.h
+    ${MAIN_INCLUDE_DIR}/ndt/packet_handlers.h
 	)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
