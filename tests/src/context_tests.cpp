@@ -1,10 +1,10 @@
 #include <fmt/core.h>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <memory>
 #include <vector>
 
-#include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include "ndt/context.h"
 #include "ndt/exception.h"
 #include "ndt/thread_pool.h"

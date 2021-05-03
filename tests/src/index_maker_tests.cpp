@@ -1,4 +1,5 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+
 #include "ndt/index_maker.h"
 
 TEST(IndexMakerTest, MaxIndex1)

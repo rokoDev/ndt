@@ -1,6 +1,6 @@
 #include <fmt/core.h>
+#include <gtest/gtest.h>
 
-#include "gtest/gtest.h"
 #include "ndt/endian.h"
 #include "ndt/version_info.h"
 

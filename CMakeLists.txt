@@ -61,106 +61,20 @@ endif()
 
 message(STATUS "ALL_CXX_FLAGS: ${ALL_CXX_FLAGS}")
 
-set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
-
-set(INCLUDE_DIRS
-	${MAIN_INCLUDE_DIR}
-	${CMAKE_CURRENT_LIST_DIR}/fmt/include
-	)
-set(HEADERS
-	${MAIN_INCLUDE_DIR}/ndt/common.h
-	${MAIN_INCLUDE_DIR}/ndt/socket.h
-	${MAIN_INCLUDE_DIR}/ndt/utils.h
-	${MAIN_INCLUDE_DIR}/ndt/fast_pimpl.h
-	${MAIN_INCLUDE_DIR}/ndt/udp.h
-	${MAIN_INCLUDE_DIR}/ndt/address.h
-	${MAIN_INCLUDE_DIR}/ndt/exception.h
-	${MAIN_INCLUDE_DIR}/ndt/thread_pool.h
-	${MAIN_INCLUDE_DIR}/ndt/buffer.h
-	${MAIN_INCLUDE_DIR}/ndt/system_wrappers.h
-	${MAIN_INCLUDE_DIR}/ndt/context.h
-	${MAIN_INCLUDE_DIR}/ndt/useful_base_types.h
-    ${MAIN_INCLUDE_DIR}/ndt/executor_select_base.h
-	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
-    ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
-	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
-    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
-    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
-    ${MAIN_INCLUDE_DIR}/ndt/event_handler_select.h
-    ${MAIN_INCLUDE_DIR}/ndt/executor_select.h
-    ${MAIN_INCLUDE_DIR}/ndt/bin_rw.h
-    ${MAIN_INCLUDE_DIR}/ndt/endian.h
-    ${MAIN_INCLUDE_DIR}/ndt/index_maker.h
-    ${MAIN_INCLUDE_DIR}/ndt/packet.h
-    ${MAIN_INCLUDE_DIR}/ndt/packet_handlers.h
-	)
-
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(SOURCES
-	${SOURCE_DIR}/utils.cpp
-	${SOURCE_DIR}/udp.cpp
-	${SOURCE_DIR}/address.cpp
-	${SOURCE_DIR}/exception.cpp
-	${SOURCE_DIR}/common.cpp
-	${SOURCE_DIR}/thread_pool.cpp
-	${SOURCE_DIR}/system_wrappers.cpp
-    ${SOURCE_DIR}/platform/win/context_base_error.cpp
-    ${SOURCE_DIR}/endian.cpp
-    ${SOURCE_DIR}/packet.cpp
-	)
-
-if(WIN32)
-      # Don't need to compile this files for Windows platforms
-      set_source_files_properties(
-      	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
-       PROPERTIES
-          HEADER_FILE_ONLY YES
-      )
-else()
-	# Don't need to compile this file for non-Windows platforms
-      set_source_files_properties(
-      	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
-        ${SOURCE_DIR}/platform/win/context_base_error.cpp
-      	PROPERTIES
-          HEADER_FILE_ONLY YES
-      )
-endif()
-
-source_group(
-	TREE   ${MAIN_INCLUDE_DIR}
-	PREFIX "include"
-	FILES  ${HEADERS}
-)
-
-source_group(
-	TREE   ${SOURCE_DIR}
-	PREFIX "src"
-	FILES  ${SOURCES}
-)
-
-include_directories("${INCLUDE_DIRS}")
-
+# Add dependencies
 add_subdirectory(deps)
 
 # Create library
-message(STATUS "BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
-add_library(${ProjectName} ${SOURCES} ${HEADERS})
+add_library(${ProjectName} "")
 
-test_big_endian(HOST_BIG_ENDIAN)
-if(HOST_BIG_ENDIAN)
-    target_compile_definitions(${ProjectName} PRIVATE HOST_BIG_ENDIAN)
-endif()
+# Add sources, definitions, link dependencies, etc.
+add_subdirectory(sources)
 
-target_compile_definitions(${ProjectName} PRIVATE $<UPPER_CASE:$<CONFIG>>)
-target_compile_options(${ProjectName} PRIVATE ${ALL_CXX_FLAGS})
-set_target_properties(${ProjectName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(${ProjectName} PUBLIC "${ProjectName}_versionInfo" fmt)
-target_include_directories(${ProjectName} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+# Create groups in the IDE which mirrors directory structure on the hard disk
+get_target_property(ndt_sources ndt SOURCES)
+source_group(
+  TREE   ${CMAKE_CURRENT_SOURCE_DIR}/sources
+  FILES  ${ndt_sources}
 )
 
 # Things typically only needed if we are the top level project

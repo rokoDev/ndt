@@ -1,7 +1,6 @@
 #include <fmt/core.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-
 #include <chrono>
 
 #include "ndt/address.h"

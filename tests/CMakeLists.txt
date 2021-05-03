@@ -20,8 +20,8 @@ if (WIN32)
     option(GTEST_FORCE_SHARED_CRT "Use shared (DLL) run-time lib even when Google Test is built as static lib." ON)
 endif (WIN32)
 
+
 macro(package_add_test TESTNAME)
-	include_directories("include")
     add_executable(${TESTNAME} ${ARGN})
     target_link_libraries(${TESTNAME} gtest gmock gtest_main ${outProjectName})
     add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})

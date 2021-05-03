@@ -1,4 +1,5 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
+
 #include "ndt/address.h"
 #include "ndt/utils.h"
 
