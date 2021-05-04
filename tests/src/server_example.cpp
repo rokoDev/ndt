@@ -68,7 +68,7 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
     {
         std::error_code err;
         ndt::Buffer buf(recvBuffer_);
-        const auto bytesReceived = s.recvFrom(buf, sender_, err);
+        s.recvFrom(buf, sender_, err);
         if (!err)
         {
             ndt::BinReader reader((ndt::CBuffer(buf)));

@@ -9,3 +9,6 @@ FetchContent_Declare(fmt
 	GIT_TAG 9cb347b4b2e80fc9fbf57b8621746663c3f870f6)
 
 FetchContent_MakeAvailable(fmt)
+
+# If use IDE add fmt target into deps/googletest group
+set_target_properties(fmt PROPERTIES FOLDER deps)

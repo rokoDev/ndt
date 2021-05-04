@@ -73,7 +73,7 @@ endif()
 target_compile_definitions(ndt PRIVATE $<UPPER_CASE:$<CONFIG>>)
 target_compile_options(ndt PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(ndt PROPERTIES POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(ndt PUBLIC "ndt_versionInfo" fmt)
+target_link_libraries(ndt PUBLIC fmt)
 target_include_directories(ndt PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>

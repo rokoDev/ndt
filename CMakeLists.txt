@@ -15,11 +15,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(TestBigEndian)
 
+# To organize targets into groups when using IDE like XCode or VisualStudio, etc.
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# Create library
+add_library(ndt "")
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/VersionHelper")
 include(VersionInfoUtils)
 m_generate_version_info(PROJECT_NAME ${ProjectName}
 	                    CPP_NAMESPACE "ndt"
-	                    BUILD_TYPES Debug Release)
+	                    BUILD_TYPES Debug Release
+	                    IDE_SRC_GROUP "generated"
+	                    TARGET_NAME "ndt")
 
 message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
@@ -50,22 +58,21 @@ list(APPEND WIN_BUILD_TYPES_CLANG_FLAGS
 	)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-  if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
+  if("${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
     list(APPEND ALL_CXX_FLAGS "${WIN_BUILD_TYPES_CLANG_FLAGS}")
-  elseif(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL GNU)
+  elseif("${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "GNU")
     list(APPEND ALL_CXX_FLAGS "${UNIX_BUILD_TYPES_CLANG_FLAGS}")
   endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
   list(APPEND ALL_CXX_FLAGS "${UNIX_BUILD_TYPES_CLANG_FLAGS}")# "${CMAKE_CXX_FLAGS}"
+else()
+	message(STATUS "SIMULATE_ID: Unknown")
 endif()
 
 message(STATUS "ALL_CXX_FLAGS: ${ALL_CXX_FLAGS}")
 
 # Add dependencies
 add_subdirectory(deps)
-
-# Create library
-add_library(${ProjectName} "")
 
 # Add sources, definitions, link dependencies, etc.
 add_subdirectory(sources)
