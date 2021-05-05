@@ -13,50 +13,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(TestBigEndian)
-
-message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
-message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "CMAKE_CXX_COMPILER_FRONTEND_VARIANT: ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
-
-list(APPEND UNIX_BUILD_TYPES_CLANG_FLAGS
-	"-std=c++17"
-	"-Werror"
-	"-pedantic-errors"
-	"-Wall"
-	"-Wextra"
-	"-Wconversion"
-	"-Wsign-conversion"
-	"-Wshadow-all"
-	"-Wunreachable-code"
-	"-Wuninitialized"
-	"-Wold-style-cast"
-	"-Wfloat-equal"
-	"-Wcast-align"
-	"-Winvalid-constexpr"
-	)
-
-list(APPEND WIN_BUILD_TYPES_CLANG_FLAGS
-	"/std:c++17"
-	"/WX"
-	"/permissive-"
-	"/W4"
-	)
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-  if("${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "MSVC")
-    list(APPEND ALL_CXX_FLAGS "${WIN_BUILD_TYPES_CLANG_FLAGS}")
-  elseif("${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "GNU")
-    list(APPEND ALL_CXX_FLAGS "${UNIX_BUILD_TYPES_CLANG_FLAGS}")
-  endif()
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL AppleClang)
-  list(APPEND ALL_CXX_FLAGS "${UNIX_BUILD_TYPES_CLANG_FLAGS}")# "${CMAKE_CXX_FLAGS}"
-else()
-	message(STATUS "SIMULATE_ID: Unknown")
-endif()
-
-message(STATUS "ALL_CXX_FLAGS: ${ALL_CXX_FLAGS}")
-
 # To organize targets into groups when using IDE like XCode or VisualStudio, etc.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
