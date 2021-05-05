@@ -22,12 +22,12 @@ FetchContent_Declare(
   GIT_TAG        c50c9f6743f8791439313246c56f476a7b1e0b84
 )
 FetchContent_GetProperties(VersionHelper)
-if(NOT VersionHelper_POPULATED)
+if(NOT versionhelper_POPULATED)
   FetchContent_Populate(VersionHelper)
+  list(APPEND CMAKE_MODULE_PATH "${versionhelper_SOURCE_DIR}")
 endif()
 
 # Generate sources with information about ndt version
-list(APPEND CMAKE_MODULE_PATH "${versionhelper_SOURCE_DIR}")
 include(VersionInfoUtils)
 m_generate_version_info(PROJECT_NAME ${ProjectName}
 	                    CPP_NAMESPACE "ndt"
