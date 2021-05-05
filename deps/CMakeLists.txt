@@ -19,7 +19,7 @@ set_target_properties(fmt PROPERTIES FOLDER deps)
 FetchContent_Declare(
   VersionHelper
   GIT_REPOSITORY https://github.com/rokoDev/VersionHelper.git
-  GIT_TAG        2cd088a8f0573dce70d0b929270a5b97e94c0388
+  GIT_TAG        c50c9f6743f8791439313246c56f476a7b1e0b84
 )
 FetchContent_GetProperties(VersionHelper)
 if(NOT VersionHelper_POPULATED)
