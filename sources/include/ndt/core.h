@@ -13,6 +13,7 @@
 #include "executor_select_base.h"
 #include "fast_pimpl.h"
 #include "index_maker.h"
+#include "ndt/version_info.h"
 #include "packet.h"
 #include "packet_handlers.h"
 #include "socket.h"
