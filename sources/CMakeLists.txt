@@ -44,10 +44,8 @@ endif()
 message(STATUS "ALL_CXX_FLAGS: ${ALL_CXX_FLAGS}")
 
 target_sources(ndt
-  PUBLIC
-    include/ndt/core.h
-
 	PRIVATE
+    include/ndt/core.h
     include/ndt/common.h
     include/ndt/socket.h
     include/ndt/utils.h
