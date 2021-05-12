@@ -2,7 +2,7 @@
 
 namespace ndt
 {
-PacketId::PacketId() = default;
-UserId::UserId() = default;
-TimeStamp::TimeStamp() = default;
+PacketId::PacketId() noexcept = default;
+UserId::UserId() noexcept = default;
+TimeStamp::TimeStamp() noexcept = default;
 }  // namespace ndt

@@ -1,13 +1,16 @@
 #include <fmt/core.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
 #include <chrono>
+#include <thread>
 
 #include "ndt/address.h"
 #include "ndt/context.h"
 #include "ndt/event_handler_select.h"
 #include "ndt/packet_handlers.h"
 #include "ndt/udp.h"
+#include "packet_info.h"
 
 enum class eClientPacket : uint8_t
 {
@@ -18,6 +21,29 @@ enum class eClientPacket : uint8_t
     Count,
     Error = Count
 };
+
+void printErrorCode(const std::error_code &aError)
+{
+    fmt::print("error: {}\nmsg: {}\n", aError.value(), aError.message());
+}
+
+void printErrorCodeAndExit(const std::error_code &aError)
+{
+    printErrorCode(aError);
+    exit(aError.value());
+}
+
+void printSysError(const int aValue)
+{
+    const auto err = std::error_code(aValue, std::system_category());
+    printErrorCode(err);
+}
+
+void printSysErrorAndExit(const int aValue)
+{
+    printSysError(aValue);
+    exit(aValue);
+}
 
 using namespace std::chrono_literals;
 
@@ -99,6 +125,8 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
     void handleJoin([[maybe_unused]] ndt::BinReader &aReader) noexcept
     {
         fmt::print("eClientPacket::kJoin received\n");
+        using namespace client;
+        JoinPacket packet = PacketFactory<ePacketType::kJoin>::create(aReader);
     }
 
     void handleLeave([[maybe_unused]] ndt::BinReader &aReader) noexcept
@@ -125,11 +153,7 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
    private:
     void handleTimeout() { fmt::print("SELECT timeout\n"); }
 
-    void handleError(std::error_code aError)
-    {
-        fmt::print("error: {}\nmsg: {}\n", aError.value(), aError.message());
-        exit(aError.value());
-    }
+    void handleError(std::error_code aError) { printErrorCodeAndExit(aError); }
 
     microseconds timeStep_ = 200ms;
     static constexpr uint16_t port_ = 4123;
@@ -140,8 +164,89 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
     char sendBuffer_[1024];
 };
 
+template <std::size_t kBufSize, std::size_t kMaxPacketCount = 100>
+class NetSimulator
+{
+   public:
+    constexpr NetSimulator()
+        : buf_(rawBuf_), writer_(buf_), reader_(ndt::CBuffer(buf_))
+    {
+    }
+
+    template <typename PacketT>
+    void addPacket(const std::chrono::microseconds aDelay,
+                   const PacketT &aPacket) noexcept
+    {
+        if (nextWIndex_ >= kMaxPacketCount)
+        {
+            printSysErrorAndExit(ENOMEM);
+        }
+        // writer_.add(aDelay.count());
+        const auto err = aPacket.serialize(writer_);
+        if (err)
+        {
+            printErrorCodeAndExit(err);
+        }
+        packetsInfo_[nextWIndex_].first = aDelay;
+        packetsInfo_[nextWIndex_].second = writer_.size();
+        writer_.alignByte();
+        ++nextWIndex_;
+    }
+
+    void addData(const std::chrono::microseconds aDelay,
+                 ndt::CBuffer &aBuf) noexcept
+    {
+    }
+
+    void getData(ndt::Buffer &aBuf) noexcept
+    {
+        if (nextPacketIndex_ >= nextWIndex_)
+        {
+            printSysErrorAndExit(ENODATA);
+        }
+        const auto packetSize = packetsInfo_[nextPacketIndex_].second;
+        if (aBuf.size() < packetSize)
+        {
+            printSysErrorAndExit(ENOMEM);
+        }
+
+        std::this_thread::sleep_for(packetsInfo_[nextPacketIndex_].first);
+        char *bufData = aBuf.data<char>();
+        std::memcpy(bufData, rawBuf_ + rBeginIdx_, packetSize);
+        aBuf.setSize(packetSize);
+        rBeginIdx_ += packetSize;
+        ++nextPacketIndex_;
+    }
+
+   private:
+    std::size_t rBeginIdx_ = 0;
+    std::size_t nextPacketIndex_ = 0;
+    std::size_t nextWIndex_ = 0;
+    std::array<std::pair<std::chrono::microseconds, std::size_t>,
+               kMaxPacketCount>
+        packetsInfo_;
+    char *rawBuf_[kBufSize];
+    ndt::Buffer buf_;
+    ndt::BinWriter writer_;
+    ndt::BinReader reader_;
+};
+
 TEST(PacketHandler, LackOfSpaceWrite)
 {
+    using namespace std::chrono;
+    client::JoinPacket joinPacket;
+    joinPacket.packetId(0);
+
+    NetSimulator<2048> dataSim;
+    dataSim.addPacket(50ms, joinPacket);
+
+    char *rawBuf[256];
+    ndt::Buffer buf(rawBuf);
+    dataSim.getData(buf);
+
+    std::array<std::pair<microseconds, char *const>, 2> incomeData = {
+
+    };
     ndt::Context<ndt::System> context;
     Server server(context);
     // context.run();

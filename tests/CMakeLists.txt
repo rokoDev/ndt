@@ -21,7 +21,8 @@ endif (WIN32)
 
 
 macro(package_add_test TESTNAME)
-    add_executable(${TESTNAME} ${ARGN})
+    add_executable(${TESTNAME} ${ARGN} include/packet_info.h)
+    target_include_directories(${TESTNAME} include)
     target_link_libraries(${TESTNAME} gtest gmock gtest_main ndt)
     add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
@@ -29,7 +30,7 @@ macro(package_add_test TESTNAME)
     # Create groups in the IDE which mirrors directory structure on the hard disk
     get_target_property(ndt_tests_src ${TESTNAME} SOURCES)
     source_group(
-      TREE   ${CMAKE_CURRENT_SOURCE_DIR}/src
+      TREE   ${CMAKE_CURRENT_SOURCE_DIR}#/src
       FILES  ${ndt_tests_src}
     )
 endmacro()

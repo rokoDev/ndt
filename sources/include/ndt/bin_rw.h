@@ -15,16 +15,36 @@ template <typename T>
 class BinBase
 {
    public:
-    std::size_t byteIndex() const noexcept { return byteIndex_; }
-    uint8_t bitIndex() const noexcept { return bitIndex_; }
-    std::size_t size() const noexcept
+    inline std::size_t byteIndex() const noexcept { return byteIndex_; }
+    inline uint8_t bitIndex() const noexcept { return bitIndex_; }
+    inline std::size_t size() const noexcept
     {
         return byteIndex_ + ((bitIndex_ != 0) ? 1 : 0);
     }
-    std::size_t bitSize() const noexcept { return byteIndex_ * 8 + bitIndex_; }
-    std::size_t bitCapacity() const noexcept
+    inline std::size_t bitSize() const noexcept
+    {
+        return byteIndex_ * 8 + bitIndex_;
+    }
+    inline std::size_t bitCapacity() const noexcept
     {
         return (static_cast<T const *>(this))->bitCapacityImpl();
+    }
+    inline std::size_t bitsLeft() const noexcept
+    {
+        return bitCapacity() - bitSize();
+    }
+    inline void reset() const noexcept
+    {
+        byteIndex_ = 0;
+        bitIndex_ = 0;
+    }
+    inline void alignByte() const noexcept
+    {
+        if (bitIndex_ != 0)
+        {
+            bitIndex_ = 0;
+            ++byteIndex_;
+        }
     }
 
    protected:
