@@ -4,6 +4,8 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 
+#include <array>
+#include <chrono>
 #include <cstring>
 #include <system_error>
 #include <type_traits>
@@ -16,6 +18,13 @@
 
 namespace ndt
 {
+union sa_u
+{
+    sockaddr sa;
+    sockaddr_in sa4;
+    sockaddr_in6 sa6;
+};
+
 enum class eSocketType : std::uint8_t
 {
     kStream,
@@ -83,6 +92,96 @@ extern const ipv6_t kIPv6Loopback;
 
 inline constexpr std::size_t kV4Capacity = sizeof(sockaddr_in);
 inline constexpr std::size_t kV6Capacity = sizeof(sockaddr_in6);
+
+template <typename T>
+using Int =
+    std::enable_if_t<std::is_signed_v<T> && !std::is_same_v<T, bool>, T>;
+
+template <typename T>
+using UInt =
+    std::enable_if_t<std::is_unsigned_v<T> && !std::is_same_v<T, bool>, T>;
+
+template <typename T>
+struct is_std_array : std::false_type
+{
+};
+
+template <typename DataT, std::size_t Size>
+struct is_std_array<std::array<DataT, Size>> : std::true_type
+{
+};
+
+template <typename T>
+inline constexpr bool is_std_array_v = is_std_array<std::decay_t<T>>::value;
+
+template <typename T>
+inline constexpr std::size_t std_array_size_v =
+    std::tuple_size_v<std::decay_t<T>>;
+
+template <typename T>
+using std_array_data_t = typename std::tuple_element_t<0, std::decay_t<T>>;
+
+template <typename A1, typename A2>
+inline constexpr bool is_same_data_std_arrays =
+    is_std_array_v<A1>&& is_std_array_v<A2>&&
+        std::is_same_v<std_array_data_t<A1>, std_array_data_t<A2>>;
+
+template <typename... Arrays>
+inline constexpr std::size_t std_array_sizes_sum = (0 + ... +
+                                                    std_array_size_v<Arrays>);
+
+namespace details
+{
+template <typename A1, typename A2, std::size_t... i1, std::size_t... i2,
+          typename = std::enable_if_t<is_same_data_std_arrays<A1, A2>>>
+static constexpr auto concatenate_2_arrays(A1&& aArray1, A2&& aArray2,
+                                           std::index_sequence<i1...>,
+                                           std::index_sequence<i2...>) noexcept
+    -> std::array<std_array_data_t<A1>, std_array_sizes_sum<A1, A2>>
+{
+    return {std::get<i1>(std::forward<A1>(aArray1))...,
+            std::get<i2>(std::forward<A2>(aArray2))...};
+}
+
+template <typename T, typename = std::enable_if_t<is_std_array_v<T>>>
+constexpr decltype(auto) concatenate_arrays(T&& aArray) noexcept
+{
+    return std::forward<T>(aArray);
+}
+
+template <typename A1, typename A2, typename... RestArrays>
+constexpr auto concatenate_arrays(A1&& aArray1, A2&& aArray2,
+                                  RestArrays&&... aArrays) noexcept
+    -> std::array<std_array_data_t<A1>,
+                  std_array_sizes_sum<A1, A2, RestArrays...>>
+{
+    using Indices1 = std::make_index_sequence<std_array_size_v<A1>>;
+    using Indices2 = std::make_index_sequence<std_array_size_v<A2>>;
+    return concatenate_arrays(
+        details::concatenate_2_arrays(std::forward<A1>(aArray1),
+                                      std::forward<A2>(aArray2), Indices1{},
+                                      Indices2{}),
+        std::forward<RestArrays>(aArrays)...);
+}
+}  //  namespace details
+
+template <typename Array, typename... RestArrays>
+constexpr auto concatenate_arrays(Array&& aArray,
+                                  RestArrays&&... aArrays) noexcept
+    -> std::array<std_array_data_t<Array>,
+                  std_array_sizes_sum<Array, RestArrays...>>
+{
+    return details::concatenate_arrays(std::forward<Array>(aArray),
+                                       std::forward<RestArrays>(aArrays)...);
+}
+
+template <typename... T>
+constexpr auto make_array(T&&... aArgs) -> std::array<
+    typename std::decay<typename std::common_type<T...>::type>::type,
+    sizeof...(T)>
+{
+    return {std::forward<T>(aArgs)...};
+}
 
 namespace utils
 {
@@ -245,7 +344,6 @@ void logErrorAndExit(const std::error_code& aEc, Args&&... aArgs)
 {
     handleError<true, true>(aEc, aArgs...);
 }
-
 }  // namespace utils
 }  // namespace ndt
 

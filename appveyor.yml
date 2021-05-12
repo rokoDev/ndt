@@ -27,7 +27,7 @@ for:
   configuration: Release
   environment:
     access_token:
-      secure: 1CmaO1PP145ZCBg1/61+TyKyLu1ak/A1lCi9bysewRaeytcEr35/cxtfTYTyWwNW
+      secure: uX6m9cCR+H+C68j3kkvfTaGys4b6EZ3elGf9XeF6FGTlCRQ61jC06iTrxm87Qw2V
     generate_deps_graph: --graphviz=ndtdeps.dot
   init:
     - ps: |

@@ -21,17 +21,19 @@ endif (WIN32)
 
 
 macro(package_add_test TESTNAME)
-    add_executable(${TESTNAME} ${ARGN})
-    target_link_libraries(${TESTNAME} gtest gmock gtest_main ndt)
-    add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
-    set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
+  add_executable(${TESTNAME} "")
+  target_sources(${TESTNAME} PRIVATE include/packet_info.h ${ARGN})
+  target_include_directories(${TESTNAME} PUBLIC include)
+  target_link_libraries(${TESTNAME} gtest gmock gtest_main ndt)
+  add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
+  set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 
-    # Create groups in the IDE which mirrors directory structure on the hard disk
-    get_target_property(ndt_tests_src ${TESTNAME} SOURCES)
-    source_group(
-      TREE   ${CMAKE_CURRENT_SOURCE_DIR}/src
-      FILES  ${ndt_tests_src}
-    )
+  # Create groups in the IDE which mirrors directory structure on the hard disk
+  get_target_property(ndt_tests_src ${TESTNAME} SOURCES)
+  source_group(
+    TREE   ${CMAKE_CURRENT_SOURCE_DIR}#/src
+    FILES  ${ndt_tests_src}
+  )
 endmacro()
 
 package_add_test(${ProjectName}
@@ -47,6 +49,10 @@ package_add_test(${ProjectName}
     src/packet_tests.cpp
     src/server_example.cpp
     src/file_ops_tests.cpp
+    src/packet_queue_tests.cpp
+    src/serialize_tests.cpp
+    src/interval_tests.cpp
+    src/value_tests.cpp
 	)
 
 # If use IDE add gtest, gmock, gtest_main and gmock_main targets into deps/googletest group

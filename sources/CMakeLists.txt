@@ -69,11 +69,15 @@ target_sources(ndt
     include/ndt/bin_rw.h
     include/ndt/endian.h
     include/ndt/index_maker.h
-    include/ndt/packet.h
     include/ndt/packet_handlers.h
     include/ndt/sys_file_ops.h
     include/ndt/sys_error_code.h
     include/ndt/file.h
+    include/ndt/serialize.h
+    include/ndt/type_name.h
+    include/ndt/interval.h
+    include/ndt/value.h
+    include/ndt/tag.h
 
     src/utils.cpp
     src/udp.cpp
@@ -84,9 +88,9 @@ target_sources(ndt
     src/sys_socket_ops.cpp
     src/platform/win/context_base_error.cpp
     src/endian.cpp
-    src/packet.cpp
     src/sys_file_ops.cpp
     src/file.cpp
+    src/buffer.cpp
   )
 
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
@@ -94,36 +98,36 @@ set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(WIN32)
-      # Don't need to compile this files for Windows platforms
-      set_source_files_properties(
-      	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
-       PROPERTIES
-          HEADER_FILE_ONLY YES
-      )
+  # Don't need to compile this files for Windows platforms
+  set_source_files_properties(
+  	${MAIN_INCLUDE_DIR}/ndt/platform/nix/executor_select_impl.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/nix/context_base.h
+   PROPERTIES
+      HEADER_FILE_ONLY YES
+  )
 else()
 	# Don't need to compile this file for non-Windows platforms
-      set_source_files_properties(
-      	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
-        ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
-        ${SOURCE_DIR}/platform/win/context_base_error.cpp
-      	PROPERTIES
-          HEADER_FILE_ONLY YES
-      )
+  set_source_files_properties(
+  	${MAIN_INCLUDE_DIR}/ndt/platform/win/executor_select_impl.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base.h
+    ${MAIN_INCLUDE_DIR}/ndt/platform/win/context_base_error.h
+    ${SOURCE_DIR}/platform/win/context_base_error.cpp
+  	PROPERTIES
+      HEADER_FILE_ONLY YES
+  )
 endif()
 
 include(TestBigEndian)
 test_big_endian(HOST_BIG_ENDIAN)
 if(HOST_BIG_ENDIAN)
-    target_compile_definitions(ndt PRIVATE HOST_BIG_ENDIAN)
+  target_compile_definitions(ndt PRIVATE HOST_BIG_ENDIAN)
 endif()
 
 target_compile_definitions(ndt PRIVATE $<UPPER_CASE:$<CONFIG>>)
 target_compile_options(ndt PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(ndt PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET ndt APPEND PROPERTY SRC_DIRS "${CMAKE_CURRENT_LIST_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_link_libraries(ndt PUBLIC fmt)
+target_link_libraries(ndt PUBLIC fmt boost_pfr)
 target_include_directories(ndt PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>

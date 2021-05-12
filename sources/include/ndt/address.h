@@ -4,9 +4,11 @@
 #include <string>
 #include <variant>
 
+#include "bin_rw.h"
 #include "buffer.h"
 #include "exception.h"
 #include "sys_socket_ops.h"
+#include "tag.h"
 #include "utils.h"
 
 namespace ndt
@@ -74,6 +76,9 @@ struct AddressFamily<eAddressFamily>
 {
     using type = eAddressFamily;
 };
+
+class BinWriter;
+class BinReader;
 
 class Address final
 {
@@ -150,19 +155,15 @@ class Address final
     friend bool operator==(const Address &aVal1, const Address &aVal2) noexcept;
     friend bool operator!=(const Address &aVal1, const Address &aVal2) noexcept;
 
+    void const *ipPtr() const noexcept;
+
    private:
     inline void setFamily(const uint8_t aFamily) noexcept;
-    const void *ipPtr() const noexcept;
     template <typename AF_Type>
     void throwIfInvalidFamily(
         const typename AddressFamily<AF_Type>::type aFamily);
     sockaddr *nativeData() noexcept;
-    union
-    {
-        sockaddr sa;
-        sockaddr_in sa4;
-        sockaddr_in6 sa6;
-    } sockaddr_;
+    sa_u sockaddr_;
 };
 
 template <typename AF_Type>
@@ -274,6 +275,95 @@ void Address::ipStr(Buffer aBuf, std::error_code &aEc) const noexcept
     }
 }
 
+template <typename T>
+using enable_if_Address_t =
+    std::enable_if_t<std::is_same_v<std::decay_t<T>, Address>, T>;
+
+template <typename T>
+[[nodiscard]] std::error_code serialize(
+    BinWriter &aWriter, T &&aData, ndt::tag_t<enable_if_Address_t<T>>) noexcept
+{
+    std::error_code ec;
+    const auto af = aData.addressFamilySys();
+    if (af == AF_INET)
+    {
+        if ((ec = aWriter.add<bool>(true)))
+        {
+            return ec;
+        }
+        if ((ec = aWriter.add<uint16_t>(aData.port())))
+        {
+            return ec;
+        }
+        if ((ec = aWriter.add(aData.ipPtr(), sizeof(in_addr))))
+        {
+            return ec;
+        }
+    }
+    else if (af == AF_INET6)
+    {
+        if ((ec = aWriter.add<bool>(false)))
+        {
+            return ec;
+        }
+        if ((ec = aWriter.add<uint16_t>(aData.port())))
+        {
+            return ec;
+        }
+        if ((ec = aWriter.add(aData.ipPtr(), sizeof(in6_addr))))
+        {
+            return ec;
+        }
+    }
+    else
+    {
+        ec = eAddressErrorCode::kInvalidAddressFamily;
+    }
+    return ec;
+}
+
+template <typename T>
+[[nodiscard]] std::error_code deserialize(
+    BinReader &aReader, T &&aData, ndt::tag_t<enable_if_Address_t<T>>) noexcept
+{
+    std::error_code ec;
+
+    // deserialize address family
+    const auto isV4 = aReader.get<bool>(ec);
+    if (ec)
+    {
+        return ec;
+    }
+    const uint8_t kAF = isV4 ? AF_INET : AF_INET6;
+
+    // deserialize port
+    const auto kPort = toNet(aReader.get<uint16_t>(ec));
+    if (ec)
+    {
+        return ec;
+    }
+
+    // deserialize ip
+    sa_u sock_addr;
+    memset(&sock_addr, 0, sizeof(sock_addr));
+    sock_addr.sa.sa_family = kAF;
+    if (isV4)
+    {
+        sock_addr.sa4.sin_port = kPort;
+        ec = aReader.get(&sock_addr.sa4.sin_addr, sizeof(in_addr));
+    }
+    else
+    {
+        sock_addr.sa6.sin6_port = kPort;
+        ec = aReader.get(&sock_addr.sa6.sin6_addr, sizeof(in6_addr));
+    }
+
+    if (!ec)
+    {
+        aData = Address(sock_addr.sa);
+    }
+    return ec;
+}
 }  // namespace ndt
 
 #endif /* ndt_address_h */

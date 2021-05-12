@@ -4,12 +4,14 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <system_error>
 #include <type_traits>
 
 #include "common.h"
 
 namespace ndt
 {
+class CBuffer;
 class Buffer
 {
    public:
@@ -53,6 +55,9 @@ class Buffer
     {
         return static_cast<T>(size_);
     }
+
+    [[nodiscard]] std::error_code copyFrom(CBuffer &aBuf) noexcept;
+    [[nodiscard]] std::error_code copyFrom(Buffer &aBuf) noexcept;
 
    private:
     bufp_t data_ = nullptr;

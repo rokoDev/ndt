@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+#include "ndt/bin_rw.h"
+
 namespace ndt
 {
 Address::~Address() = default;
@@ -60,11 +62,11 @@ Address::Address(const sockaddr &aSockaddr) : Address()
 
     if (family == AF_INET)
     {
-        memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in));
+        std::memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in));
     }
     else if (family == AF_INET6)
     {
-        memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in6));
+        std::memcpy(&sockaddr_, &aSockaddr, sizeof(sockaddr_in6));
     }
 }
 
@@ -202,7 +204,7 @@ void Address::setFamily(const uint8_t aFamily) noexcept
     sockaddr_.sa.sa_family = aFamily;
 }
 
-const void *Address::ipPtr() const noexcept
+void const *Address::ipPtr() const noexcept
 {
     if (const auto kAf = addressFamilySys(); kAf == AF_INET)
     {

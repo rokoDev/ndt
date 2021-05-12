@@ -6,7 +6,9 @@
 #include <array>
 
 #include "ndt/address.h"
+#include "ndt/bin_rw.h"
 #include "ndt/exception.h"
+#include "ndt/serialize.h"
 
 inline const char *kSystemCStr = "system";
 
@@ -978,4 +980,48 @@ TEST(AddressTest, UnspecIpToStrThrow)
             }
         },
         ndt::Error);
+}
+
+TEST(AddressTest, SerializeDeserialize)
+{
+    struct TestDataT
+    {
+        uint8_t af;
+        uint16_t port;
+        const char ipCStr[64];
+    };
+
+    constexpr std::size_t kTestCount = 9;
+    constexpr std::array<TestDataT, kTestCount> kTestData = {
+        TestDataT{AF_INET, 1111, "0.111.0.12"},
+        TestDataT{AF_INET, 1111, "0.0.0.0"},
+        TestDataT{AF_INET, 1111, "255.255.255.255"},
+        TestDataT{AF_INET6, 11341, "fe80::a299:9bff:fe18:50d1"},
+        TestDataT{AF_INET6, 11341, "ff02::1"},
+        TestDataT{AF_INET6, 11341, "::1"},
+        TestDataT{AF_INET6, 11341, "2001:db8:aaaa:1::200"},
+        TestDataT{AF_INET6, 11341, "2001:db8::abcd:0:0:1234"},
+        TestDataT{AF_INET6, 11341, "2001:db8::abcd:0:0:1234"},
+    };
+
+    char rawBuf[2048];
+    ndt::BinWriter writer((ndt::Buffer(rawBuf)));
+    ndt::BinReader reader((ndt::CBuffer(rawBuf)));
+
+    for (std::size_t i = 0; i < kTestCount; ++i)
+    {
+        ndt::Address a;
+        a.ip(kTestData[i].ipCStr);
+        a.port(kTestData[i].port);
+        ASSERT_EQ(a.addressFamilySys(), kTestData[i].af);
+
+        const std::error_code errA = ndt::serialize(writer, a);
+        ASSERT_EQ(errA, std::error_code());
+
+        std::error_code errB;
+        const ndt::Address b = ndt::deserialize<ndt::Address>(reader, errB);
+        ASSERT_EQ(errB, std::error_code());
+
+        ASSERT_EQ(a, b);
+    }
 }
