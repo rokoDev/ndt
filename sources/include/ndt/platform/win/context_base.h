@@ -6,6 +6,7 @@
 
 #include "../../common.h"
 #include "../../useful_base_types.h"
+#include "../../utils.h"
 #include "context_base_error.h"
 
 namespace ndt
@@ -21,7 +22,6 @@ class ContextBase : private NoCopyAble
    private:
     void startUp(std::error_code &aEc) noexcept;
     void cleanUp(std::error_code &aEc) noexcept;
-    void logAndExit(std::error_code &aEc, const char *aMsg) noexcept;
 
     static inline std::atomic_int32_t instanceCount_ = 0;
 };
@@ -33,7 +33,7 @@ ContextBase<SysWrapperT>::~ContextBase()
     {
         std::error_code ec;
         cleanUp(ec);
-        logAndExit(ec, "context clean up error");
+        utils::logErrorAndExit(ec, "context clean up error\n");
     }
 }
 
@@ -46,7 +46,7 @@ ContextBase<SysWrapperT>::ContextBase() noexcept
     }
     std::error_code ec;
     startUp(ec);
-    logAndExit(ec, "context start up error");
+    utils::logErrorAndExit(ec, "context start up error\n");
 }
 
 template <typename SysWrapperT>
@@ -96,19 +96,6 @@ void ContextBase<SysWrapperT>::cleanUp(std::error_code &aEc) noexcept
     if (result == kSocketError)
     {
         aEc.assign(SysWrapperT::lastErrorCode(), std::system_category());
-    }
-}
-
-template <typename SysWrapperT>
-void ContextBase<SysWrapperT>::logAndExit(
-    std::error_code &aEc, [[maybe_unused]] const char *aMsg) noexcept
-{
-    if (aEc)
-    {
-        fmt::print("error >>\ncategory: {}\ncode: {}\nmessage: {}\n",
-                   aEc.category().name(), aEc.value(), aEc.message());
-        assert(false && aMsg);
-        exit(aEc.value());
     }
 }
 

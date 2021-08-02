@@ -140,15 +140,15 @@ class SocketTest : public ::testing::Test
 #if _WIN32
     static int ioctlsocket(ndt::sock_t s, long cmd, u_long *argp) noexcept
     {
-        return ndt::System::ioctlsocket(s, cmd, argp);
+        return ndt::SocketOps::ioctlsocket(s, cmd, argp);
     }
 
     static int WSAStartup(WORD wVersionRequired, LPWSADATA lpWSAData) noexcept
     {
-        return ndt::System::WSAStartup(wVersionRequired, lpWSAData);
+        return ndt::SocketOps::WSAStartup(wVersionRequired, lpWSAData);
     }
 
-    static int WSACleanup() noexcept { return ndt::System::WSACleanup(); }
+    static int WSACleanup() noexcept { return ndt::SocketOps::WSACleanup(); }
 #endif
 
     static std::unique_ptr<MockDetails> mDetails;
@@ -373,7 +373,7 @@ TEST_F(SocketTest, CallOpenOnAlreadyOpenedSocketV6MustThrow)
 
 TEST(SocketTests, MoveConstructorV4ClosedSocket)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s1(ctx, ndt::UDP::V4());
 
     ndt::UDP::Socket s2(std::move(s1));
@@ -386,7 +386,7 @@ TEST(SocketTests, MoveConstructorV4ClosedSocket)
 
 TEST(SocketTests, MoveConstructorV6ClosedSocket)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s1(ctx, ndt::UDP::V6());
 
     ndt::UDP::Socket s2(std::move(s1));
@@ -466,7 +466,7 @@ TEST_F(SocketTest, MoveAssignmentV4OpenedToV6Closed)
 
 TEST(SocketTests, BindNotOpenedV4MustThrowError)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V4());
 
     EXPECT_THROW(
@@ -485,7 +485,7 @@ TEST(SocketTests, BindNotOpenedV4MustThrowError)
 
 TEST(SocketTests, BindNotOpenedV6MustThrowError)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6());
 
     EXPECT_THROW(
@@ -763,7 +763,7 @@ TEST_F(SocketTest, FailedRecvFromMustThrowError)
 
 TEST(SocketTests, SetNonBlockingMode)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V4(), 111);
     ASSERT_EQ(s.nonBlocking(), false);
     auto action = [](ndt::UDP::Socket &sRef) {
@@ -778,7 +778,7 @@ TEST(SocketTests, SetNonBlockingMode)
 
 TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 111);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);
@@ -791,7 +791,7 @@ TEST(SocketTests, MoveConstructorWithNonBlockingMode)
 
 TEST(SocketTests, MoveAssignmentWithNonBlockingMode)
 {
-    ndt::Context<ndt::System> ctx;
+    ndt::Context<ndt::SocketOps> ctx;
     ndt::UDP::Socket s(ctx, ndt::UDP::V6(), 112);
     s.nonBlocking(true);
     ASSERT_EQ(s.nonBlocking(), true);

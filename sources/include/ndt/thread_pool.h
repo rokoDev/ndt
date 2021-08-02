@@ -46,9 +46,10 @@ class thread_pool final
     std::size_t maxQueueSize() const noexcept;
 
     template <typename Func, typename... Args>
-    auto push(Func &&f, Args &&... args) -> std::enable_if_t<
-        std::is_invocable_v<Func, Args &&...>,
-        std::optional<std::future<typename std::result_of_t<Func(Args...)>>>>;
+    auto push(Func &&f, Args &&... args)
+        -> std::enable_if_t<std::is_invocable_v<Func, Args &&...>,
+                            std::optional<std::future<
+                                typename std::invoke_result_t<Func, Args...>>>>;
 
    private:
     void executeJob(std::unique_lock<std::mutex> aULock);
@@ -65,9 +66,9 @@ class thread_pool final
 template <typename Func, typename... Args>
 auto thread_pool::push(Func &&f, Args &&... args) -> std::enable_if_t<
     std::is_invocable_v<Func, Args &&...>,
-    std::optional<std::future<typename std::result_of_t<Func(Args...)>>>>
+    std::optional<std::future<typename std::invoke_result_t<Func, Args...>>>>
 {
-    using result_type = typename std::result_of_t<Func(Args...)>;
+    using result_type = typename std::invoke_result_t<Func, Args...>;
     std::future<result_type> retVal;
     {
         std::unique_lock<std::mutex> uLock(mMutex);

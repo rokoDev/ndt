@@ -68,6 +68,19 @@ bool memvcmp(const void *memptr, unsigned char val, const std::size_t size)
     return (*mm == val) && (memcmp(mm, mm + 1, size - 1) == 0);
 }
 
+void vlog(fmt::string_view format, fmt::format_args args)
+{
+    fmt::vprint(format, args);
+}
+
+void exitIfError(const std::error_code &aEc)
+{
+    if (aEc)
+    {
+        exit(aEc.value());
+    }
+}
+
 }  // namespace utils
 
 }  // namespace ndt

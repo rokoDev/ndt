@@ -1,21 +1,15 @@
-#ifndef ndt_system_wrappers_h
-#define ndt_system_wrappers_h
+#ifndef ndt_sys_socket_ops_h
+#define ndt_sys_socket_ops_h
 
 #include "common.h"
+#include "sys_error_code.h"
+#include "useful_base_types.h"
 
 namespace ndt
 {
-class System final
+class SysSocketOps
 {
-    ~System() = delete;
-    System() = delete;
-    System(const System &) = delete;
-    System &operator=(const System &) = delete;
-    System(System &&) = delete;
-    System &operator=(System &&) = delete;
-
    public:
-    inline static int lastErrorCode() { return err_code; }
     static int bind(sock_t sockfd, const struct sockaddr *addr,
                     ndt::salen_t addrlen) noexcept;
     static sdlen_t recvfrom(sock_t sockfd, ndt::bufp_t buf, ndt::dlen_t len,
@@ -41,6 +35,13 @@ class System final
     static int fcntl(sock_t s, int cmd, int arg) noexcept;
 #endif
 };
+
+class SocketOps
+    : public NoConstructibleNoDestructible
+    , public SysSocketOps
+    , public SysErrorCode
+{
+};
 }  // namespace ndt
 
-#endif /* ndt_system_wrappers_h */
+#endif /* ndt_sys_socket_ops_h */

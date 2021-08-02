@@ -6,7 +6,7 @@
 
 #include "buffer.h"
 #include "exception.h"
-#include "system_wrappers.h"
+#include "sys_socket_ops.h"
 #include "utils.h"
 
 namespace ndt
@@ -111,22 +111,22 @@ class Address final
     std::variant<std::monostate, ipv4_t, ipv6_t> ip() const noexcept;
     void ip(const ipv4_t &aIPv4) noexcept;
     void ip(const ipv6_t &aIPv6) noexcept;
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipV4(const char *aIPCStr, std::error_code &aEc) noexcept;
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipV4(const char *aIPCStr);
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipV6(const char *aIPCStr, std::error_code &aEc) noexcept;
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipV6(const char *aIPCStr);
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ip(const char *aIPCStr, std::error_code &aEc) noexcept;
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ip(const char *aIPCStr);
 
     void port(uint16_t aPort) noexcept;
@@ -136,9 +136,9 @@ class Address final
     void reset() noexcept;
     std::size_t capacity() const noexcept;
 
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipStr(Buffer aBuf) const;
-    template <typename SysWrapperT = System>
+    template <typename SysWrapperT = SocketOps>
     void ipStr(Buffer aBuf, std::error_code &aEc) const noexcept;
 
     static void validateAddressFamily(const eAddressFamily aAddressFamily,

@@ -55,7 +55,7 @@ target_sources(ndt
     include/ndt/exception.h
     include/ndt/thread_pool.h
     include/ndt/buffer.h
-    include/ndt/system_wrappers.h
+    include/ndt/sys_socket_ops.h
     include/ndt/context.h
     include/ndt/useful_base_types.h
     include/ndt/executor_select_base.h
@@ -71,6 +71,9 @@ target_sources(ndt
     include/ndt/index_maker.h
     include/ndt/packet.h
     include/ndt/packet_handlers.h
+    include/ndt/sys_file_ops.h
+    include/ndt/sys_error_code.h
+    include/ndt/file.h
 
     src/utils.cpp
     src/udp.cpp
@@ -78,10 +81,12 @@ target_sources(ndt
     src/exception.cpp
     src/common.cpp
     src/thread_pool.cpp
-    src/system_wrappers.cpp
+    src/sys_socket_ops.cpp
     src/platform/win/context_base_error.cpp
     src/endian.cpp
     src/packet.cpp
+    src/sys_file_ops.cpp
+    src/file.cpp
   )
 
 set(MAIN_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)

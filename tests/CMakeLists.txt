@@ -46,6 +46,7 @@ package_add_test(${ProjectName}
     src/index_maker_tests.cpp
     src/packet_tests.cpp
     src/server_example.cpp
+    src/file_ops_tests.cpp
 	)
 
 # If use IDE add gtest, gmock, gtest_main and gmock_main targets into deps/googletest group

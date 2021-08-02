@@ -1,11 +1,18 @@
 #ifndef ndt_utils_h
 #define ndt_utils_h
 
+#include <fmt/core.h>
+#include <fmt/format.h>
+
 #include <cstring>
+#include <system_error>
 #include <type_traits>
 #include <unordered_map>
 
 #include "common.h"
+
+#define NDT_LOG_ERROR(e) \
+    ndt::utils::logIfError((e), "source: {}\nline: {}\n", __FILE__, __LINE__);
 
 namespace ndt
 {
@@ -194,6 +201,49 @@ template <typename E>
 constexpr auto to_underlying(E e) noexcept
 {
     return static_cast<typename std::underlying_type_t<E>>(e);
+}
+
+void vlog(fmt::string_view format, fmt::format_args args);
+
+template <typename S, typename... Args>
+void log(const S& format, Args&&... args)
+{
+    vlog(format, fmt::make_args_checked<Args...>(format, args...));
+}
+
+template <typename... Args>
+void logIfError(const std::error_code& aEc, Args&&... aArgs)
+{
+    if (aEc)
+    {
+        fmt::print("{} error: {} ({})\n", aEc.category().name(), aEc.value(),
+                   aEc.message());
+        if constexpr (sizeof...(Args) > 0)
+        {
+            log(aArgs...);
+        }
+    }
+}
+
+void exitIfError(const std::error_code& aEc);
+
+template <bool IsLog, bool IsExit, typename... Args>
+void handleError(const std::error_code& aEc, Args&&... aArgs)
+{
+    if constexpr (IsLog)
+    {
+        logIfError(aEc, aArgs...);
+    }
+    if constexpr (IsExit)
+    {
+        exitIfError(aEc);
+    }
+}
+
+template <typename... Args>
+void logErrorAndExit(const std::error_code& aEc, Args&&... aArgs)
+{
+    handleError<true, true>(aEc, aArgs...);
 }
 
 }  // namespace utils

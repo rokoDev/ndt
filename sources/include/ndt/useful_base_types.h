@@ -30,6 +30,20 @@ struct NoCopyMoveDefConstructible
     , public NoDefaultConstructible
 {
 };
+
+struct NoDestructible
+{
+    ~NoDestructible() = delete;
+};
+
+struct NoConstructibleNoDestructible
+    : public NoDefaultConstructible
+    , public NoDestructible
+    , public NoCopyAble
+    , public NoMoveAble
+{
+};
+
 }  // namespace ndt
 
 #endif /* ndt_useful_base_types_h */

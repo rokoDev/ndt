@@ -21,9 +21,10 @@ enum class eClientPacket : uint8_t
 
 using namespace std::chrono_literals;
 
-class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
+class Server
+    : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::SocketOps>
 {
-    friend class ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>;
+    friend class ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::SocketOps>;
     friend class ndt::CheckMethod_readHandlerImpl<Server, void,
                                                   ndt::UDP::Socket &>;
     friend class ndt::CheckMethod_writeHandlerImpl<Server, void,
@@ -43,8 +44,8 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
         }
     }
 
-    Server(ndt::Context<ndt::System> &aContext)
-        : HandlerSelect<ndt::UDP::Socket, Server, ndt::System>(aContext)
+    Server(ndt::Context<ndt::SocketOps> &aContext)
+        : HandlerSelect<ndt::UDP::Socket, Server, ndt::SocketOps>(aContext)
         , socket_(context_, ndt::UDP::V4(), port_)
         , handlers_(
               {{{{eClientPacket::kInput, &Server::handleInput},
@@ -142,7 +143,7 @@ class Server : public ndt::HandlerSelect<ndt::UDP::Socket, Server, ndt::System>
 
 TEST(PacketHandler, LackOfSpaceWrite)
 {
-    ndt::Context<ndt::System> context;
+    ndt::Context<ndt::SocketOps> context;
     Server server(context);
     // context.run();
     ASSERT_EQ(0, 0);
