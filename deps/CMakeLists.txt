@@ -15,8 +15,12 @@ FetchContent_Declare(
 FetchContent_Declare(
 	VersionHelper
     GIT_REPOSITORY https://github.com/rokoDev/VersionHelper.git
-    GIT_TAG        c50c9f6743f8791439313246c56f476a7b1e0b84
+    GIT_TAG        cea7d1349d5f5167c045b90d12e91d2fefdc99b6
 )
+
+# If necessary it's possible to use VersionHelper from different location instead of downloaded from GitHub
+# string(TOUPPER VersionHelper UP_VersionHelper)
+# set(FETCHCONTENT_SOURCE_DIR_${UP_VersionHelper} ${CMAKE_CURRENT_LIST_DIR}/../../VersionHelper)
 
 FetchContent_MakeAvailable(fmt VersionHelper)
 

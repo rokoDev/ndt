@@ -122,6 +122,7 @@ endif()
 target_compile_definitions(ndt PRIVATE $<UPPER_CASE:$<CONFIG>>)
 target_compile_options(ndt PRIVATE ${ALL_CXX_FLAGS})
 set_target_properties(ndt PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET ndt APPEND PROPERTY SRC_DIRS "${CMAKE_CURRENT_LIST_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_link_libraries(ndt PUBLIC fmt)
 target_include_directories(ndt PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

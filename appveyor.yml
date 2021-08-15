@@ -18,6 +18,25 @@ configuration:
   - Debug
   - Release
 
+for:
+-
+  branches:
+    only:
+      - master
+
+  configuration: Release
+  environment:
+    access_token:
+      secure: 1CmaO1PP145ZCBg1/61+TyKyLu1ak/A1lCi9bysewRaeytcEr35/cxtfTYTyWwNW
+  init:
+    - ps: |
+        git config --global credential.helper store
+        Set-Content -Path "$HOME\.git-credentials" -Value "https://$($env:access_token):x-oauth-basic@github.com`n" -NoNewline
+        git config --global user.email "mishaDoter@gmail.com"
+        git config --global user.name "rokoDev"
+  after_test:
+    - cmake --build . --target %APPVEYOR_PROJECT_NAME%.docs.push --config %CONFIGURATION%
+
 matrix:
   fast_finish: true
 
@@ -83,10 +102,9 @@ before_build:
   # - ps: |
   #     clang-cl /?
   - cmake -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
-  - cmake --build . --config %CONFIGURATION%
 
-build:
-  project: $(APPVEYOR_BUILD_FOLDER)\build\$(APPVEYOR_PROJECT_NAME).sln
+build_script:
+  - cmake --build . --target ndt_tests --config %CONFIGURATION%
 
 test_script:
   - ctest -VV --output-on-failure -C %CONFIGURATION%

@@ -84,7 +84,7 @@ using sdlen_t = ssize_t;
  */
 namespace ndt
 {
-/*! \typedef using sock_t = decltype(::socket(0, 0, 0));
+/*! \typedef sock_t
     \brief sock_t - instance of this type contains socket descriptor returned by
    socket function.
  */

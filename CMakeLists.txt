@@ -6,7 +6,15 @@ set(ProjectName "ndt")
 
 project(${ProjectName}
 		VERSION 0.1.1
-		LANGUAGES CXX)
+		LANGUAGES CXX
+        DESCRIPTION "Network data transmission")
+
+# Require out-of-source builds
+file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
+if(EXISTS "${LOC_PATH}")
+    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
+endif()
+
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -32,8 +40,18 @@ source_group(
   FILES  ${ndt_sources}
 )
 
-# Things typically only needed if we are the top level project
-if(TEST_NDT OR CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-  # Setup testing
-  add_subdirectory(tests)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(IS_TOP_LVL_PROJECT TRUE)
+else()
+    set(IS_TOP_LVL_PROJECT FALSE)
+endif()
+
+if(NDT_TEST OR IS_TOP_LVL_PROJECT)
+    # Setup testing
+    add_subdirectory(tests)
+endif()
+
+if(NDT_DOCS OR IS_TOP_LVL_PROJECT)
+    # Setup documentation
+    add_subdirectory(docs_builder)
 endif()
