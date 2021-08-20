@@ -1,0 +1,10 @@
+<map id="ndt::FileOps" name="ndt::FileOps">
+<area shape="rect" id="node1" title=" " alt="" coords="507,461,601,539"/>
+<area shape="rect" id="node2" href="$structndt_1_1_no_constructible_no_destructible.html" title=" " alt="" coords="240,255,465,333"/>
+<area shape="rect" id="node3" href="$structndt_1_1_no_default_constructible.html" title=" " alt="" coords="5,27,185,105"/>
+<area shape="rect" id="node4" href="$structndt_1_1_no_destructible.html" title=" " alt="" coords="209,27,344,105"/>
+<area shape="rect" id="node5" href="$structndt_1_1_no_copy_able.html" title=" " alt="" coords="369,5,491,127"/>
+<area shape="rect" id="node6" href="$structndt_1_1_no_move_able.html" title=" " alt="" coords="515,5,638,127"/>
+<area shape="rect" id="node7" href="$classndt_1_1_sys_error_code.html" title=" " alt="" coords="489,255,619,333"/>
+<area shape="rect" id="node8" href="$classndt_1_1_sys_file_ops.html" title=" " alt="" coords="643,175,759,413"/>
+</map>

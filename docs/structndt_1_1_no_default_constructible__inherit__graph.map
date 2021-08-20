@@ -1,0 +1,12 @@
+<map id="ndt::NoDefaultConstructible" name="ndt::NoDefaultConstructible">
+<area shape="rect" id="node1" title=" " alt="" coords="257,5,437,83"/>
+<area shape="rect" id="node2" href="$structndt_1_1_no_constructible_no_destructible.html" title=" " alt="" coords="67,131,293,208"/>
+<area shape="rect" id="node5" href="$structndt_1_1_no_copy_move_def_constructible.html" title=" " alt="" coords="493,131,712,208"/>
+<area shape="rect" id="node3" href="$classndt_1_1_file_ops.html" title=" " alt="" coords="5,271,99,348"/>
+<area shape="rect" id="node4" href="$classndt_1_1_socket_ops.html" title=" " alt="" coords="123,271,237,348"/>
+<area shape="rect" id="node6" href="$classndt_1_1details_1_1_byte_order.html" title=" " alt="" coords="261,256,414,363"/>
+<area shape="rect" id="node7" href="$classndt_1_1details_1_1_byte_order_3_01uint16__t_00_012_01_4.html" title=" " alt="" coords="438,256,591,363"/>
+<area shape="rect" id="node8" href="$classndt_1_1details_1_1_byte_order_3_01uint32__t_00_014_01_4.html" title=" " alt="" coords="615,256,769,363"/>
+<area shape="rect" id="node9" href="$classndt_1_1details_1_1_byte_order_3_01uint64__t_00_018_01_4.html" title=" " alt="" coords="793,256,946,363"/>
+<area shape="rect" id="node10" href="$classndt_1_1details_1_1_byte_order_3_01uint8__t_00_011_01_4.html" title=" " alt="" coords="970,256,1123,363"/>
+</map>
