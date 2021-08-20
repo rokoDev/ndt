@@ -44,7 +44,7 @@ var searchData=
   ['kraw_244',['kRaw',['../namespacendt.html#a9082a2c05cf61d756ba458b00bf293e9abd440e87576477e8111424302a843c30',1,'ndt']]],
   ['kread_245',['kRead',['../classndt_1_1_handler_select_base.html#a73d842d70e7bd28d413c64b203e10f40a94751d940905a16d269140094e7e0a31',1,'ndt::HandlerSelectBase']]],
   ['krelease_246',['kRelease',['../namespacendt.html#a0c8654c6fbdb56605e575f573afdc095a042072d11384a0da225b50a05a939159',1,'ndt']]],
-  ['ksha1_247',['kSHA1',['../namespacendt_1_1git.html#ab633c92528493476c20a9846dc4502db',1,'ndt::git']]],
+  ['ksha1_247',['kSHA1',['../namespacendt_1_1git.html#ae25c9af4e581fffeada1db92e9c5b636',1,'ndt::git']]],
   ['ksocketerror_248',['kSocketError',['../namespacendt.html#a5b95bf45b9979275b9df53f7959f4340',1,'ndt']]],
   ['kstr_249',['kStr',['../namespacendt_1_1version.html#aa20fdf014e5a8bb37c8d3fff06ff4b52',1,'ndt::version']]],
   ['kstream_250',['kStream',['../namespacendt.html#a9082a2c05cf61d756ba458b00bf293e9a82f0a1cdb8de7b0c21bea113b4abd3c6',1,'ndt']]],
