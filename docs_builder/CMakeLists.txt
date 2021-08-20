@@ -14,6 +14,19 @@ endif()
 get_target_property(PATH_TO_DOXYGEN Doxygen::doxygen IMPORTED_LOCATION)
 get_target_property(PATH_TO_DOT Doxygen::dot IMPORTED_LOCATION)
 
+# Generate project dependency graph
+add_custom_command(OUTPUT "docs_images/${ProjectName}depsgraph.svg"
+    COMMAND ${CMAKE_COMMAND} -E echo "Generating project dependency graph..."
+    COMMAND ${CMAKE_COMMAND} -E make_directory docs_images
+    COMMAND ${CMAKE_COMMAND} -E chdir docs_images ${PATH_TO_DOT} -Tsvg -o ${ProjectName}depsgraph.svg ${${ProjectName}_BINARY_DIR}/${ProjectName}deps.dot
+    BYPRODUCTS "docs_images/${ProjectName}depsgraph.svg"
+    VERBATIM
+)
+
+if(result)
+    message(FATAL_ERROR "Failed to generate ${ProjectName} dependency graph: ${result}")
+endif()
+
 get_target_property(SRC_DIRS ${ProjectName} SRC_DIRS)
 
 string(REPLACE ";" " " INPUT_STR "${SRC_DIRS}")
@@ -26,9 +39,11 @@ add_custom_target("${ProjectName}.docs.gen"
     -DPATH_TO_DOXYGEN=${PATH_TO_DOXYGEN}
     -DPROJECT_BRIEF="${${ProjectName}_DESCRIPTION}"
     -DINPUT=${INPUT_STR}
+    -DDOCS_IMAGE_PATH=${CMAKE_CURRENT_BINARY_DIR}/docs_images
     -DDOT_PATH=${PATH_TO_DOT}
     -DDOXYGEN_IN=${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
     -P ${CMAKE_CURRENT_LIST_DIR}/GenDocs.cmake
+    DEPENDS "docs_images/${ProjectName}depsgraph.svg"
     BYPRODUCTS ${OUT_PATH_LIST}
     VERBATIM
 )

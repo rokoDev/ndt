@@ -28,6 +28,7 @@ for:
   environment:
     access_token:
       secure: 1CmaO1PP145ZCBg1/61+TyKyLu1ak/A1lCi9bysewRaeytcEr35/cxtfTYTyWwNW
+    generate_deps_graph: --graphviz=ndtdeps.dot
   init:
     - ps: |
         git config --global credential.helper store
@@ -101,7 +102,7 @@ before_build:
   - echo %PATH%
   # - ps: |
   #     clang-cl /?
-  - cmake -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
+  - cmake %GENERATE_DEPS_GRAPH% -G "Visual Studio 16 2019" -A x64 -T ClangCL ..
 
 build_script:
   - cmake --build . --target ndt_tests --config %CONFIGURATION%

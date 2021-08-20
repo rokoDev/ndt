@@ -1,6 +1,13 @@
 #ifndef ndt_core_h
 #define ndt_core_h
 
+/*! \mainpage NDT brief
+ *
+ * \section intro_sec Dependency graph:
+ *
+ * \image html ndtdepsgraph.svg "dependency graph" width=100%
+ */
+
 #include "address.h"
 #include "bin_rw.h"
 #include "buffer.h"

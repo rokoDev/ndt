@@ -7,7 +7,7 @@ set(ProjectName "ndt")
 project(${ProjectName}
 		VERSION 0.1.1
 		LANGUAGES CXX
-        DESCRIPTION "Network data transmission")
+        DESCRIPTION "Network Data Transmission")
 
 # Require out-of-source builds
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
