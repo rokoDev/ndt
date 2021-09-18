@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -68,7 +68,9 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ndt::details Namespace Reference</div>  </div>
 </div><!--header-->
@@ -88,7 +90,285 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_byte_order_3_01uint64__t_00_018_01_4.html">ByteOrder&lt; uint64_t, 8 &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:af7b5d338f9765bfc371ed2de7511768b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#af7b5d338f9765bfc371ed2de7511768b">type_name_prober</a> = float</td></tr>
+<tr class="separator:af7b5d338f9765bfc371ed2de7511768b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:aec5783a9227afa25b6287f823076edb3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aec5783a9227afa25b6287f823076edb3"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::string_view&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#aec5783a9227afa25b6287f823076edb3">clattered_name</a> ()</td></tr>
+<tr class="separator:aec5783a9227afa25b6287f823076edb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a025e6de923567470f192642ff1daf7"><td class="memItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#a7a025e6de923567470f192642ff1daf7">wrapped_type_name_prefix_length</a> ()</td></tr>
+<tr class="separator:a7a025e6de923567470f192642ff1daf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a707e8dde30afc68861e94d1580014fae"><td class="memItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#a707e8dde30afc68861e94d1580014fae">wrapped_type_name_suffix_length</a> ()</td></tr>
+<tr class="separator:a707e8dde30afc68861e94d1580014fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfcc84915fbe88c8faab20380131f931"><td class="memTemplParams" colspan="2">template&lt;typename A1 , typename A2 , std::size_t... i1, std::size_t... i2, typename  = std::enable_if_t&lt;is_same_data_std_arrays&lt;A1, A2&gt;&gt;&gt; </td></tr>
+<tr class="memitem:adfcc84915fbe88c8faab20380131f931"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#adfcc84915fbe88c8faab20380131f931">concatenate_2_arrays</a> (A1 &amp;&amp;aArray1, A2 &amp;&amp;aArray2, std::index_sequence&lt; i1... &gt;, std::index_sequence&lt; i2... &gt;) noexcept -&gt; std::array&lt; <a class="el" href="namespacendt.html#abeebadb84ab9ff35bc505ee7d05f0d1c">std_array_data_t</a>&lt; A1 &gt;, <a class="el" href="namespacendt.html#a67b801cc2c36770ef9b1f161942ce7c0">std_array_sizes_sum</a>&lt; A1, A2 &gt;&gt;</td></tr>
+<tr class="separator:adfcc84915fbe88c8faab20380131f931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abadd09853ff9222f4d6babfde93872b1"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = std::enable_if_t&lt;is_std_array_v&lt;T&gt;&gt;&gt; </td></tr>
+<tr class="memitem:abadd09853ff9222f4d6babfde93872b1"><td class="memTemplItemLeft" align="right" valign="top">constexpr decltype(auto)&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#abadd09853ff9222f4d6babfde93872b1">concatenate_arrays</a> (T &amp;&amp;aArray) noexcept</td></tr>
+<tr class="separator:abadd09853ff9222f4d6babfde93872b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memTemplParams" colspan="2">template&lt;typename A1 , typename A2 , typename... RestArrays&gt; </td></tr>
+<tr class="memitem:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#a9b819c7778fd46d8ef447ab49e1874bc">concatenate_arrays</a> (A1 &amp;&amp;aArray1, A2 &amp;&amp;aArray2, RestArrays &amp;&amp;... aArrays) noexcept -&gt; std::array&lt; <a class="el" href="namespacendt.html#abeebadb84ab9ff35bc505ee7d05f0d1c">std_array_data_t</a>&lt; A1 &gt;, <a class="el" href="namespacendt.html#a67b801cc2c36770ef9b1f161942ce7c0">std_array_sizes_sum</a>&lt; A1, A2, RestArrays... &gt;&gt;</td></tr>
+<tr class="separator:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="af7b5d338f9765bfc371ed2de7511768b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7b5d338f9765bfc371ed2de7511768b">&#9670;&nbsp;</a></span>type_name_prober</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacendt_1_1details.html#af7b5d338f9765bfc371ed2de7511768b">ndt::details::type_name_prober</a> = typedef float</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aec5783a9227afa25b6287f823076edb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec5783a9227afa25b6287f823076edb3">&#9670;&nbsp;</a></span>clattered_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::string_view ndt::details::clattered_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adfcc84915fbe88c8faab20380131f931"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfcc84915fbe88c8faab20380131f931">&#9670;&nbsp;</a></span>concatenate_2_arrays()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename A1 , typename A2 , std::size_t... i1, std::size_t... i2, typename  = std::enable_if_t&lt;is_same_data_std_arrays&lt;A1, A2&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr auto ndt::details::concatenate_2_arrays </td>
+          <td>(</td>
+          <td class="paramtype">A1 &amp;&amp;&#160;</td>
+          <td class="paramname"><em>aArray1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">A2 &amp;&amp;&#160;</td>
+          <td class="paramname"><em>aArray2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::index_sequence&lt; i1... &gt;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::index_sequence&lt; i2... &gt;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> -&gt; std::array&lt;<a class="el" href="namespacendt.html#abeebadb84ab9ff35bc505ee7d05f0d1c">std_array_data_t</a>&lt;A1&gt;, <a class="el" href="namespacendt.html#a67b801cc2c36770ef9b1f161942ce7c0">std_array_sizes_sum</a>&lt;A1, A2&gt;&gt;
+</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_adfcc84915fbe88c8faab20380131f931_icgraph.svg" width="390" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a9b819c7778fd46d8ef447ab49e1874bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b819c7778fd46d8ef447ab49e1874bc">&#9670;&nbsp;</a></span>concatenate_arrays() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename A1 , typename A2 , typename... RestArrays&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto ndt::details::concatenate_arrays </td>
+          <td>(</td>
+          <td class="paramtype">A1 &amp;&amp;&#160;</td>
+          <td class="paramname"><em>aArray1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">A2 &amp;&amp;&#160;</td>
+          <td class="paramname"><em>aArray2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">RestArrays &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>aArrays</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> -&gt; std::array&lt;<a class="el" href="namespacendt.html#abeebadb84ab9ff35bc505ee7d05f0d1c">std_array_data_t</a>&lt;A1&gt;,
+                  <a class="el" href="namespacendt.html#a67b801cc2c36770ef9b1f161942ce7c0">std_array_sizes_sum</a>&lt;A1, A2, RestArrays...&gt;&gt;
+</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_a9b819c7778fd46d8ef447ab49e1874bc_cgraph.svg" width="390" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="abadd09853ff9222f4d6babfde93872b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abadd09853ff9222f4d6babfde93872b1">&#9670;&nbsp;</a></span>concatenate_arrays() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename  = std::enable_if_t&lt;is_std_array_v&lt;T&gt;&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr decltype(auto) ndt::details::concatenate_arrays </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>aArray</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_abadd09853ff9222f4d6babfde93872b1_icgraph.svg" width="390" height="104"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a7a025e6de923567470f192642ff1daf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a025e6de923567470f192642ff1daf7">&#9670;&nbsp;</a></span>wrapped_type_name_prefix_length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::size_t ndt::details::wrapped_type_name_prefix_length </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_a7a025e6de923567470f192642ff1daf7_icgraph.svg" width="564" height="82"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a707e8dde30afc68861e94d1580014fae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a707e8dde30afc68861e94d1580014fae">&#9670;&nbsp;</a></span>wrapped_type_name_suffix_length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::size_t ndt::details::wrapped_type_name_suffix_length </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_a707e8dde30afc68861e94d1580014fae_cgraph.svg" width="404" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_1_1details_a707e8dde30afc68861e94d1580014fae_icgraph.svg" width="343" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

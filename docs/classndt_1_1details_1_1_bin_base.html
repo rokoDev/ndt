@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -69,6 +69,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
@@ -88,7 +89,7 @@ Inheritance diagram for ndt::details::BinBase&lt; T &gt;:</div>
 <div class="dynheader">
 Collaboration diagram for ndt::details::BinBase&lt; T &gt;:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base__coll__graph.svg" width="186" height="294"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base__coll__graph.svg" width="218" height="396"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 <table class="memberdecls">
@@ -104,6 +105,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abded7eb670b36266e1b34a83fc7e4289"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e0698c6540db0474281feaee67a2345"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a1e0698c6540db0474281feaee67a2345">bitCapacity</a> () const noexcept</td></tr>
 <tr class="separator:a1e0698c6540db0474281feaee67a2345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32db1cdc99552b23587f4b962ad0bfae"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a32db1cdc99552b23587f4b962ad0bfae">bitsLeft</a> () const noexcept</td></tr>
+<tr class="separator:a32db1cdc99552b23587f4b962ad0bfae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a703962e302de8ad3617082f63c18afad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a703962e302de8ad3617082f63c18afad">reset</a> () const noexcept</td></tr>
+<tr class="separator:a703962e302de8ad3617082f63c18afad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3bb6c4752bbf39c6d46bd83566a7252"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ad3bb6c4752bbf39c6d46bd83566a7252">alignByte</a> () const noexcept</td></tr>
+<tr class="separator:ad3bb6c4752bbf39c6d46bd83566a7252"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a069df6107da9ffc106719cf5df514f15"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> = std::tuple&lt; std::size_t, uint8_t &gt;</td></tr>
+<tr class="separator:a069df6107da9ffc106719cf5df514f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -119,11 +131,21 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a98022c391456afff69725270cb814e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dba5dec504092a791e4534591c1a6c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classndt_1_1details_1_1_bin_base.html">BinBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a6dba5dec504092a791e4534591c1a6c9">operator=</a> (<a class="el" href="classndt_1_1details_1_1_bin_base.html">BinBase</a> &amp;&amp;) noexcept=default</td></tr>
 <tr class="separator:a6dba5dec504092a791e4534591c1a6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50d820fb924a413085e93e86381037c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ad50d820fb924a413085e93e86381037c">extractIndexes</a> () const noexcept</td></tr>
+<tr class="separator:ad50d820fb924a413085e93e86381037c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a826c1243331de5fe58843c0b914c42d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a826c1243331de5fe58843c0b914c42d5">applyIndexes</a> (const <a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> &amp;aIndexes) const noexcept</td></tr>
+<tr class="separator:a826c1243331de5fe58843c0b914c42d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af13881025d1a28cc30e8acadc15e7019"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#af13881025d1a28cc30e8acadc15e7019">updateIndices</a> (const uint8_t numBits) const noexcept</td></tr>
 <tr class="separator:af13881025d1a28cc30e8acadc15e7019"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae386df0d4e2a01a45d2ea9ca67b9a1f9"><td class="memTemplParams" colspan="2">template&lt;typename UIntT &gt; </td></tr>
 <tr class="memitem:ae386df0d4e2a01a45d2ea9ca67b9a1f9"><td class="memTemplItemLeft" align="right" valign="top">constexpr UIntT&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ae386df0d4e2a01a45d2ea9ca67b9a1f9">filledMask</a> (const uint8_t aNumBits) const noexcept</td></tr>
 <tr class="separator:ae386df0d4e2a01a45d2ea9ca67b9a1f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f5da6f75c3f038c3b9aee85b9a2932f"><td class="memTemplParams" colspan="2">template&lt;typename SizeT &gt; </td></tr>
+<tr class="memitem:a2f5da6f75c3f038c3b9aee85b9a2932f"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a2f5da6f75c3f038c3b9aee85b9a2932f">checkIsAlignedSizeAvailable</a> (SizeT aSize) const noexcept</td></tr>
+<tr class="separator:a2f5da6f75c3f038c3b9aee85b9a2932f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11c9cb886c406f480d51e221ae54fb51"><td class="memTemplParams" colspan="2">template&lt;typename SizeT &gt; </td></tr>
+<tr class="memitem:a11c9cb886c406f480d51e221ae54fb51"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a11c9cb886c406f480d51e221ae54fb51">checkAlignedBufArgs</a> (void const *const aBuf, SizeT aSize) const noexcept</td></tr>
+<tr class="separator:a11c9cb886c406f480d51e221ae54fb51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -137,6 +159,31 @@ Static Protected Attributes</h2></td></tr>
 <tr class="memitem:ab97346bff84aa8c9b25e3fb78f65d6fe"><td class="memItemLeft" align="right" valign="top">static constexpr uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ab97346bff84aa8c9b25e3fb78f65d6fe">kBitsInByte</a> = 8</td></tr>
 <tr class="separator:ab97346bff84aa8c9b25e3fb78f65d6fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a069df6107da9ffc106719cf5df514f15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a069df6107da9ffc106719cf5df514f15">&#9670;&nbsp;</a></span>IndexesT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::<a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> =  std::tuple&lt;std::size_t, uint8_t&gt;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3227609acb00caf51a75b3f877b77b4f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3227609acb00caf51a75b3f877b77b4f">&#9670;&nbsp;</a></span>~BinBase()</h2>
@@ -249,6 +296,61 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad3bb6c4752bbf39c6d46bd83566a7252"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3bb6c4752bbf39c6d46bd83566a7252">&#9670;&nbsp;</a></span>alignByte()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::alignByte </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a826c1243331de5fe58843c0b914c42d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a826c1243331de5fe58843c0b914c42d5">&#9670;&nbsp;</a></span>applyIndexes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::applyIndexes </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> &amp;&#160;</td>
+          <td class="paramname"><em>aIndexes</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1e0698c6540db0474281feaee67a2345"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e0698c6540db0474281feaee67a2345">&#9670;&nbsp;</a></span>bitCapacity()</h2>
 
@@ -273,6 +375,12 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a1e0698c6540db0474281feaee67a2345_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
 
 </div>
 </div>
@@ -327,6 +435,51 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_abded7eb670b36266e1b34a83fc7e4289_icgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a32db1cdc99552b23587f4b962ad0bfae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32db1cdc99552b23587f4b962ad0bfae">&#9670;&nbsp;</a></span>bitsLeft()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::bitsLeft </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a32db1cdc99552b23587f4b962ad0bfae_cgraph.svg" width="344" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a32db1cdc99552b23587f4b962ad0bfae_icgraph.svg" width="599" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -351,6 +504,121 @@ template&lt;typename T &gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11c9cb886c406f480d51e221ae54fb51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11c9cb886c406f480d51e221ae54fb51">&#9670;&nbsp;</a></span>checkAlignedBufArgs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename SizeT &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::checkAlignedBufArgs </td>
+          <td>(</td>
+          <td class="paramtype">void const *const&#160;</td>
+          <td class="paramname"><em>aBuf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SizeT&#160;</td>
+          <td class="paramname"><em>aSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a11c9cb886c406f480d51e221ae54fb51_cgraph.svg" width="100%" height="427"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a2f5da6f75c3f038c3b9aee85b9a2932f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f5da6f75c3f038c3b9aee85b9a2932f">&#9670;&nbsp;</a></span>checkIsAlignedSizeAvailable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename SizeT &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::checkIsAlignedSizeAvailable </td>
+          <td>(</td>
+          <td class="paramtype">SizeT&#160;</td>
+          <td class="paramname"><em>aSize</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a2f5da6f75c3f038c3b9aee85b9a2932f_cgraph.svg" width="644" height="170"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1details_1_1_bin_base_a2f5da6f75c3f038c3b9aee85b9a2932f_icgraph.svg" width="408" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ad50d820fb924a413085e93e86381037c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad50d820fb924a413085e93e86381037c">&#9670;&nbsp;</a></span>extractIndexes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::extractIndexes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -437,6 +705,33 @@ template&lt;typename T &gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a703962e302de8ad3617082f63c18afad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a703962e302de8ad3617082f63c18afad">&#9670;&nbsp;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase</a>&lt; T &gt;::reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

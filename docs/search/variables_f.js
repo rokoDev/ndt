@@ -1,13 +1,7 @@
 var searchData=
 [
-  ['sa_893',['sa',['../classndt_1_1_address.html#ae9390919937a6738b8c7fe617630daab',1,'ndt::Address']]],
-  ['sa4_894',['sa4',['../classndt_1_1_address.html#a43fd690e6656c928083349fbbfe69e0a',1,'ndt::Address']]],
-  ['sa6_895',['sa6',['../classndt_1_1_address.html#a2657363532f80fe8162be2c226ebb692',1,'ndt::Address']]],
-  ['size_5f_896',['size_',['../classndt_1_1_buffer.html#ae33c9ca8dba29dfe8164377e34cd4f64',1,'ndt::Buffer::size_()'],['../classndt_1_1_c_buffer.html#a45459ea25e1b7c5a1d09a52bbe4f2829',1,'ndt::CBuffer::size_()']]],
-  ['sockaddr_5f_897',['sockaddr_',['../classndt_1_1_address.html#a310f66ec728a0f1ff637b73b5168191b',1,'ndt::Address']]],
-  ['socketcloser_898',['socketcloser',['../namespacendt.html#aebb744cc87c013f2d970eb7c28be7cdb',1,'ndt']]],
-  ['sockethandle_5f_899',['socketHandle_',['../classndt_1_1_socket_base.html#a0141e69aa10cc56f6ea0a3760095b652',1,'ndt::SocketBase']]],
-  ['sockettypesystemtouser_900',['SocketTypeSystemToUser',['../namespacendt.html#afb4af4ff98dc2268531f21588bc3f0e4',1,'ndt']]],
-  ['sockettypeusertosystem_901',['SocketTypeUserToSystem',['../namespacendt.html#ab09eda413c25926573f2dff37c26ab9d',1,'ndt']]],
-  ['stopmode_5f_902',['stopMode_',['../classndt_1_1thread__pool.html#ad1e6a9e9348b69e8dd80c155961395ee',1,'ndt::thread_pool']]]
+  ['tag_1005',['tag',['../namespacendt.html#a5a13bbf9263dac34a435f44ea004f84f',1,'ndt']]],
+  ['timeout_5f_1006',['timeout_',['../classndt_1_1_executor_select_base.html#acb79cfccd1d92fe8b461de4b55fde0fc',1,'ndt::ExecutorSelectBase']]],
+  ['timeouthandler_5f_1007',['timeoutHandler_',['../classndt_1_1_executor_select_base.html#a9ad8f22af66bb1f60c5c28e255a4362a',1,'ndt::ExecutorSelectBase']]],
+  ['timeoutptr_5f_1008',['timeoutPtr_',['../classndt_1_1_executor_select_base.html#ac57880fe9ffa973ae15412a79831d55e',1,'ndt::ExecutorSelectBase']]]
 ];

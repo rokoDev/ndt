@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -96,15 +96,19 @@ Collaboration diagram for ndt::BinWriter:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aade38e908b017d62ba5c6450a8807a78"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#aade38e908b017d62ba5c6450a8807a78">BinWriter</a> (<a class="el" href="classndt_1_1_buffer.html">Buffer</a> aBuf) noexcept</td></tr>
 <tr class="separator:aade38e908b017d62ba5c6450a8807a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa832e551d62f613a1a5ff03b6b542474"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa832e551d62f613a1a5ff03b6b542474"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#aa832e551d62f613a1a5ff03b6b542474">add</a> (const T aValue, const uint8_t aNumBits) noexcept</td></tr>
-<tr class="separator:aa832e551d62f613a1a5ff03b6b542474"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae277ddf9f662bc566f1ff610903ab2c8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae277ddf9f662bc566f1ff610903ab2c8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#ae277ddf9f662bc566f1ff610903ab2c8">add</a> (T aValue) noexcept</td></tr>
-<tr class="separator:ae277ddf9f662bc566f1ff610903ab2c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4541f3fcc21a75273bf31d63296cada"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
-<tr class="memitem:af4541f3fcc21a75273bf31d63296cada"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#af4541f3fcc21a75273bf31d63296cada">add</a> (const bool aValue) noexcept</td></tr>
-<tr class="separator:af4541f3fcc21a75273bf31d63296cada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35faf9f5ca7d24f724b1d7443ef36aa6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a35faf9f5ca7d24f724b1d7443ef36aa6"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#a35faf9f5ca7d24f724b1d7443ef36aa6">add</a> (const T aValue, const uint8_t aNumBits) noexcept</td></tr>
+<tr class="separator:a35faf9f5ca7d24f724b1d7443ef36aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4d61b55d427457f6e6b8af2d57d3995"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab4d61b55d427457f6e6b8af2d57d3995"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#ab4d61b55d427457f6e6b8af2d57d3995">add</a> (T aValue) noexcept</td></tr>
+<tr class="separator:ab4d61b55d427457f6e6b8af2d57d3995"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab13ba1addfc0c3bd974423ed25653051"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
+<tr class="memitem:ab13ba1addfc0c3bd974423ed25653051"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#ab13ba1addfc0c3bd974423ed25653051">add</a> (const bool aValue) noexcept</td></tr>
+<tr class="separator:ab13ba1addfc0c3bd974423ed25653051"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b04cf7321baa4e68c7626beff4f294a"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#a6b04cf7321baa4e68c7626beff4f294a">add</a> (void const *aValue, const std::size_t aSize) noexcept</td></tr>
+<tr class="separator:a6b04cf7321baa4e68c7626beff4f294a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54744a085035f18d67f710a7110ad779"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#a54744a085035f18d67f710a7110ad779">add</a> (const <a class="el" href="classndt_1_1_c_buffer.html">CBuffer</a> &amp;aBuffer) noexcept</td></tr>
+<tr class="separator:a54744a085035f18d67f710a7110ad779"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classndt_1_1details_1_1_bin_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classndt_1_1details_1_1_bin_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase&lt; BinWriter &gt;</a></td></tr>
 <tr class="memitem:a8efa793c06440ed5e70ce711849ff8e1 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a8efa793c06440ed5e70ce711849ff8e1">byteIndex</a> () const noexcept</td></tr>
 <tr class="separator:a8efa793c06440ed5e70ce711849ff8e1 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,12 +120,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abded7eb670b36266e1b34a83fc7e4289 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e0698c6540db0474281feaee67a2345 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a1e0698c6540db0474281feaee67a2345">bitCapacity</a> () const noexcept</td></tr>
 <tr class="separator:a1e0698c6540db0474281feaee67a2345 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32db1cdc99552b23587f4b962ad0bfae inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a32db1cdc99552b23587f4b962ad0bfae">bitsLeft</a> () const noexcept</td></tr>
+<tr class="separator:a32db1cdc99552b23587f4b962ad0bfae inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a703962e302de8ad3617082f63c18afad inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a703962e302de8ad3617082f63c18afad">reset</a> () const noexcept</td></tr>
+<tr class="separator:a703962e302de8ad3617082f63c18afad inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3bb6c4752bbf39c6d46bd83566a7252 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ad3bb6c4752bbf39c6d46bd83566a7252">alignByte</a> () const noexcept</td></tr>
+<tr class="separator:ad3bb6c4752bbf39c6d46bd83566a7252 inherit pub_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a3a5a78146badd157bec6f7f139e849d5"><td class="memTemplParams" colspan="2">template&lt;typename E , typename U  = std::enable_if_t&lt;std::is_enum_v&lt;E&gt;&gt;&gt; </td></tr>
-<tr class="memitem:a3a5a78146badd157bec6f7f139e849d5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#a3a5a78146badd157bec6f7f139e849d5">addEnum</a> (const E aEnumValue) noexcept</td></tr>
-<tr class="separator:a3a5a78146badd157bec6f7f139e849d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0812e4bb46edb95ea2fb1e64f95bf24"><td class="memTemplParams" colspan="2">template&lt;typename E , typename U  = std::enable_if_t&lt;std::is_enum_v&lt;E&gt;&gt;&gt; </td></tr>
+<tr class="memitem:af0812e4bb46edb95ea2fb1e64f95bf24"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#af0812e4bb46edb95ea2fb1e64f95bf24">addEnum</a> (const E aEnumValue) noexcept</td></tr>
+<tr class="separator:af0812e4bb46edb95ea2fb1e64f95bf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3545246c210be26581edaf37a6ea8296"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_bin_writer.html#a3545246c210be26581edaf37a6ea8296">bitCapacityImpl</a> () const noexcept</td></tr>
 <tr class="separator:a3545246c210be26581edaf37a6ea8296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -137,6 +147,9 @@ Friends</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_types_classndt_1_1details_1_1_bin_base"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classndt_1_1details_1_1_bin_base')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase&lt; BinWriter &gt;</a></td></tr>
+<tr class="memitem:a069df6107da9ffc106719cf5df514f15 inherit pro_types_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> = std::tuple&lt; std::size_t, uint8_t &gt;</td></tr>
+<tr class="separator:a069df6107da9ffc106719cf5df514f15 inherit pro_types_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classndt_1_1details_1_1_bin_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classndt_1_1details_1_1_bin_base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase&lt; BinWriter &gt;</a></td></tr>
 <tr class="memitem:a3227609acb00caf51a75b3f877b77b4f inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a3227609acb00caf51a75b3f877b77b4f">~BinBase</a> ()=default</td></tr>
 <tr class="separator:a3227609acb00caf51a75b3f877b77b4f inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,10 +163,18 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a54fee3694ec18287dc6ffdfa0b50886d inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dba5dec504092a791e4534591c1a6c9 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classndt_1_1details_1_1_bin_base.html">BinBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a6dba5dec504092a791e4534591c1a6c9">operator=</a> (<a class="el" href="classndt_1_1details_1_1_bin_base.html">BinBase</a> &amp;&amp;) noexcept=default</td></tr>
 <tr class="separator:a6dba5dec504092a791e4534591c1a6c9 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad50d820fb924a413085e93e86381037c inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ad50d820fb924a413085e93e86381037c">extractIndexes</a> () const noexcept</td></tr>
+<tr class="separator:ad50d820fb924a413085e93e86381037c inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a826c1243331de5fe58843c0b914c42d5 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a826c1243331de5fe58843c0b914c42d5">applyIndexes</a> (const <a class="el" href="classndt_1_1details_1_1_bin_base.html#a069df6107da9ffc106719cf5df514f15">IndexesT</a> &amp;aIndexes) const noexcept</td></tr>
+<tr class="separator:a826c1243331de5fe58843c0b914c42d5 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af13881025d1a28cc30e8acadc15e7019 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#af13881025d1a28cc30e8acadc15e7019">updateIndices</a> (const uint8_t numBits) const noexcept</td></tr>
 <tr class="separator:af13881025d1a28cc30e8acadc15e7019 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae386df0d4e2a01a45d2ea9ca67b9a1f9 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">constexpr UIntT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#ae386df0d4e2a01a45d2ea9ca67b9a1f9">filledMask</a> (const uint8_t aNumBits) const noexcept</td></tr>
 <tr class="separator:ae386df0d4e2a01a45d2ea9ca67b9a1f9 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f5da6f75c3f038c3b9aee85b9a2932f inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a2f5da6f75c3f038c3b9aee85b9a2932f">checkIsAlignedSizeAvailable</a> (SizeT aSize) const noexcept</td></tr>
+<tr class="separator:a2f5da6f75c3f038c3b9aee85b9a2932f inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11c9cb886c406f480d51e221ae54fb51 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a11c9cb886c406f480d51e221ae54fb51">checkAlignedBufArgs</a> (void const *const aBuf, SizeT aSize) const noexcept</td></tr>
+<tr class="separator:a11c9cb886c406f480d51e221ae54fb51 inherit pro_methods_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classndt_1_1details_1_1_bin_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classndt_1_1details_1_1_bin_base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classndt_1_1details_1_1_bin_base.html">ndt::details::BinBase&lt; BinWriter &gt;</a></td></tr>
 <tr class="memitem:a8d2894453b59047cbab800a14a377e22 inherit pro_attribs_classndt_1_1details_1_1_bin_base"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1details_1_1_bin_base.html#a8d2894453b59047cbab800a14a377e22">byteIndex_</a></td></tr>
 <tr class="separator:a8d2894453b59047cbab800a14a377e22 inherit pro_attribs_classndt_1_1details_1_1_bin_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,8 +212,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af4541f3fcc21a75273bf31d63296cada"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4541f3fcc21a75273bf31d63296cada">&#9670;&nbsp;</a></span>add() <span class="overload">[1/3]</span></h2>
+<a id="ab13ba1addfc0c3bd974423ed25653051"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab13ba1addfc0c3bd974423ed25653051">&#9670;&nbsp;</a></span>add() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -203,7 +224,7 @@ template&lt;&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ndt::BinWriter::add </td>
+          <td class="memname">std::error_code ndt::BinWriter::add </td>
           <td>(</td>
           <td class="paramtype">const bool&#160;</td>
           <td class="paramname"><em>aValue</em></td><td>)</td>
@@ -219,8 +240,40 @@ template&lt;&gt; </div>
 
 </div>
 </div>
-<a id="aa832e551d62f613a1a5ff03b6b542474"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa832e551d62f613a1a5ff03b6b542474">&#9670;&nbsp;</a></span>add() <span class="overload">[2/3]</span></h2>
+<a id="a54744a085035f18d67f710a7110ad779"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54744a085035f18d67f710a7110ad779">&#9670;&nbsp;</a></span>add() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code ndt::BinWriter::add </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classndt_1_1_c_buffer.html">CBuffer</a> &amp;&#160;</td>
+          <td class="paramname"><em>aBuffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_a54744a085035f18d67f710a7110ad779_cgraph.svg" width="100%" height="476"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a35faf9f5ca7d24f724b1d7443ef36aa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35faf9f5ca7d24f724b1d7443ef36aa6">&#9670;&nbsp;</a></span>add() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +284,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ndt::BinWriter::add </td>
+          <td class="memname">std::error_code ndt::BinWriter::add </td>
           <td>(</td>
           <td class="paramtype">const T&#160;</td>
           <td class="paramname"><em>aValue</em>, </td>
@@ -254,11 +307,23 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_a35faf9f5ca7d24f724b1d7443ef36aa6_cgraph.svg" width="580" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_a35faf9f5ca7d24f724b1d7443ef36aa6_icgraph.svg" width="643" height="114"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
-<a id="ae277ddf9f662bc566f1ff610903ab2c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae277ddf9f662bc566f1ff610903ab2c8">&#9670;&nbsp;</a></span>add() <span class="overload">[3/3]</span></h2>
+<a id="ab4d61b55d427457f6e6b8af2d57d3995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4d61b55d427457f6e6b8af2d57d3995">&#9670;&nbsp;</a></span>add() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -269,7 +334,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ndt::BinWriter::add </td>
+          <td class="memname">std::error_code ndt::BinWriter::add </td>
           <td>(</td>
           <td class="paramtype">T&#160;</td>
           <td class="paramname"><em>aValue</em></td><td>)</td>
@@ -285,14 +350,56 @@ template&lt;typename T &gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_ae277ddf9f662bc566f1ff610903ab2c8_cgraph.svg" width="355" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_ab4d61b55d427457f6e6b8af2d57d3995_cgraph.svg" width="355" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a3a5a78146badd157bec6f7f139e849d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a5a78146badd157bec6f7f139e849d5">&#9670;&nbsp;</a></span>addEnum()</h2>
+<a id="a6b04cf7321baa4e68c7626beff4f294a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b04cf7321baa4e68c7626beff4f294a">&#9670;&nbsp;</a></span>add() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code ndt::BinWriter::add </td>
+          <td>(</td>
+          <td class="paramtype">void const *&#160;</td>
+          <td class="paramname"><em>aValue</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::size_t&#160;</td>
+          <td class="paramname"><em>aSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_a6b04cf7321baa4e68c7626beff4f294a_cgraph.svg" width="376" height="184"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af0812e4bb46edb95ea2fb1e64f95bf24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0812e4bb46edb95ea2fb1e64f95bf24">&#9670;&nbsp;</a></span>addEnum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,7 +410,7 @@ template&lt;typename E , typename U  = std::enable_if_t&lt;std::is_enum_v&lt;E&g
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void ndt::BinWriter::addEnum </td>
+          <td class="memname">std::error_code ndt::BinWriter::addEnum </td>
           <td>(</td>
           <td class="paramtype">const E&#160;</td>
           <td class="paramname"><em>aEnumValue</em></td><td>)</td>
@@ -319,7 +426,7 @@ template&lt;typename E , typename U  = std::enable_if_t&lt;std::is_enum_v&lt;E&g
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_a3a5a78146badd157bec6f7f139e849d5_icgraph.svg" width="355" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_bin_writer_af0812e4bb46edb95ea2fb1e64f95bf24_icgraph.svg" width="355" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -80,7 +80,7 @@ $(function() {
 <div class="dynheader">
 Collaboration diagram for ndt::Buffer:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_buffer__coll__graph.svg" width="112" height="206"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_buffer__coll__graph.svg" width="112" height="235"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 <table class="memberdecls">
@@ -106,6 +106,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7702c1d405ea4be0aeec27493b187048"><td class="memTemplParams" colspan="2">template&lt;typename T  = dlen_t&gt; </td></tr>
 <tr class="memitem:a7702c1d405ea4be0aeec27493b187048"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_buffer.html#a7702c1d405ea4be0aeec27493b187048">size</a> () const noexcept</td></tr>
 <tr class="separator:a7702c1d405ea4be0aeec27493b187048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a76b5334cc72eb9cd39b3ea8602f4a8"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_buffer.html#a8a76b5334cc72eb9cd39b3ea8602f4a8">copyFrom</a> (<a class="el" href="classndt_1_1_c_buffer.html">CBuffer</a> &amp;aBuf) noexcept</td></tr>
+<tr class="separator:a8a76b5334cc72eb9cd39b3ea8602f4a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d4a4320ba32d12a1821466713654df7"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_buffer.html#a7d4a4320ba32d12a1821466713654df7">copyFrom</a> (<a class="el" href="classndt_1_1_buffer.html">Buffer</a> &amp;aBuf) noexcept</td></tr>
+<tr class="separator:a7d4a4320ba32d12a1821466713654df7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -216,6 +220,58 @@ template&lt;size_t N, typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7d4a4320ba32d12a1821466713654df7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d4a4320ba32d12a1821466713654df7">&#9670;&nbsp;</a></span>copyFrom() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code ndt::Buffer::copyFrom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classndt_1_1_buffer.html">Buffer</a> &amp;&#160;</td>
+          <td class="paramname"><em>aBuf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a76b5334cc72eb9cd39b3ea8602f4a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a76b5334cc72eb9cd39b3ea8602f4a8">&#9670;&nbsp;</a></span>copyFrom() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::error_code ndt::Buffer::copyFrom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classndt_1_1_c_buffer.html">CBuffer</a> &amp;&#160;</td>
+          <td class="paramname"><em>aBuf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a284e89ec2af5eec449a98d15f7abf107"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a284e89ec2af5eec449a98d15f7abf107">&#9670;&nbsp;</a></span>data()</h2>
 
@@ -243,7 +299,7 @@ template&lt;typename T  = buf_t&gt; </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_buffer_a284e89ec2af5eec449a98d15f7abf107_icgraph.svg" width="354" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_buffer_a284e89ec2af5eec449a98d15f7abf107_icgraph.svg" width="354" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -412,8 +468,9 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/projects/ndt/sources/include/ndt/<a class="el" href="buffer_8h_source.html">buffer.h</a></li>
+<li>C:/projects/ndt/sources/src/<a class="el" href="buffer_8cpp.html">buffer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

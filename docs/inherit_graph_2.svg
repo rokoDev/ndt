@@ -9,8 +9,8 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 100)">
 <title>Graphical Class Hierarchy</title>
 <polygon fill="white" stroke="none" points="-4,4 -4,-100 270,-100 270,4 -4,4"/>
-<!-- Node13 -->
-<g id="node1" class="node"><title>Node13</title>
+<!-- Node15 -->
+<g id="node1" class="node"><title>Node15</title>
 <g id="a_node1"><a xlink:title=" ">
 <polygon fill="white" stroke="#bfbfbf" points="0,-38.5 0,-57.5 98,-57.5 98,-38.5 0,-38.5"/>
 <text text-anchor="middle" x="49" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00">std::error_category</text>
@@ -25,34 +25,34 @@
 </a>
 </g>
 </g>
-<!-- Node13&#45;&gt;Node0 -->
-<g id="edge1" class="edge"><title>Node13&#45;&gt;Node0</title>
+<!-- Node15&#45;&gt;Node0 -->
+<g id="edge1" class="edge"><title>Node15&#45;&gt;Node0</title>
 <path fill="none" stroke="midnightblue" d="M97.4922,-60.1121C118.244,-65.4044 142.228,-71.5213 161.671,-76.4799"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="98.1538,-56.6689 87.599,-57.589 96.4239,-63.4518 98.1538,-56.6689"/>
 </g>
-<!-- Node15 -->
-<g id="node3" class="node"><title>Node15</title>
+<!-- Node17 -->
+<g id="node3" class="node"><title>Node17</title>
 <g id="a_node3"><a xlink:href="classndt_1_1_context_error_category.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="135,-38.5 135,-57.5 265,-57.5 265,-38.5 135,-38.5"/>
 <text text-anchor="middle" x="200" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00">ndt::ContextErrorCategory</text>
 </a>
 </g>
 </g>
-<!-- Node13&#45;&gt;Node15 -->
-<g id="edge2" class="edge"><title>Node13&#45;&gt;Node15</title>
+<!-- Node15&#45;&gt;Node17 -->
+<g id="edge2" class="edge"><title>Node15&#45;&gt;Node17</title>
 <path fill="none" stroke="midnightblue" d="M108.4,-48C117.084,-48 126.075,-48 134.869,-48"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="108.376,-44.5001 98.376,-48 108.376,-51.5001 108.376,-44.5001"/>
 </g>
-<!-- Node16 -->
-<g id="node4" class="node"><title>Node16</title>
+<!-- Node18 -->
+<g id="node4" class="node"><title>Node18</title>
 <g id="a_node4"><a xlink:href="classndt_1_1_file_error_category.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="144,-0.5 144,-19.5 256,-19.5 256,-0.5 144,-0.5"/>
 <text text-anchor="middle" x="200" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">ndt::FileErrorCategory</text>
 </a>
 </g>
 </g>
-<!-- Node13&#45;&gt;Node16 -->
-<g id="edge3" class="edge"><title>Node13&#45;&gt;Node16</title>
+<!-- Node15&#45;&gt;Node18 -->
+<g id="edge3" class="edge"><title>Node15&#45;&gt;Node18</title>
 <path fill="none" stroke="midnightblue" d="M97.4922,-35.8879C118.244,-30.5956 142.228,-24.4787 161.671,-19.5201"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="96.4239,-32.5482 87.599,-38.411 98.1538,-39.3311 96.4239,-32.5482"/>
 </g>

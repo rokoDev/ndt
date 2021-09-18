@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -81,6 +81,8 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;fmt/core.h&gt;</code><br />
 <code>#include &lt;fmt/format.h&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;system_error&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
@@ -103,6 +105,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionndt_1_1sa__u.html">ndt::sa_u</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionndt_1_1u__ipv4__t.html">ndt::u_ipv4_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structndt_1_1ipv4__t.html">ndt::ipv4_t</a></td></tr>
@@ -110,6 +114,10 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionndt_1_1u__ipv6__t.html">ndt::u_ipv6_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structndt_1_1ipv6__t.html">ndt::ipv6_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structndt_1_1is__std__array.html">ndt::is_std_array&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structndt_1_1is__std__array_3_01std_1_1array_3_01_data_t_00_01_size_01_4_01_4.html">ndt::is_std_array&lt; std::array&lt; DataT, Size &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structndt_1_1utils_1_1uint__from__nbits.html">ndt::utils::uint_from_nbits&lt; BitsCount &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,6 +129,8 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacendt"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html">ndt</a></td></tr>
 <tr class="memdesc:namespacendt"><td class="mdescLeft">&#160;</td><td class="mdescRight">ndt - namespace which contains all stuff provided by this library. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacendt_1_1details"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html">ndt::details</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacendt_1_1utils"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1utils.html">ndt::utils</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -131,6 +141,15 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a104872fd3d2a21c515e653af534caeef"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a104872fd3d2a21c515e653af534caeef"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a104872fd3d2a21c515e653af534caeef">ndt::Int</a> = std::enable_if_t&lt; std::is_signed_v&lt; T &gt; &amp;&amp;!std::is_same_v&lt; T, bool &gt;, T &gt;</td></tr>
+<tr class="separator:a104872fd3d2a21c515e653af534caeef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae200d8a856b3287f1439e2fce87ff2d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aae200d8a856b3287f1439e2fce87ff2d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#aae200d8a856b3287f1439e2fce87ff2d">ndt::UInt</a> = std::enable_if_t&lt; std::is_unsigned_v&lt; T &gt; &amp;&amp;!std::is_same_v&lt; T, bool &gt;, T &gt;</td></tr>
+<tr class="separator:aae200d8a856b3287f1439e2fce87ff2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeebadb84ab9ff35bc505ee7d05f0d1c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:abeebadb84ab9ff35bc505ee7d05f0d1c"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#abeebadb84ab9ff35bc505ee7d05f0d1c">ndt::std_array_data_t</a> = typename std::tuple_element_t&lt; 0, std::decay_t&lt; T &gt; &gt;</td></tr>
+<tr class="separator:abeebadb84ab9ff35bc505ee7d05f0d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71871fbef17a88bab03fc09011b76225"><td class="memTemplParams" colspan="2">template&lt;uint8_t BitsCount&gt; </td></tr>
 <tr class="memitem:a71871fbef17a88bab03fc09011b76225"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1utils.html#a71871fbef17a88bab03fc09011b76225">ndt::utils::uint_from_nbits_t</a> = typename uint_from_nbits&lt; BitsCount &gt;::type</td></tr>
 <tr class="separator:a71871fbef17a88bab03fc09011b76225"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,6 +174,21 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:adfcc84915fbe88c8faab20380131f931"><td class="memTemplParams" colspan="2">template&lt;typename A1 , typename A2 , std::size_t... i1, std::size_t... i2, typename  = std::enable_if_t&lt;is_same_data_std_arrays&lt;A1, A2&gt;&gt;&gt; </td></tr>
+<tr class="memitem:adfcc84915fbe88c8faab20380131f931"><td class="memTemplItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#adfcc84915fbe88c8faab20380131f931">ndt::details::concatenate_2_arrays</a> (A1 &amp;&amp;aArray1, A2 &amp;&amp;aArray2, std::index_sequence&lt; i1... &gt;, std::index_sequence&lt; i2... &gt;) noexcept -&gt; std::array&lt; std_array_data_t&lt; A1 &gt;, std_array_sizes_sum&lt; A1, A2 &gt;&gt;</td></tr>
+<tr class="separator:adfcc84915fbe88c8faab20380131f931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abadd09853ff9222f4d6babfde93872b1"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = std::enable_if_t&lt;is_std_array_v&lt;T&gt;&gt;&gt; </td></tr>
+<tr class="memitem:abadd09853ff9222f4d6babfde93872b1"><td class="memTemplItemLeft" align="right" valign="top">constexpr decltype(auto)&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#abadd09853ff9222f4d6babfde93872b1">ndt::details::concatenate_arrays</a> (T &amp;&amp;aArray) noexcept</td></tr>
+<tr class="separator:abadd09853ff9222f4d6babfde93872b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memTemplParams" colspan="2">template&lt;typename A1 , typename A2 , typename... RestArrays&gt; </td></tr>
+<tr class="memitem:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt_1_1details.html#a9b819c7778fd46d8ef447ab49e1874bc">ndt::details::concatenate_arrays</a> (A1 &amp;&amp;aArray1, A2 &amp;&amp;aArray2, RestArrays &amp;&amp;... aArrays) noexcept -&gt; std::array&lt; std_array_data_t&lt; A1 &gt;, std_array_sizes_sum&lt; A1, A2, RestArrays... &gt;&gt;</td></tr>
+<tr class="separator:a9b819c7778fd46d8ef447ab49e1874bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accbd7ec5ca53381af27055897954e158"><td class="memTemplParams" colspan="2">template&lt;typename Array , typename... RestArrays&gt; </td></tr>
+<tr class="memitem:accbd7ec5ca53381af27055897954e158"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#accbd7ec5ca53381af27055897954e158">ndt::concatenate_arrays</a> (Array &amp;&amp;aArray, RestArrays &amp;&amp;... aArrays) noexcept -&gt; std::array&lt; std_array_data_t&lt; Array &gt;, std_array_sizes_sum&lt; Array, RestArrays... &gt;&gt;</td></tr>
+<tr class="separator:accbd7ec5ca53381af27055897954e158"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53e4cfad7b988ec0c05c7f04bf74e133"><td class="memTemplParams" colspan="2">template&lt;typename... T&gt; </td></tr>
+<tr class="memitem:a53e4cfad7b988ec0c05c7f04bf74e133"><td class="memTemplItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a53e4cfad7b988ec0c05c7f04bf74e133">ndt::make_array</a> (T &amp;&amp;... aArgs) -&gt; std::array&lt; typename std::decay&lt; typename std::common_type&lt; T... &gt;::type &gt;::type, sizeof...(T)&gt;</td></tr>
+<tr class="separator:a53e4cfad7b988ec0c05c7f04bf74e133"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ab67cd93f96e18577ba4425ac4d06a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1utils.html#a9ab67cd93f96e18577ba4425ac4d06a9">ndt::utils::memvcmp</a> (const void *memptr, unsigned char val, const std::size_t size)</td></tr>
 <tr class="separator:a9ab67cd93f96e18577ba4425ac4d06a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c223513a19bfad08c7215344d9efd7b"><td class="memItemLeft" align="right" valign="top">constexpr uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt_1_1utils.html#a2c223513a19bfad08c7215344d9efd7b">ndt::utils::bits_count</a> (const uint64_t aValue)</td></tr>
@@ -223,6 +257,18 @@ Variables</h2></td></tr>
 <tr class="separator:a4b884752668e70cf8faf9cb73147c56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d5eaac2a529005e1d4d0439516bf8a6"><td class="memItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#a3d5eaac2a529005e1d4d0439516bf8a6">ndt::kV6Capacity</a> = sizeof(sockaddr_in6)</td></tr>
 <tr class="separator:a3d5eaac2a529005e1d4d0439516bf8a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5710bfd411b67c7da3e2edcc536d7952"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5710bfd411b67c7da3e2edcc536d7952"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a5710bfd411b67c7da3e2edcc536d7952">ndt::is_std_array_v</a> = is_std_array&lt;std::decay_t&lt;T&gt;&gt;::value</td></tr>
+<tr class="separator:a5710bfd411b67c7da3e2edcc536d7952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e7d924396465558ed96608ae1d9bb63"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2e7d924396465558ed96608ae1d9bb63"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a2e7d924396465558ed96608ae1d9bb63">ndt::std_array_size_v</a></td></tr>
+<tr class="separator:a2e7d924396465558ed96608ae1d9bb63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7143b36b371be5b9f62463d2c0f5b51"><td class="memTemplParams" colspan="2">template&lt;typename A1 , typename A2 &gt; </td></tr>
+<tr class="memitem:aa7143b36b371be5b9f62463d2c0f5b51"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#aa7143b36b371be5b9f62463d2c0f5b51">ndt::is_same_data_std_arrays</a></td></tr>
+<tr class="separator:aa7143b36b371be5b9f62463d2c0f5b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67b801cc2c36770ef9b1f161942ce7c0"><td class="memTemplParams" colspan="2">template&lt;typename... Arrays&gt; </td></tr>
+<tr class="memitem:a67b801cc2c36770ef9b1f161942ce7c0"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a67b801cc2c36770ef9b1f161942ce7c0">ndt::std_array_sizes_sum</a></td></tr>
+<tr class="separator:a67b801cc2c36770ef9b1f161942ce7c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ad8a7fadfe424e4a192b857630488550a"></a>

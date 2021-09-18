@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -161,6 +161,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adbfe0ed4f6b0d87bff89d67660efa323"><td class="memTemplParams" colspan="2">template&lt;typename SysWrapperT  = SocketOps&gt; </td></tr>
 <tr class="memitem:adbfe0ed4f6b0d87bff89d67660efa323"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#adbfe0ed4f6b0d87bff89d67660efa323">ipStr</a> (<a class="el" href="classndt_1_1_buffer.html">Buffer</a> aBuf, std::error_code &amp;aEc) const noexcept</td></tr>
 <tr class="separator:adbfe0ed4f6b0d87bff89d67660efa323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a947e5390323b236819830df8d2466e9d"><td class="memItemLeft" align="right" valign="top">void const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#a947e5390323b236819830df8d2466e9d">ipPtr</a> () const noexcept</td></tr>
+<tr class="separator:a947e5390323b236819830df8d2466e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -173,8 +175,6 @@ Static Public Member Functions</h2></td></tr>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a3a4b38ee40d14e291dd110ff60c4ea78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#a3a4b38ee40d14e291dd110ff60c4ea78">setFamily</a> (const uint8_t aFamily) noexcept</td></tr>
 <tr class="separator:a3a4b38ee40d14e291dd110ff60c4ea78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d3ff27044661628e032c4abd076f1f7"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#a0d3ff27044661628e032c4abd076f1f7">ipPtr</a> () const noexcept</td></tr>
-<tr class="separator:a0d3ff27044661628e032c4abd076f1f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe5b967619059f2d8ed44ffe1f08835a"><td class="memTemplParams" colspan="2">template&lt;typename AF_Type &gt; </td></tr>
 <tr class="memitem:abe5b967619059f2d8ed44ffe1f08835a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#abe5b967619059f2d8ed44ffe1f08835a">throwIfInvalidFamily</a> (const typename <a class="el" href="structndt_1_1_address_family.html">AddressFamily</a>&lt; AF_Type &gt;::type aFamily)</td></tr>
 <tr class="separator:abe5b967619059f2d8ed44ffe1f08835a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,15 +183,8 @@ Private Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a310f66ec728a0f1ff637b73b5168191b"><td class="memItemLeft" >union {</td></tr>
-<tr class="memitem:a410e3a0ae6643d72bc2b65aaa20bc896"><td class="memItemLeft" >&#160;&#160;&#160;sockaddr&#160;&#160;&#160;<a class="el" href="classndt_1_1_address.html#ae9390919937a6738b8c7fe617630daab">sa</a></td></tr>
-<tr class="separator:a410e3a0ae6643d72bc2b65aaa20bc896"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64e5518d83d53f69b137f6487219c2de"><td class="memItemLeft" >&#160;&#160;&#160;sockaddr_in&#160;&#160;&#160;<a class="el" href="classndt_1_1_address.html#a43fd690e6656c928083349fbbfe69e0a">sa4</a></td></tr>
-<tr class="separator:a64e5518d83d53f69b137f6487219c2de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1be9075aa243dd98ae8041d1bac8e1d"><td class="memItemLeft" >&#160;&#160;&#160;sockaddr_in6&#160;&#160;&#160;<a class="el" href="classndt_1_1_address.html#a2657363532f80fe8162be2c226ebb692">sa6</a></td></tr>
-<tr class="separator:ad1be9075aa243dd98ae8041d1bac8e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a310f66ec728a0f1ff637b73b5168191b"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#a310f66ec728a0f1ff637b73b5168191b">sockaddr_</a></td></tr>
-<tr class="separator:a310f66ec728a0f1ff637b73b5168191b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5af2ab3e3a433956b566a8feecd2dd06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="unionndt_1_1sa__u.html">sa_u</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classndt_1_1_address.html#a5af2ab3e3a433956b566a8feecd2dd06">sockaddr_</a></td></tr>
+<tr class="separator:a5af2ab3e3a433956b566a8feecd2dd06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -260,6 +253,12 @@ Friends</h2></td></tr>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_ae40f211c43c0d6a45b6e6728db27097b_cgraph.svg" width="344" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_ae40f211c43c0d6a45b6e6728db27097b_icgraph.svg" width="100%" height="366"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -558,6 +557,12 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a44af3f37ab71784738abeadefefd7a5b_icgraph.svg" width="379" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -634,7 +639,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_acc3c23480a74e90b63d75e15c3300040_icgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_acc3c23480a74e90b63d75e15c3300040_icgraph.svg" width="100%" height="461"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -830,8 +835,8 @@ template&lt;typename SysWrapperT &gt; </div>
 
 </div>
 </div>
-<a id="a0d3ff27044661628e032c4abd076f1f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d3ff27044661628e032c4abd076f1f7">&#9670;&nbsp;</a></span>ipPtr()</h2>
+<a id="a947e5390323b236819830df8d2466e9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a947e5390323b236819830df8d2466e9d">&#9670;&nbsp;</a></span>ipPtr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -840,7 +845,7 @@ template&lt;typename SysWrapperT &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const void * ndt::Address::ipPtr </td>
+          <td class="memname">void const  * ndt::Address::ipPtr </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -848,14 +853,20 @@ template&lt;typename SysWrapperT &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a0d3ff27044661628e032c4abd076f1f7_cgraph.svg" width="402" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a947e5390323b236819830df8d2466e9d_cgraph.svg" width="402" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a947e5390323b236819830df8d2466e9d_icgraph.svg" width="320" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -922,6 +933,12 @@ template&lt;typename SysWrapperT &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_adbfe0ed4f6b0d87bff89d67660efa323_cgraph.svg" width="580" height="63"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -986,6 +1003,12 @@ template&lt;typename SysWrapperT &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a34fc4c99babe36ce8dfe6907b6d15a13_cgraph.svg" width="379" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -1050,6 +1073,12 @@ template&lt;typename SysWrapperT &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_a14dac18f131ae89082c34976e64fd4a3_cgraph.svg" width="379" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -1229,7 +1258,7 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_ab40eccd53620a2883bd78cd51c745b1d_icgraph.svg" width="344" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="classndt_1_1_address_ab40eccd53620a2883bd78cd51c745b1d_icgraph.svg" width="100%" height="366"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1537,58 +1566,24 @@ template&lt;typename SysWrapperT &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae9390919937a6738b8c7fe617630daab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9390919937a6738b8c7fe617630daab">&#9670;&nbsp;</a></span>sa</h2>
+<a id="a5af2ab3e3a433956b566a8feecd2dd06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5af2ab3e3a433956b566a8feecd2dd06">&#9670;&nbsp;</a></span>sockaddr_</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">sockaddr ndt::Address::sa</td>
+          <td class="memname"><a class="el" href="unionndt_1_1sa__u.html">sa_u</a> ndt::Address::sockaddr_</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a43fd690e6656c928083349fbbfe69e0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43fd690e6656c928083349fbbfe69e0a">&#9670;&nbsp;</a></span>sa4</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">sockaddr_in ndt::Address::sa4</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2657363532f80fe8162be2c226ebb692"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2657363532f80fe8162be2c226ebb692">&#9670;&nbsp;</a></span>sa6</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">sockaddr_in6 ndt::Address::sa6</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a310f66ec728a0f1ff637b73b5168191b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a310f66ec728a0f1ff637b73b5168191b">&#9670;&nbsp;</a></span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">union { ... }  ndt::Address::sockaddr_</td>
-        </tr>
-      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

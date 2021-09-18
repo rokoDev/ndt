@@ -1,4 +1,5 @@
 <map id="ndt::CBuffer::data" name="ndt::CBuffer::data">
-<area shape="rect" id="node1" title=" " alt="" coords="223,5,345,32"/>
-<area shape="rect" id="node2" href="$classndt_1_1_socket_base.html#a869764aa83c8bd0bcfe00db19401586f" title=" " alt="" coords="5,5,175,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="223,31,345,57"/>
+<area shape="rect" id="node2" href="$classndt_1_1_bin_reader.html#a006142796663e6adef7ef3b3bc1c218e" title=" " alt="" coords="23,5,157,32"/>
+<area shape="rect" id="node3" href="$classndt_1_1_socket_base.html#a869764aa83c8bd0bcfe00db19401586f" title=" " alt="" coords="5,56,175,83"/>
 </map>

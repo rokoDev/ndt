@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">6fb134801658a6661f96544a51e55b4af1a2ca71</span>
+   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -70,6 +70,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -79,9 +80,11 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;variant&gt;</code><br />
+<code>#include &quot;<a class="el" href="bin__rw_8h_source.html">bin_rw.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="buffer_8h_source.html">buffer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="exception_8h_source.html">exception.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sys__socket__ops_8h_source.html">sys_socket_ops.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="tag_8h_source.html">tag.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for address.h:</div>
@@ -121,6 +124,12 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacestd"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestd.html">std</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a9306b64be83ea952cb81b221683da7f6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9306b64be83ea952cb81b221683da7f6"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a9306b64be83ea952cb81b221683da7f6">ndt::enable_if_Address_t</a> = std::enable_if_t&lt; std::is_same_v&lt; std::decay_t&lt; T &gt;, Address &gt;, T &gt;</td></tr>
+<tr class="separator:a9306b64be83ea952cb81b221683da7f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a18035717bc44bd0af5856f1f45be990b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#a18035717bc44bd0af5856f1f45be990b">ndt::eAddressErrorCode</a> { <a class="el" href="namespacendt.html#a18035717bc44bd0af5856f1f45be990ba8c632159fa131f09d04f94e3cbcd8782">ndt::kSuccess</a> = 0
@@ -136,6 +145,12 @@ Functions</h2></td></tr>
 <tr class="separator:afb00545aff91ded0f81e30a6dfde4608"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4c1e716b25fd6e4ad568edd93a2e518"><td class="memItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#ad4c1e716b25fd6e4ad568edd93a2e518">ndt::make_error_code</a> (eAddressErrorCode e)</td></tr>
 <tr class="separator:ad4c1e716b25fd6e4ad568edd93a2e518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0645da168cfe455888152aa94418b891"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0645da168cfe455888152aa94418b891"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a0645da168cfe455888152aa94418b891">ndt::serialize</a> (BinWriter &amp;aWriter, T &amp;&amp;aData, <a class="el" href="structndt_1_1tag__t.html">ndt::tag_t</a>&lt; enable_if_Address_t&lt; T &gt;&gt;) noexcept</td></tr>
+<tr class="separator:a0645da168cfe455888152aa94418b891"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8891ed023a4bc139e70e0724c94d1b9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ab8891ed023a4bc139e70e0724c94d1b9"><td class="memTemplItemLeft" align="right" valign="top">std::error_code&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#ab8891ed023a4bc139e70e0724c94d1b9">ndt::deserialize</a> (BinReader &amp;aReader, T &amp;&amp;aData, <a class="el" href="structndt_1_1tag__t.html">ndt::tag_t</a>&lt; enable_if_Address_t&lt; T &gt;&gt;) noexcept</td></tr>
+<tr class="separator:ab8891ed023a4bc139e70e0724c94d1b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
