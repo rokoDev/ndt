@@ -1,55 +1,12 @@
 #ifndef ndt_endian_h
 #define ndt_endian_h
 
+#include <climits>
 #include <cstdint>
 #include <cstring>
 #include <string_view>
 #include <type_traits>
-
-#include "useful_base_types.h"
-
-#if defined(__linux__)
-
-#include <byteswap.h>
-#define swap16(arg) __bswap_16(arg)
-#define swap32(arg) __bswap_32(arg)
-#define swap64(arg) __bswap_64(arg)
-
-#elif defined(__APPLE__)
-
-#include <libkern/OSByteOrder.h>
-#define swap16(arg) OSSwapInt16(arg)
-#define swap32(arg) OSSwapInt32(arg)
-#define swap64(arg) OSSwapInt64(arg)
-
-#elif defined(_MSC_VER)
-
-#include <stdlib.h>
-#define swap16(arg) _byteswap_ushort(arg)
-#define swap32(arg) _byteswap_ulong(arg)
-#define swap64(arg) _byteswap_uint64(arg)
-
-#else
-
-#define swap16(arg) \
-    static_cast<uint16_t>((((arg)&0xff00) >> 8) | (((arg)&0x00ff) << 8))
-
-#define swap32(arg)                                              \
-    static_cast<uint32_t>(                                       \
-        (((arg)&0xff000000) >> 24) | (((arg)&0x00ff0000) >> 8) | \
-        (((arg)&0x0000ff00) << 8) | (((arg)&0x000000ff) << 24))
-
-#define swap64(arg)                                               \
-    static_cast<uint64_t>((((arg)&0xff00000000000000ull) >> 56) | \
-                          (((arg)&0x00ff000000000000ull) >> 40) | \
-                          (((arg)&0x0000ff0000000000ull) >> 24) | \
-                          (((arg)&0x000000ff00000000ull) >> 8) |  \
-                          (((arg)&0x00000000ff000000ull) << 8) |  \
-                          (((arg)&0x0000000000ff0000ull) << 24) | \
-                          (((arg)&0x000000000000ff00ull) << 40) | \
-                          (((arg)&0x00000000000000ffull) << 56))
-
-#endif
+#include <utility>
 
 namespace ndt
 {
@@ -97,99 +54,38 @@ std::string_view endianName() noexcept;
 
 namespace details
 {
-template <typename T, std::size_t numBytes = sizeof(T)>
-class ByteOrder : private NoCopyMoveDefConstructible
+template <typename T, std::size_t... I>
+constexpr T bswap_impl(T aValue, std::index_sequence<I...>)
 {
-   public:
-    static T toHost(const T aValue) noexcept;
-    static T toNet(const T aValue) noexcept;
-};
-
-template <>
-class ByteOrder<uint8_t, 1> : private NoCopyMoveDefConstructible
-{
-   public:
-    static uint8_t toHost(const uint8_t aValue) noexcept
-    {
-        return toNet(aValue);
-    }
-    static uint8_t toNet(const uint8_t aValue) noexcept { return aValue; }
-};
-
-template <>
-class ByteOrder<uint16_t, 2> : private NoCopyMoveDefConstructible
-{
-   public:
-    static uint16_t toHost(const uint16_t aValue) noexcept
-    {
-        return toNet(aValue);
-    }
-    static uint16_t toNet(const uint16_t aValue) noexcept
-    {
-        if constexpr (kEndian == eEndian::kLittle)
-        {
-            return swap16(aValue);
-        }
-        else
-        {
-            return aValue;
-        }
-    }
-};
-
-template <>
-class ByteOrder<uint32_t, 4> : private NoCopyMoveDefConstructible
-{
-   public:
-    static uint32_t toHost(const uint32_t aValue) noexcept
-    {
-        return toNet(aValue);
-    }
-    static uint32_t toNet(const uint32_t aValue) noexcept
-    {
-        if constexpr (kEndian == eEndian::kLittle)
-        {
-            return swap32(aValue);
-        }
-        else
-        {
-            return aValue;
-        }
-    }
-};
-
-template <>
-class ByteOrder<uint64_t, 8> : private NoCopyMoveDefConstructible
-{
-   public:
-    static uint64_t toHost(const uint64_t aValue) noexcept
-    {
-        return toNet(aValue);
-    }
-    static uint64_t toNet(const uint64_t aValue) noexcept
-    {
-        if constexpr (kEndian == eEndian::kLittle)
-        {
-            return swap64(aValue);
-        }
-        else
-        {
-            return aValue;
-        }
-    }
+    return (... | static_cast<T>((0b11111111 & (aValue >> (I * CHAR_BIT)))
+                                 << ((sizeof(T) - 1 - I) * CHAR_BIT)));
 };
 }  // namespace details
 
-template <typename T>
-T toHost(const T aValue) noexcept
+template <typename T, typename U = typename std::make_unsigned<T>::type>
+constexpr U bswap(T aValue)
 {
-    return details::ByteOrder<T>::toHost(aValue);
+    return details::bswap_impl<U>(aValue,
+                                  std::make_index_sequence<sizeof(T)>{});
 }
 
 template <typename T>
-T toNet(const T aValue) noexcept
+constexpr T toNet(const T aValue) noexcept
 {
-    return details::ByteOrder<T>::toNet(aValue);
+    if constexpr (kEndian == eEndian::kLittle)
+    {
+        return bswap(aValue);
+    }
+    else
+    {
+        return aValue;
+    }
+}
+
+template <typename T>
+constexpr T toHost(const T aValue) noexcept
+{
+    return toNet(aValue);
 }
 }  // namespace ndt
 
