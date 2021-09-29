@@ -10,7 +10,7 @@ var indexSectionsWithContent =
   7: "e",
   8: "k",
   9: "dehos",
-  10: "cefns",
+  10: "cefn",
   11: "n"
 };
 

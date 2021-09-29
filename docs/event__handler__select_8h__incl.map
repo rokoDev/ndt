@@ -1,42 +1,44 @@
 <map id="C:/projects/ndt/sources/include/ndt/event_handler_select.h" name="C:/projects/ndt/sources/include/ndt/event_handler_select.h">
-<area shape="rect" id="node1" title=" " alt="" coords="383,5,555,61"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,661,67,688"/>
-<area shape="rect" id="node3" title=" " alt="" coords="376,661,459,688"/>
-<area shape="rect" id="node4" href="$executor__select_8h.html" title=" " alt="" coords="1025,109,1151,136"/>
-<area shape="rect" id="node5" href="$nix_2executor__select__impl_8h.html" title=" " alt="" coords="1211,184,1354,225"/>
-<area shape="rect" id="node6" href="$common_8h.html" title="Header with typedefs to make type designation platform independent." alt="" coords="1261,661,1368,688"/>
-<area shape="rect" id="node16" href="$executor__select__base_8h.html" title=" " alt="" coords="1213,273,1352,315"/>
-<area shape="rect" id="node7" title=" " alt="" coords="1536,736,1619,763"/>
-<area shape="rect" id="node8" title=" " alt="" coords="1643,736,1706,763"/>
-<area shape="rect" id="node9" title=" " alt="" coords="925,736,982,763"/>
-<area shape="rect" id="node10" title=" " alt="" coords="1006,736,1071,763"/>
-<area shape="rect" id="node11" title=" " alt="" coords="1095,736,1182,763"/>
-<area shape="rect" id="node12" title=" " alt="" coords="1206,736,1303,763"/>
-<area shape="rect" id="node13" title=" " alt="" coords="1328,736,1419,763"/>
-<area shape="rect" id="node14" title=" " alt="" coords="1443,736,1511,763"/>
-<area shape="rect" id="node15" title=" " alt="" coords="680,736,744,763"/>
-<area shape="rect" id="node17" title=" " alt="" coords="1416,661,1467,688"/>
-<area shape="rect" id="node18" title=" " alt="" coords="1200,437,1277,464"/>
-<area shape="rect" id="node19" title=" " alt="" coords="1139,661,1237,688"/>
-<area shape="rect" id="node20" href="$socket_8h.html" title=" " alt="" coords="1025,363,1097,389"/>
-<area shape="rect" id="node21" title=" " alt="" coords="201,661,266,688"/>
-<area shape="rect" id="node22" href="$address_8h.html" title=" " alt="" coords="779,437,858,464"/>
-<area shape="rect" id="node28" href="$buffer_8h.html" title=" " alt="" coords="532,587,596,613"/>
-<area shape="rect" id="node31" href="$useful__base__types_8h.html" title=" " alt="" coords="533,661,675,688"/>
-<area shape="rect" id="node32" href="$utils_8h.html" title=" " alt="" coords="853,587,910,613"/>
-<area shape="rect" id="node37" href="$exception_8h.html" title=" " alt="" coords="1137,587,1226,613"/>
-<area shape="rect" id="node23" title=" " alt="" coords="631,512,686,539"/>
-<area shape="rect" id="node24" title=" " alt="" coords="711,512,769,539"/>
-<area shape="rect" id="node25" href="$bin__rw_8h.html" title=" " alt="" coords="383,512,454,539"/>
-<area shape="rect" id="node38" href="$sys__socket__ops_8h.html" title=" " alt="" coords="919,512,1047,539"/>
-<area shape="rect" id="node40" href="$tag_8h.html" title=" " alt="" coords="793,512,844,539"/>
-<area shape="rect" id="node26" title=" " alt="" coords="433,587,508,613"/>
-<area shape="rect" id="node27" title=" " alt="" coords="291,661,352,688"/>
-<area shape="rect" id="node29" href="$endian_8h.html" title=" " alt="" coords="186,587,257,613"/>
-<area shape="rect" id="node30" title=" " alt="" coords="91,661,176,688"/>
-<area shape="rect" id="node33" title=" " alt="" coords="699,661,779,688"/>
-<area shape="rect" id="node34" title=" " alt="" coords="803,661,893,688"/>
-<area shape="rect" id="node35" title=" " alt="" coords="917,661,979,688"/>
-<area shape="rect" id="node36" title=" " alt="" coords="1003,661,1114,688"/>
-<area shape="rect" id="node39" href="$sys__error__code_8h.html" title=" " alt="" coords="935,587,1057,613"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1015,5,1187,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="1651,661,1712,688"/>
+<area shape="rect" id="node3" title=" " alt="" coords="1272,661,1355,688"/>
+<area shape="rect" id="node4" href="$executor__select_8h.html" title=" " alt="" coords="765,109,891,136"/>
+<area shape="rect" id="node5" href="$nix_2executor__select__impl_8h.html" title=" " alt="" coords="311,184,454,225"/>
+<area shape="rect" id="node6" href="$common_8h.html" title="Header with typedefs to make type designation platform independent." alt="" coords="352,661,459,688"/>
+<area shape="rect" id="node16" href="$executor__select__base_8h.html" title=" " alt="" coords="204,273,343,315"/>
+<area shape="rect" id="node7" title=" " alt="" coords="745,736,828,763"/>
+<area shape="rect" id="node8" title=" " alt="" coords="47,736,110,763"/>
+<area shape="rect" id="node9" title=" " alt="" coords="134,736,191,763"/>
+<area shape="rect" id="node10" title=" " alt="" coords="215,736,281,763"/>
+<area shape="rect" id="node11" title=" " alt="" coords="305,736,391,763"/>
+<area shape="rect" id="node12" title=" " alt="" coords="415,736,513,763"/>
+<area shape="rect" id="node13" title=" " alt="" coords="537,736,628,763"/>
+<area shape="rect" id="node14" title=" " alt="" coords="653,736,721,763"/>
+<area shape="rect" id="node15" title=" " alt="" coords="911,736,975,763"/>
+<area shape="rect" id="node17" title=" " alt="" coords="5,661,56,688"/>
+<area shape="rect" id="node18" title=" " alt="" coords="265,437,343,464"/>
+<area shape="rect" id="node19" title=" " alt="" coords="483,661,581,688"/>
+<area shape="rect" id="node20" href="$socket_8h.html" title=" " alt="" coords="547,363,619,389"/>
+<area shape="rect" id="node21" title=" " alt="" coords="1097,661,1162,688"/>
+<area shape="rect" id="node22" href="$address_8h.html" title=" " alt="" coords="710,437,789,464"/>
+<area shape="rect" id="node28" href="$buffer_8h.html" title=" " alt="" coords="1023,587,1087,613"/>
+<area shape="rect" id="node33" href="$utils_8h.html" title=" " alt="" coords="777,587,834,613"/>
+<area shape="rect" id="node38" href="$exception_8h.html" title=" " alt="" coords="570,587,659,613"/>
+<area shape="rect" id="node41" href="$useful__base__types_8h.html" title=" " alt="" coords="80,661,221,688"/>
+<area shape="rect" id="node23" title=" " alt="" coords="722,512,777,539"/>
+<area shape="rect" id="node24" title=" " alt="" coords="801,512,860,539"/>
+<area shape="rect" id="node25" href="$bin__rw_8h.html" title=" " alt="" coords="1163,512,1234,539"/>
+<area shape="rect" id="node39" href="$sys__socket__ops_8h.html" title=" " alt="" coords="265,512,393,539"/>
+<area shape="rect" id="node42" href="$tag_8h.html" title=" " alt="" coords="884,512,935,539"/>
+<area shape="rect" id="node26" title=" " alt="" coords="1161,587,1236,613"/>
+<area shape="rect" id="node27" title=" " alt="" coords="1187,661,1248,688"/>
+<area shape="rect" id="node29" href="$endian_8h.html" title=" " alt="" coords="1413,587,1483,613"/>
+<area shape="rect" id="node30" title=" " alt="" coords="1566,661,1626,688"/>
+<area shape="rect" id="node31" title=" " alt="" coords="1379,661,1464,688"/>
+<area shape="rect" id="node32" title=" " alt="" coords="1488,661,1541,688"/>
+<area shape="rect" id="node34" title=" " alt="" coords="605,661,685,688"/>
+<area shape="rect" id="node35" title=" " alt="" coords="709,661,800,688"/>
+<area shape="rect" id="node36" title=" " alt="" coords="824,661,885,688"/>
+<area shape="rect" id="node37" title=" " alt="" coords="910,661,1021,688"/>
+<area shape="rect" id="node40" href="$sys__error__code_8h.html" title=" " alt="" coords="169,587,292,613"/>
 </map>

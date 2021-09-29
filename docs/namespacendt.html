@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
+   &#160;<span id="projectnumber">de8bafc26a70bde1c5914c7af25ad69b20a4f19f</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -344,12 +344,15 @@ Functions</h2></td></tr>
 <tr class="separator:a1fac050300c27d54589be315f2d0f476"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d2b0b6599a13f06eada263d7b3e9f71"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#a0d2b0b6599a13f06eada263d7b3e9f71">endianName</a> () noexcept</td></tr>
 <tr class="separator:a0d2b0b6599a13f06eada263d7b3e9f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12f3fbb3d8fd8bdbc6d8bae89bda38a0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a12f3fbb3d8fd8bdbc6d8bae89bda38a0"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a12f3fbb3d8fd8bdbc6d8bae89bda38a0">toHost</a> (const T aValue) noexcept</td></tr>
-<tr class="separator:a12f3fbb3d8fd8bdbc6d8bae89bda38a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff5aae17f9fa68f8d8d9d552c2aed652"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aff5aae17f9fa68f8d8d9d552c2aed652"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#aff5aae17f9fa68f8d8d9d552c2aed652">toNet</a> (const T aValue) noexcept</td></tr>
-<tr class="separator:aff5aae17f9fa68f8d8d9d552c2aed652"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95df39eaa7d87a9005500419f320d650"><td class="memTemplParams" colspan="2">template&lt;typename T , typename U  = typename std::make_unsigned&lt;T&gt;::type&gt; </td></tr>
+<tr class="memitem:a95df39eaa7d87a9005500419f320d650"><td class="memTemplItemLeft" align="right" valign="top">constexpr U&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a95df39eaa7d87a9005500419f320d650">bswap</a> (T aValue)</td></tr>
+<tr class="separator:a95df39eaa7d87a9005500419f320d650"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98d1fa5159a6cdd4cbbc87ee249b912a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a98d1fa5159a6cdd4cbbc87ee249b912a"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a98d1fa5159a6cdd4cbbc87ee249b912a">toNet</a> (const T aValue) noexcept</td></tr>
+<tr class="separator:a98d1fa5159a6cdd4cbbc87ee249b912a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b6d168fd30ca3c52d4c3c212d077bf5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4b6d168fd30ca3c52d4c3c212d077bf5"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacendt.html#a4b6d168fd30ca3c52d4c3c212d077bf5">toHost</a> (const T aValue) noexcept</td></tr>
+<tr class="separator:a4b6d168fd30ca3c52d4c3c212d077bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a4fceb426f8e7b6a4971b5e4b5e0a1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#a7a4fceb426f8e7b6a4971b5e4b5e0a1b">CREATE_MEMBER_METHOD_EXISTANCE_CHECKER</a> (readHandlerImpl)</td></tr>
 <tr class="separator:a7a4fceb426f8e7b6a4971b5e4b5e0a1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8782c9bb2fd7b2961a19524847cb28fa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacendt.html#a8782c9bb2fd7b2961a19524847cb28fa">CREATE_MEMBER_METHOD_EXISTANCE_CHECKER</a> (writeHandlerImpl)</td></tr>
@@ -1091,6 +1094,40 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a95df39eaa7d87a9005500419f320d650"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95df39eaa7d87a9005500419f320d650">&#9670;&nbsp;</a></span>bswap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename U  = typename std::make_unsigned&lt;T&gt;::type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr U ndt::bswap </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>aValue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a95df39eaa7d87a9005500419f320d650_icgraph.svg" width="100%" height="385"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="ad7d7267d5b243e9b5ad8916f3f38aa37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad7d7267d5b243e9b5ad8916f3f38aa37">&#9670;&nbsp;</a></span>build_type()</h2>
 
@@ -1279,7 +1316,7 @@ template&lt;typename T &gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a6486eb8876e8c99680c8681e9da720e7_cgraph.svg" width="100%" height="416"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a6486eb8876e8c99680c8681e9da720e7_cgraph.svg" width="100%" height="404"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1323,7 +1360,7 @@ template&lt;typename T &gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a659a3c1ff9f586346cfbc6198f531f7e_cgraph.svg" width="100%" height="416"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a659a3c1ff9f586346cfbc6198f531f7e_cgraph.svg" width="100%" height="404"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1373,7 +1410,7 @@ template&lt;typename T &gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_ab8891ed023a4bc139e70e0724c94d1b9_cgraph.svg" width="100%" height="416"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_ab8891ed023a4bc139e70e0724c94d1b9_cgraph.svg" width="100%" height="404"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 <div class="dynheader">
@@ -1429,7 +1466,7 @@ template&lt;typename T &gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_ab788b02adea235a3fd072ee0624cac01_cgraph.svg" width="100%" height="416"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_ab788b02adea235a3fd072ee0624cac01_cgraph.svg" width="100%" height="404"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1629,7 +1666,7 @@ template&lt;typename T , std::size_t... I&gt; </div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a9f58b21d1594e31cdbd6aa8c7c2ad34d_cgraph.svg" width="100%" height="416"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="namespacendt_a9f58b21d1594e31cdbd6aa8c7c2ad34d_cgraph.svg" width="100%" height="404"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 <div class="dynheader">
@@ -2595,8 +2632,8 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a12f3fbb3d8fd8bdbc6d8bae89bda38a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12f3fbb3d8fd8bdbc6d8bae89bda38a0">&#9670;&nbsp;</a></span>toHost()</h2>
+<a id="a4b6d168fd30ca3c52d4c3c212d077bf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b6d168fd30ca3c52d4c3c212d077bf5">&#9670;&nbsp;</a></span>toHost()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2607,7 +2644,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T ndt::toHost </td>
+          <td class="memname">constexpr T ndt::toHost </td>
           <td>(</td>
           <td class="paramtype">const T&#160;</td>
           <td class="paramname"><em>aValue</em></td><td>)</td>
@@ -2616,21 +2653,21 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_a12f3fbb3d8fd8bdbc6d8bae89bda38a0_cgraph.svg" width="299" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_a4b6d168fd30ca3c52d4c3c212d077bf5_cgraph.svg" width="358" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
 </div>
 </div>
-<a id="aff5aae17f9fa68f8d8d9d552c2aed652"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff5aae17f9fa68f8d8d9d552c2aed652">&#9670;&nbsp;</a></span>toNet()</h2>
+<a id="a98d1fa5159a6cdd4cbbc87ee249b912a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98d1fa5159a6cdd4cbbc87ee249b912a">&#9670;&nbsp;</a></span>toNet()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2641,7 +2678,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">T ndt::toNet </td>
+          <td class="memname">constexpr T ndt::toNet </td>
           <td>(</td>
           <td class="paramtype">const T&#160;</td>
           <td class="paramname"><em>aValue</em></td><td>)</td>
@@ -2650,20 +2687,20 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_aff5aae17f9fa68f8d8d9d552c2aed652_cgraph.svg" width="291" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_a98d1fa5159a6cdd4cbbc87ee249b912a_cgraph.svg" width="223" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_aff5aae17f9fa68f8d8d9d552c2aed652_icgraph.svg" width="643" height="326"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="namespacendt_a98d1fa5159a6cdd4cbbc87ee249b912a_icgraph.svg" width="600" height="114"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -3400,7 +3437,7 @@ template&lt;typename T &gt; </div>
 <div class="line"><span class="stringliteral">********************************* - ndt info - *********************************</span></div>
 <div class="line"><span class="stringliteral">   version: 0.1.1</span></div>
 <div class="line"><span class="stringliteral">build type: Release</span></div>
-<div class="line"><span class="stringliteral">      sha1: 9bb6e2011bb38b44122d373ff1a755349441c9b3</span></div>
+<div class="line"><span class="stringliteral">      sha1: de8bafc26a70bde1c5914c7af25ad69b20a4f19f</span></div>
 <div class="line"><span class="stringliteral">     dirty: false</span></div>
 <div class="line"><span class="stringliteral">********************************************************************************</span></div>
 <div class="line"><span class="stringliteral">)vi&quot;</span></div>

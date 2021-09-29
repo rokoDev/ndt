@@ -1,11 +1,6 @@
 <map id="ndt::NoCopyMoveDefConstructible" name="ndt::NoCopyMoveDefConstructible">
-<area shape="rect" id="node1" title=" " alt="" coords="327,175,546,252"/>
-<area shape="rect" id="node5" href="$classndt_1_1details_1_1_byte_order.html" title=" " alt="" coords="5,300,159,407"/>
-<area shape="rect" id="node6" href="$classndt_1_1details_1_1_byte_order_3_01uint16__t_00_012_01_4.html" title=" " alt="" coords="183,300,336,407"/>
-<area shape="rect" id="node7" href="$classndt_1_1details_1_1_byte_order_3_01uint32__t_00_014_01_4.html" title=" " alt="" coords="360,300,513,407"/>
-<area shape="rect" id="node8" href="$classndt_1_1details_1_1_byte_order_3_01uint64__t_00_018_01_4.html" title=" " alt="" coords="537,300,691,407"/>
-<area shape="rect" id="node9" href="$classndt_1_1details_1_1_byte_order_3_01uint8__t_00_011_01_4.html" title=" " alt="" coords="715,300,868,407"/>
-<area shape="rect" id="node2" href="$structndt_1_1_no_copy_able.html" title=" " alt="" coords="229,5,351,127"/>
-<area shape="rect" id="node3" href="$structndt_1_1_no_move_able.html" title=" " alt="" coords="375,5,498,127"/>
-<area shape="rect" id="node4" href="$structndt_1_1_no_default_constructible.html" title=" " alt="" coords="523,27,703,105"/>
+<area shape="rect" id="node1" title=" " alt="" coords="104,175,323,252"/>
+<area shape="rect" id="node2" href="$structndt_1_1_no_copy_able.html" title=" " alt="" coords="5,5,128,127"/>
+<area shape="rect" id="node3" href="$structndt_1_1_no_move_able.html" title=" " alt="" coords="152,5,275,127"/>
+<area shape="rect" id="node4" href="$structndt_1_1_no_default_constructible.html" title=" " alt="" coords="299,27,479,105"/>
 </map>

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NDT
-   &#160;<span id="projectnumber">9bb6e2011bb38b44122d373ff1a755349441c9b3</span>
+   &#160;<span id="projectnumber">de8bafc26a70bde1c5914c7af25ad69b20a4f19f</span>
    </div>
    <div id="projectbrief">Network Data Transmission</div>
   </td>
@@ -410,7 +410,7 @@ $(function() {
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keyword">const</span> uint8_t kAF = isV4 ? AF_INET : AF_INET6;</div>
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
 <div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="comment">// deserialize port</span></div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> kPort = <a class="code" href="namespacendt.html#aff5aae17f9fa68f8d8d9d552c2aed652">toNet</a>(aReader.<a class="code" href="classndt_1_1_bin_reader.html#abe942576a40e5581bb6d6e4b94a9046d">get</a>&lt;uint16_t&gt;(ec));</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> kPort = <a class="code" href="namespacendt.html#a98d1fa5159a6cdd4cbbc87ee249b912a">toNet</a>(aReader.<a class="code" href="classndt_1_1_bin_reader.html#abe942576a40e5581bb6d6e4b94a9046d">get</a>&lt;uint16_t&gt;(ec));</div>
 <div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="keywordflow">if</span> (ec)</div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    {</div>
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="keywordflow">return</span> ec;</div>
@@ -487,13 +487,13 @@ $(function() {
 <div class="ttc" id="anamespacendt_html_a5a20a287f0b05e8a4e1a828c3c887fda"><div class="ttname"><a href="namespacendt.html#a5a20a287f0b05e8a4e1a828c3c887fda">ndt::kInvalidAddressFamilyDescr</a></div><div class="ttdeci">const std::string kInvalidAddressFamilyDescr</div><div class="ttdef"><b>Definition:</b> address.h:17</div></div>
 <div class="ttc" id="anamespacendt_html_a79425562ad71a23b5d0f91bfc8780e18"><div class="ttname"><a href="namespacendt.html#a79425562ad71a23b5d0f91bfc8780e18">ndt::kStringIsNotIpAddressDescr</a></div><div class="ttdeci">const std::string kStringIsNotIpAddressDescr</div><div class="ttdef"><b>Definition:</b> address.h:20</div></div>
 <div class="ttc" id="anamespacendt_html_a9306b64be83ea952cb81b221683da7f6"><div class="ttname"><a href="namespacendt.html#a9306b64be83ea952cb81b221683da7f6">ndt::enable_if_Address_t</a></div><div class="ttdeci">std::enable_if_t&lt; std::is_same_v&lt; std::decay_t&lt; T &gt;, Address &gt;, T &gt; enable_if_Address_t</div><div class="ttdef"><b>Definition:</b> address.h:280</div></div>
+<div class="ttc" id="anamespacendt_html_a98d1fa5159a6cdd4cbbc87ee249b912a"><div class="ttname"><a href="namespacendt.html#a98d1fa5159a6cdd4cbbc87ee249b912a">ndt::toNet</a></div><div class="ttdeci">constexpr T toNet(const T aValue) noexcept</div><div class="ttdef"><b>Definition:</b> endian.h:73</div></div>
 <div class="ttc" id="anamespacendt_html_aa944f7db5d9dd6201e090a114718ef3b"><div class="ttname"><a href="namespacendt.html#aa944f7db5d9dd6201e090a114718ef3b">ndt::throw_if_error</a></div><div class="ttdeci">void throw_if_error(const std::error_code &amp;aEc)</div><div class="ttdef"><b>Definition:</b> exception.h:54</div></div>
 <div class="ttc" id="anamespacendt_html_ab8891ed023a4bc139e70e0724c94d1b9"><div class="ttname"><a href="namespacendt.html#ab8891ed023a4bc139e70e0724c94d1b9">ndt::deserialize</a></div><div class="ttdeci">std::error_code deserialize(BinReader &amp;aReader, T &amp;&amp;aData, ndt::tag_t&lt; enable_if_Address_t&lt; T &gt;&gt;) noexcept</div><div class="ttdef"><b>Definition:</b> address.h:326</div></div>
 <div class="ttc" id="anamespacendt_html_ad4c1e716b25fd6e4ad568edd93a2e518"><div class="ttname"><a href="namespacendt.html#ad4c1e716b25fd6e4ad568edd93a2e518">ndt::make_error_code</a></div><div class="ttdeci">std::error_code make_error_code(eAddressErrorCode e)</div><div class="ttdef"><b>Definition:</b> address.h:46</div></div>
 <div class="ttc" id="anamespacendt_html_aed235601e13561ac543c60c83842a092"><div class="ttname"><a href="namespacendt.html#aed235601e13561ac543c60c83842a092">ndt::kAddressErrorCategoryCStr</a></div><div class="ttdeci">const char * kAddressErrorCategoryCStr</div><div class="ttdef"><b>Definition:</b> address.h:16</div></div>
 <div class="ttc" id="anamespacendt_html_aef0c591731ee0bf9473eb44587f7bb96"><div class="ttname"><a href="namespacendt.html#aef0c591731ee0bf9473eb44587f7bb96">ndt::eAddressFamily</a></div><div class="ttdeci">eAddressFamily</div><div class="ttdef"><b>Definition:</b> utils.h:36</div></div>
 <div class="ttc" id="anamespacendt_html_afb00545aff91ded0f81e30a6dfde4608"><div class="ttname"><a href="namespacendt.html#afb00545aff91ded0f81e30a6dfde4608">ndt::getAddressErrorCategory</a></div><div class="ttdeci">const AddressErrorCategory &amp; getAddressErrorCategory()</div><div class="ttdef"><b>Definition:</b> address.h:40</div></div>
-<div class="ttc" id="anamespacendt_html_aff5aae17f9fa68f8d8d9d552c2aed652"><div class="ttname"><a href="namespacendt.html#aff5aae17f9fa68f8d8d9d552c2aed652">ndt::toNet</a></div><div class="ttdeci">T toNet(const T aValue) noexcept</div><div class="ttdef"><b>Definition:</b> endian.h:190</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition:</b> address.h:54</div></div>
 <div class="ttc" id="astructndt_1_1_address_family_3_01uint8__t_01_4_html_a30d7128839ca2fb1d4b7b66eb9095151"><div class="ttname"><a href="structndt_1_1_address_family_3_01uint8__t_01_4.html#a30d7128839ca2fb1d4b7b66eb9095151">ndt::AddressFamily&lt; uint8_t &gt;::type</a></div><div class="ttdeci">uint8_t type</div><div class="ttdef"><b>Definition:</b> address.h:72</div></div>
 <div class="ttc" id="astructndt_1_1_address_family_html"><div class="ttname"><a href="structndt_1_1_address_family.html">ndt::AddressFamily</a></div><div class="ttdef"><b>Definition:</b> address.h:67</div></div>
